@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meridian Official Hub - ของดีต้องของเฮีย</title>
+    <style>
+        :root {
+            --primary: #ff64ff;
+            --secondary: #6432ff;
+            --bg: #0a0a0c;
+            --card: #141419;
+        }
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .header {
+            padding: 40px 0;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .slogan {
+            color: #aaa;
+            margin-top: -20px;
+            font-style: italic;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid #282832;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .script-box {
+            background: #000;
+            padding: 15px;
+            border-radius: 8px;
+            color: var(--primary);
+            font-family: monospace;
+            word-break: break-all;
+            margin: 15px 0;
+            border: 1px solid var(--secondary);
+            font-size: 0.9rem;
+        }
+        .btn {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--primary);
+        }
+        .footer {
+            margin-top: 50px;
+            color: #666;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">MERIDIAN HUB</div>
+    <p class="slogan">"ของดีต้องของเฮีย"</p>
+
+    <div class="card">
+        <h3>🚀 Meridian V2.5 [EXTREME]</h3>
+        <p>สคริปต์ลดแลค + กันสั่น 100% ตัวท็อปสำหรับสายรัน</p>
+        <div class="script-box" id="scriptText">
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/main/Meridian_Tle.lua"))()
+        </div>
+        <button class="btn" onclick="copyScript()">ก๊อปปี้สคริปต์</button>
+    </div>
+
+    <div class="card">
+        <h3>📱 ติดตามเฮียได้ที่</h3>
+        <p>อัปเดตสคริปต์ใหม่ๆ ก่อนใคร</p>
+        <a href="https://www.tiktok.com/@meridian_tle" class="btn">TikTok: @meridian_tle</a>
+    </div>
+
+    <div class="footer">
+        © 2026 Meridian_Tle. All Rights Reserved.
+    </div>
+</div>
+
+<script>
+    function copyScript() {
+        var text = document.getElementById("scriptText").innerText;
+        navigator.clipboard.writeText(text);
+        alert("ก๊อปปี้สคริปต์แล้ว! เอาไปวางในตัวรันได้เลยครับผม");
+    }
+</script>
+
+</body>
+</html>
