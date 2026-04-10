@@ -8,6 +8,7 @@
         :root {
             --primary: #ff64ff;
             --secondary: #6432ff;
+            --accent: #32e1ff;
             --bg: #0a0a0c;
             --card: #141419;
         }
@@ -43,6 +44,10 @@
             padding: 25px;
             margin: 20px 0;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+        .card:hover {
+            border-color: var(--secondary);
         }
         .script-box {
             background: #000;
@@ -53,7 +58,8 @@
             word-break: break-all;
             margin: 15px 0;
             border: 1px solid var(--secondary);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            text-align: left;
         }
         .btn {
             background: linear-gradient(45deg, var(--secondary), var(--primary));
@@ -66,10 +72,23 @@
             transition: 0.3s;
             text-decoration: none;
             display: inline-block;
+            width: 80%;
+        }
+        .btn-pro {
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
         }
         .btn:hover {
             transform: scale(1.05);
             box-shadow: 0 0 15px var(--primary);
+        }
+        .tag {
+            background: #ff4747;
+            color: white;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 5px;
+            vertical-align: middle;
+            margin-left: 5px;
         }
         .footer {
             margin-top: 50px;
@@ -85,12 +104,21 @@
     <p class="slogan">"ของดีต้องของเฮีย"</p>
 
     <div class="card">
-        <h3>🚀 Meridian V3 [ULTIMATE MOBILE]</h3>
-        <p>สคริปต์ลดแลค + กันสั่น 100% ตัวท็อปสำหรับสายรัน</p>
-        <div class="script-box" id="scriptText">
+        <h3>⚡ Meridian Optimizer Pro <span class="tag">NEW</span></h3>
+        <p>ตัวใหม่ล่าสุด! ปรับแต่งละเอียด แก้แลค + ปรับระยะมองเห็น + เช็ค FPS</p>
+        <div class="script-box" id="scriptPro">
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Optimizer_Pro.lua"))()
+        </div>
+        <button class="btn btn-pro" onclick="copyScript('scriptPro')">ก๊อปปี้สคริปต์ตัวใหม่ (Pro)</button>
+    </div>
+
+    <div class="card">
+        <h3>🚀 Meridian V3 [ULTIMATE]</h3>
+        <p>สคริปต์ลดแลค + กันสั่น 100% ตัวยอดนิยม</p>
+        <div class="script-box" id="scriptV3">
             loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/main/Meridian_Tle.lua"))()
         </div>
-        <button class="btn" onclick="copyScript()">ก๊อปปี้สคริปต์</button>
+        <button class="btn" onclick="copyScript('scriptV3')">ก๊อปปี้สคริปต์ V3</button>
     </div>
 
     <div class="card">
@@ -105,8 +133,8 @@
 </div>
 
 <script>
-    function copyScript() {
-        var text = document.getElementById("scriptText").innerText;
+    function copyScript(id) {
+        var text = document.getElementById(id).innerText;
         navigator.clipboard.writeText(text);
         alert("ก๊อปปี้สคริปต์แล้ว! เอาไปวางในตัวรันได้เลยครับผม");
     }
