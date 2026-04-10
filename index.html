@@ -9,6 +9,7 @@
             --primary: #ff64ff;
             --secondary: #6432ff;
             --accent: #32e1ff;
+            --danger: #ff4747;
             --bg: #0a0a0c;
             --card: #141419;
         }
@@ -77,18 +78,29 @@
         .btn-pro {
             background: linear-gradient(45deg, var(--secondary), var(--accent));
         }
+        .btn-hitbox {
+            background: linear-gradient(45deg, #ff4747, #ff9647);
+        }
         .btn:hover {
             transform: scale(1.05);
             box-shadow: 0 0 15px var(--primary);
         }
         .tag {
-            background: #ff4747;
+            background: var(--danger);
             color: white;
             font-size: 0.7rem;
             padding: 3px 8px;
             border-radius: 5px;
             vertical-align: middle;
             margin-left: 5px;
+        }
+        .note {
+            color: #ff6666;
+            font-size: 0.75rem;
+            margin-top: 15px;
+            line-height: 1.4;
+            padding: 0 10px;
+            font-style: italic;
         }
         .footer {
             margin-top: 50px;
@@ -110,6 +122,16 @@
             loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Optimizer_Pro.lua"))()
         </div>
         <button class="btn btn-pro" onclick="copyScript('scriptPro')">ก๊อปปี้สคริปต์ตัวใหม่ (Pro)</button>
+    </div>
+
+    <div class="card">
+        <h3>🎯 Meridian Hitbox Pro <span class="tag">HOT</span></h3>
+        <p>ขยายขนาดตัวศัตรู ตีง่ายขึ้น ยิงโดนแม่นขึ้น ปรับขนาดได้เอง</p>
+        <div class="script-box" id="scriptHitbox">
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Hitbox_Pro.lua"))()
+        </div>
+        <button class="btn btn-hitbox" onclick="copyScript('scriptHitbox')">ก๊อปปี้สคริปต์ Hitbox</button>
+        <p class="note">** หมายเหตุ: สคริปต์ Hitbox อาจใช้งานไม่ได้ในบางแมพที่มีระบบป้องกันสูง หากรันแล้วไม่ติด ทางเราต้องขออภัยมา ณ ที่นี้ด้วย และจะเร่งอัปเดตแก้ไขให้ในเวอร์ชันถัดไปครับ</p>
     </div>
 
     <div class="card">
