@@ -12,6 +12,7 @@
             --danger: #ff4747;
             --bg: #0a0a0c;
             --card: #141419;
+            --gold: #ffcc00;
         }
         body {
             background-color: var(--bg);
@@ -75,6 +76,10 @@
             display: inline-block;
             width: 80%;
         }
+        .btn-v2 {
+            background: linear-gradient(45deg, var(--secondary), #00ff88);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+        }
         .btn-pro {
             background: linear-gradient(45deg, var(--secondary), var(--accent));
         }
@@ -94,6 +99,11 @@
             vertical-align: middle;
             margin-left: 5px;
         }
+        .tag-v2 {
+            background: #00ff88;
+            color: #000;
+            font-weight: bold;
+        }
         .note {
             color: #ff6666;
             font-size: 0.75rem;
@@ -101,6 +111,13 @@
             line-height: 1.4;
             padding: 0 10px;
             font-style: italic;
+        }
+        .note-important {
+            color: var(--gold);
+            border-left: 2px solid var(--gold);
+            padding-left: 10px;
+            text-align: left;
+            font-style: normal;
         }
         .footer {
             margin-top: 50px;
@@ -114,6 +131,18 @@
 <div class="container">
     <div class="header">MERIDIAN HUB</div>
     <p class="slogan">"ของดีต้องของเฮีย"</p>
+
+    <div class="card">
+        <h3>🚨 Meridian Orbit V2 <span class="tag tag-v2">POLICE</span></h3>
+        <p>สคริปต์ล่าโจรตัวแรง ล็อคเป้าหมุนรอบตัว Orbit ตามติดทุกฝีก้าว!</p>
+        <div class="script-box" id="scriptV2">
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/MeridianHub_V2.lua"))()
+        </div>
+        <button class="btn btn-v2" onclick="copyScript('scriptV2')">ก๊อปปี้สคริปต์ล่าโจร (V2)</button>
+        <div class="note note-important">
+            <b>⚠️ ข้อควรระวังด้านเสถียรภาพ:</b> เนื่องจากระบบใช้การคำนวณตำแหน่งแบบ Real-time ห้ามปรับค่า Speed, Radius หรือ Height เป็น <b>0</b> โดยเด็ดขาด เพราะจะส่งผลให้ Logic ของสคริปต์ขัดข้อง (Script Crash) แนะนำให้ปรับขั้นต่ำที่ <b>1</b> เพื่อประสิทธิภาพสูงสุดครับ
+        </div>
+    </div>
 
     <div class="card">
         <h3>⚡ Meridian Optimizer Pro <span class="tag">NEW</span></h3>
@@ -164,3 +193,4 @@
 
 </body>
 </html>
+
