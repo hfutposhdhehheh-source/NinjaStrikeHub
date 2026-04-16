@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Private AI Bot</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root { --bg: #121212; --text: #e0e0e0; --primary: #bb86fc; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        #setup { padding: 20px; border-bottom: 1px solid #333; }
+        #chat-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
+        .message { max-width: 85%; padding: 10px 15px; border-radius: 15px; line-height: 1.5; font-size: 16px; }
+        .user { align-self: flex-end; background: var(--primary); color: #000; }
+        .bot { align-self: flex-start; background: #2c2c2c; }
+        #input-area { padding: 15px; background: #1e1e1e; display: flex; gap: 10px; }
+        input, button { border-radius: 8px; border: none; padding: 12px; }
+        input[type="text"] { flex: 1; background: #333; color: white; }
+        button { background: var(--primary); color: black; font-weight: bold; width: 60px; }
+    </style>
+</head>
+<body>
+
+<div id="setup">
+    <input type="password" id="apiKey" placeholder="วาง API Key ตรงนี้..." style="width: 80%;">
+</div>
+
+<div id="chat-container" id="chatContainer">
+    <div class="message bot">สวัสดีครับ ผมคือผู้ดูแลส่วนตัวของคุณ พร้อมรับใช้แล้วครับ</div>
+</div>
+
+<div id="input-area">
+    <input type="text" id="userInput" placeholder="พิมพ์ข้อความ...">
+    <button onclick="sendMsg()">ส่ง</button>
+</div>
+
+<script>
+    async function sendMsg() {
+        const key = document.getElementById('apiKey').value;
+        const input = document.getElementById('userInput');
+        const container = document.getElementById('chat-container');
+        
+        if (!key || !input.value) return alert("กรุณาใส่ API Key และข้อความ");
+
+        const userText = input.value;
+        appendMsg(userText, 'user');
+        input.value = '';
+
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: `จงตอบในบทบาทผู้ดูแลที่สุภาพและอบอุ่น บรรยายการกระทำใน *...* : ${userText}` }] }]
+                })
+            });
+            const data = await response.json();
+            const botText = data.candidates[0].content.parts[0].text;
+            appendMsg(botText, 'bot');
+        } catch (e) {
+            appendMsg("เกิดข้อผิดพลาด: ตรวจสอบ API Key ของคุณ", 'bot');
+        }
+    }
+
+    function appendMsg(text, sender) {
+        const div = document.createElement('div');
+        div.classList.add('message', sender);
+        div.innerHTML = marked.parse(text);
+        document.getElementById('chat-container').appendChild(div);
+        document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
+    }
+</script>
+</body>
+  </html>
+
