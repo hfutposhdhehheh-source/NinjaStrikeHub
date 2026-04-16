@@ -13,6 +13,7 @@
             --bg: #0a0a0c;
             --card: #141419;
             --gold: #ffcc00;
+            --emerald: #00ff88;
         }
 
         /* --- ส่วนที่เพิ่มเข้ามาสำหรับระบบ KEY --- */
@@ -87,6 +88,10 @@
         .card:hover {
             border-color: var(--secondary);
         }
+        .card-v5 {
+            border: 1px solid var(--emerald);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
+        }
         .script-box {
             background: #000;
             padding: 15px;
@@ -112,9 +117,12 @@
             display: inline-block;
             width: 80%;
         }
+        .btn-v5 {
+            background: linear-gradient(45deg, var(--secondary), var(--emerald));
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
         .btn-v2 {
             background: linear-gradient(45deg, var(--secondary), #00ff88);
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
         }
         .btn-pro {
             background: linear-gradient(45deg, var(--secondary), var(--accent));
@@ -134,6 +142,11 @@
             border-radius: 5px;
             vertical-align: middle;
             margin-left: 5px;
+        }
+        .tag-v5 {
+            background: var(--emerald);
+            color: #000;
+            font-weight: bold;
         }
         .tag-v2 {
             background: #00ff88;
@@ -177,6 +190,18 @@
 <div id="main-site-content" class="container">
     <div class="header">MERIDIAN HUB</div>
     <p class="slogan">"ของดีต้องของเฮีย"</p>
+
+    <div class="card card-v5">
+        <h3>🔥 Meridian V5.5 [COMPACT THAI] <span class="tag tag-v5">ตัวท็อป</span></h3>
+        <p>สคริปต์รวมฟังก์ชันโหด: ล็อคหัวจิกๆ, อิทบ็อกซ์กรอบเขียว, มองทะลุ และ No Clip ตัวใหม่ล่าสุด!</p>
+        <div class="script-box" id="scriptV5">
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/MeridianHub_V5.5_Thai.lua"))()
+        </div>
+        <button class="btn btn-v5" onclick="copyScript('scriptV5')">ก๊อปปี้สคริปต์ตัวแรง (V5.5)</button>
+        <div class="note note-important">
+            <b>⚠️ คำเตือนจากเฮีย:</b> สคริปต์นี้ <b>"แรงจัด"</b> โดยเฉพาะระบบ Hard Lock และ Box Hitbox แนะนำให้ใช้ด้วยความระมัดระวัง (ระวังโดนรีพอร์ต) และหากเปิด No Clip นานเกินไปอาจมีปัญหากับระบบฟิสิกส์บางแมพ แนะนำเปิดเฉพาะตอนจำเป็นครับ!
+        </div>
+    </div>
 
     <div class="card">
         <h3>🚨 Meridian Orbit V2 <span class="tag tag-v2">POLICE</span></h3>
@@ -233,7 +258,7 @@
 
 <script>
     // --- [ ตั้งค่า KEY ตรงนี้ ] ---
-    const MY_KEY = "MERIDIAN_666"; // เฮียแก้คำในเครื่องหมายคำพูดได้เลยครับ
+    const MY_KEY = "MERIDIAN_666"; 
 
     // เช็คสถานะการเข้าสู่ระบบ
     window.onload = function() {
@@ -274,3 +299,5 @@
 
 </body>
 </html>
+
+
