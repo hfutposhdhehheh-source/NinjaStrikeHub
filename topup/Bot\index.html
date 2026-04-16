@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G-SHELL TOPUP | บริการเติมเกม 24 ชม.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --main: #ff4655; --dark: #0f1923; --card: #1f2326; --accent: #ece8e1; }
+        body { font-family: 'Prompt', sans-serif; background: var(--dark); color: var(--accent); margin: 0; }
+        
+        /* Navbar */
+        .nav { background: #000; padding: 15px; border-bottom: 3px solid var(--main); display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 600; font-size: 20px; color: var(--main); }
+
+        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; padding-bottom: 100px; }
+        .step-card { background: var(--card); border-radius: 12px; padding: 20px; margin-bottom: 20px; border-left: 5px solid var(--main); }
+        .step-num { background: var(--main); color: white; width: 25px; height: 25px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%; margin-right: 10px; font-size: 14px; }
+        
+        /* Grid Items */
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .item { background: #2a2e33; border: 1.5px solid transparent; border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .item.active { border-color: var(--main); background: rgba(255, 70, 85, 0.1); }
+        .item img { width: 40px; margin-bottom: 5px; border-radius: 5px; }
+        .item-p { font-size: 14px; margin: 5px 0; color: #fff; }
+        .item-price { font-size: 12px; color: var(--main); font-weight: bold; }
+
+        /* Payment Method */
+        .pay-method { display: flex; align-items: center; background: #2a2e33; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1.5px solid transparent; cursor: pointer; }
+        .pay-method.active { border-color: #00ff88; }
+        .pay-logo { width: 30px; height: 30px; background: #eee; border-radius: 5px; margin-right: 15px; }
+
+        /* Bottom Bar */
+        .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; padding: 20px; border-top: 1px solid #333; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; z-index: 99; }
+        .buy-btn { background: var(--main); color: white; border: none; padding: 12px 30px; border-radius: 5px; font-weight: 600; font-size: 16px; cursor: pointer; }
+
+        /* Receipt Overlay */
+        #receipt { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+        .slip { background: #fff; color: #000; width: 100%; max-width: 350px; padding: 30px; border-radius: 20px; position: relative; }
+        .slip::before { content: ""; position: absolute; top: -10px; left: 0; width: 100%; height: 20px; background-image: radial-gradient(circle, transparent 70%, #fff 70%); background-size: 20px 20px; }
+        .success-icon { color: #28a745; font-size: 50px; text-align: center; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="nav">
+    <div class="logo">G-SHELL TOPUP</div>
+    <div style="font-size: 12px;">TH | Support</div>
+</div>
+
+<div class="container">
+    <div class="step-card">
+        <h3><span class="step-num">1</span> เลือกเกมที่คุณต้องการ</h3>
+        <div class="grid" id="gameGrid">
+            <div class="item active" onclick="selGame(this, 'Free Fire')"><img src="https://via.placeholder.com/50/ff4655/fff?text=FF"><div class="item-p">Free Fire</div></div>
+            <div class="item" onclick="selGame(this, 'ROV')"><img src="https://via.placeholder.com/50/007bff/fff?text=ROV"><div class="item-p">ROV</div></div>
+            <div class="item" onclick="selGame(this, 'PUBG')"><img src="https://via.placeholder.com/50/ffc107/000?text=PUBG"><div class="item-p">PUBG Mobile</div></div>
+        </div>
+    </div>
+
+    <div class="step-card">
+        <h3><span class="step-num">2</span> ข้อมูลผู้เล่น</h3>
+        <input type="text" id="uid" placeholder="กรอก ID ผู้เล่นของคุณ..." style="width:100%; padding:12px; border-radius:5px; border:none; background:#2a2e33; color:white; outline:none;">
+    </div>
+
+    <div class="step-card">
+        <h3><span class="step-num">3</span> เลือกจำนวนเพชร/คูปอง</h3>
+        <div class="grid">
+            <div class="item" onclick="selPrice(this, 100, 35)"><b>100 + 10</b><div class="item-price">฿35</div></div>
+            <div class="item" onclick="selPrice(this, 500, 150)"><b>500 + 55</b><div class="item-price">฿150</div></div>
+            <div class="item" onclick="selPrice(this, 2100, 590)"><b>2100 + 250</b><div class="item-price">฿590</div></div>
+        </div>
+    </div>
+
+    <div class="step-card">
+        <h3><span class="step-num">4</span> ช่องทางชำระเงิน</h3>
+        <div class="pay-method" onclick="selPay(this, 'PromptPay QR')"><div class="pay-logo" style="background: #1a3a6c;"></div> <span>PromptPay QR</span></div>
+        <div class="pay-method" onclick="selPay(this, 'TrueMoney')"><div class="pay-logo" style="background: #ff8c00;"></div> <span>TrueMoney Wallet</span></div>
+    </div>
+</div>
+
+<div class="bottom-bar">
+    <div>
+        <div style="font-size: 12px; color: #888;">ยอดชำระเงินทั้งหมด</div>
+        <div id="displayPrice" style="font-size: 20px; font-weight: bold; color: var(--main);">฿0.00</div>
+    </div>
+    <button class="buy-btn" onclick="process()">เติมเงินตอนนี้</button>
+</div>
+
+<div id="receipt">
+    <div class="slip">
+        <div class="success-icon">✔</div>
+        <h2 style="text-align:center; margin:0;">ทำรายการสำเร็จ</h2>
+        <p style="text-align:center; color:#666; font-size:12px; margin-bottom:20px;">ขอบคุณที่ใช้บริการ G-SHELL</p>
+        <hr style="border:none; border-top: 1px dashed #ccc;">
+        <div style="font-size:14px; line-height:2;">
+            <div style="display:flex; justify-content:space-between;"><span>เกม:</span><span id="resGame">-</span></div>
+            <div style="display:flex; justify-content:space-between;"><span>ID ผู้เล่น:</span><span id="resID">-</span></div>
+            <div style="display:flex; justify-content:space-between;"><span>ยอดชำระ:</span><span id="resPrice">-</span></div>
+            <div style="display:flex; justify-content:space-between;"><span>ช่องทาง:</span><span id="resPay">-</span></div>
+            <div style="display:flex; justify-content:space-between;"><span>เลขอ้างอิง:</span><span id="resRef">TX7890XXX</span></div>
+        </div>
+        <button onclick="location.reload()" style="width:100%; margin-top:30px; padding:10px; border:none; background:var(--main); color:white; border-radius:5px;">ปิดหน้าต่าง</button>
+    </div>
+</div>
+
+<script>
+    let g = "Free Fire", a = 0, p = 0, m = "";
+
+    function selGame(el, name) {
+        document.querySelectorAll('#gameGrid .item').forEach(i => i.classList.remove('active'));
+        el.classList.add('active'); g = name;
+    }
+
+    function selPrice(el, amt, prc) {
+        document.querySelectorAll('.step-card .item').forEach(i => i.classList.remove('active'));
+        el.classList.add('active'); a = amt; p = prc;
+        document.getElementById('displayPrice').innerText = "฿" + p.toFixed(2);
+    }
+
+    function selPay(el, method) {
+        document.querySelectorAll('.pay-method').forEach(i => i.classList.remove('active'));
+        el.classList.add('active'); m = method;
+    }
+
+    function process() {
+        const uid = document.getElementById('uid').value;
+        if(!uid || p === 0 || !m) return alert("กรุณากรอกข้อมูลให้ครบถ้วน!");
+        
+        const btn = document.querySelector('.buy-btn');
+        btn.innerText = "กำลังตรวจสอบ...";
+        btn.disabled = true;
+
+        setTimeout(() => {
+            document.getElementById('resGame').innerText = g;
+            document.getElementById('resID').innerText = uid;
+            document.getElementById('resPrice').innerText = "฿" + p.toFixed(2);
+            document.getElementById('resPay').innerText = m;
+            document.getElementById('resRef').innerText = "TX" + Math.floor(Math.random() * 900000 + 100000);
+            document.getElementById('receipt').style.display = 'flex';
+        }, 2000);
+    }
+</script>
+
+</body>
+      </html>
+                                                                        
