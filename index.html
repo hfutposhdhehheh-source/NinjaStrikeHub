@@ -12,8 +12,9 @@
             --accent: #32e1ff;
             --emerald: #00ff88;
             --danger: #ff4747;
+            --gold: #ffcc00;
             --bg: #050508;
-            --card: rgba(20, 20, 30, 0.7);
+            --card-bg: rgba(15, 15, 25, 0.8);
         }
 
         body {
@@ -31,155 +32,80 @@
         @keyframes borderFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes pulse { 0% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0.5; transform: scale(1); } }
 
-        /* --- Topbar --- */
+        /* --- UI Elements --- */
         .topbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            text-align: center;
-            background: rgba(0,0,0,0.8);
-            padding: 10px;
-            font-size: 0.75rem;
-            backdrop-filter: blur(10px);
-            z-index: 100;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            letter-spacing: 2px;
-            color: var(--accent);
+            position: fixed; top: 0; width: 100%; text-align: center;
+            background: rgba(0,0,0,0.8); padding: 10px; font-size: 0.75rem;
+            backdrop-filter: blur(10px); z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.05);
+            letter-spacing: 2px; color: var(--accent);
         }
 
-        /* --- Auth Section --- */
-        #key-auth-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
+        /* --- Auth --- */
+        #key-auth-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
         .key-card {
-            background: var(--card);
-            backdrop-filter: blur(20px);
-            padding: 50px 30px;
-            border-radius: 25px;
-            text-align: center;
-            box-shadow: 0 0 40px rgba(100, 50, 255, 0.3);
-            width: 90%;
-            max-width: 400px;
-            border: 1px solid rgba(255,100,255,0.2);
+            background: var(--card-bg); backdrop-filter: blur(20px); padding: 50px 30px;
+            border-radius: 25px; text-align: center; box-shadow: 0 0 40px rgba(100, 50, 255, 0.3);
+            width: 90%; max-width: 400px; border: 1px solid rgba(255,100,255,0.2);
         }
-
         .key-input {
-            padding: 15px;
-            width: 100%;
-            margin: 20px 0;
-            border-radius: 12px;
-            border: 1px solid #333;
-            background: rgba(0,0,0,0.5);
-            color: var(--primary);
-            text-align: center;
-            font-size: 1.2rem;
-            box-sizing: border-box;
-            outline: none;
+            padding: 15px; width: 100%; margin: 20px 0; border-radius: 12px; border: 1px solid #333;
+            background: rgba(0,0,0,0.5); color: var(--primary); text-align: center; font-size: 1.2rem;
+            box-sizing: border-box; outline: none;
         }
 
-        /* --- Main Content --- */
+        /* --- Content --- */
         #main-site-content { display: none; padding-top: 60px; }
-
         .header {
-            font-size: 3rem;
-            text-align: center;
-            padding: 50px 0 20px;
-            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 8vw, 3.5rem); text-align: center; padding: 50px 0 20px;
+            font-family: 'Orbitron', sans-serif; font-weight: 700;
             background: linear-gradient(90deg, var(--accent), var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             animation: glowText 2s infinite alternate;
-            font-weight: 700;
         }
-
         .container { max-width: 800px; margin: auto; padding: 0 20px; }
 
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
+        .stats-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+        .stat-badge { background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.1); }
+        .online-dot { height: 8px; width: 8px; background: var(--emerald); border-radius: 50%; display: inline-block; margin-right: 6px; animation: pulse 1.5s infinite; }
 
-        .stat-badge {
-            background: rgba(255,255,255,0.05);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .online-dot {
-            height: 8px; width: 8px; background: var(--emerald);
-            border-radius: 50%; display: inline-block;
-            margin-right: 6px; animation: pulse 1.5s infinite;
-        }
-
-        /* --- Script Card --- */
+        /* --- Card System (The Upgrade) --- */
         .card {
-            background: var(--card);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(255, 100, 255, 0.2);
-        }
-
-        /* Special Card V5.5 */
-        .card-v5 {
+            background: var(--card-bg); backdrop-filter: blur(15px);
+            border-radius: 20px; padding: 30px; margin-bottom: 30px;
+            position: relative; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: none;
         }
-        .card-v5::before {
-            content: ""; position: absolute; top: -1px; left: -1px; right: -1px; bottom: -1px;
-            background: linear-gradient(45deg, #ff00cc, #3333ff, #00ff88, #ff00cc);
-            background-size: 400%; z-index: -1; border-radius: 21px;
-            animation: borderFlow 6s linear infinite;
+
+        .card:hover { transform: translateY(-10px); }
+
+        /* แสงวิ่งรอบการ์ด (ทุกตัวจะมีสีต่างกัน) */
+        .card::before {
+            content: ""; position: absolute; top: -1.5px; left: -1.5px; right: -1.5px; bottom: -1.5px;
+            background-size: 400%; z-index: -1; border-radius: 22px;
+            animation: borderFlow 8s linear infinite;
         }
 
+        .theme-v5::before { background: linear-gradient(45deg, #ff00cc, #3333ff, #00ff88, #ff00cc); }
+        .theme-v2::before { background: linear-gradient(45deg, #32e1ff, #6432ff, #32e1ff); }
+        .theme-pro::before { background: linear-gradient(45deg, #ffcc00, #ff64ff, #ffcc00); }
+        .theme-hitbox::before { background: linear-gradient(45deg, #ff4747, #ff9647, #ff4747); }
+        .theme-v3::before { background: linear-gradient(45deg, #555, #fff, #555); }
+
         .script-box {
-            background: #000;
-            padding: 15px;
-            border-radius: 10px;
-            font-family: monospace;
-            font-size: 0.8rem;
-            color: #888;
-            margin: 15px 0;
-            border: 1px solid #222;
-            word-break: break-all;
+            background: rgba(0,0,0,0.6); padding: 15px; border-radius: 10px;
+            font-family: monospace; font-size: 0.8rem; color: #aaa;
+            margin: 15px 0; border: 1px solid rgba(255,255,255,0.1); word-break: break-all;
         }
 
         .btn {
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            width: 100%;
+            padding: 15px; border: none; border-radius: 12px; width: 100%;
             background: linear-gradient(45deg, var(--secondary), var(--primary));
-            color: white;
-            cursor: pointer;
-            font-weight: 700;
-            transition: 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: white; cursor: pointer; font-weight: 700; transition: 0.3s;
+            text-transform: uppercase; letter-spacing: 1px;
         }
+        .btn:hover { transform: scale(1.02); box-shadow: 0 5px 20px var(--primary); }
 
-        .btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 5px 20px var(--primary);
-        }
-
-        .note { font-size: 0.75rem; color: #ffcc00; margin-top: 12px; font-style: italic; }
+        .note { font-size: 0.75rem; color: var(--gold); margin-top: 12px; font-style: italic; line-height: 1.4; }
 
         /* Notification */
         #toast {
@@ -203,12 +129,12 @@
 <body>
 
 <canvas id="bg"></canvas>
-<div id="toast">✅ คัดลอกแล้ว!</div>
-<div class="topbar">MERIDIAN HUB FINAL • SYSTEM STATUS: ONLINE • VERSION 11.0</div>
+<div id="toast">✅ คัดลอกเรียบร้อยแล้ว!</div>
+<div class="topbar">MERIDIAN HUB FINAL • STATUS: GOD MODE • VERSION 11.0</div>
 
 <div id="key-auth-container">
     <div class="key-card">
-        <h2 style="font-family: 'Orbitron'; letter-spacing: 4px; color: var(--primary);">ACCESS HUB</h2>
+        <h2 style="font-family: 'Orbitron'; letter-spacing: 4px; color: var(--primary); margin:0;">ACCESS HUB</h2>
         <input type="text" id="user-key" class="key-input" placeholder="ใส่คีย์ส่วนตัวที่นี่">
         <button class="btn" onclick="validateKey()">LOGIN SYSTEM</button>
         <p id="error-text" style="color:var(--danger); display:none; margin-top:15px; font-size:0.8rem;">❌ รหัสผ่านไม่ถูกต้อง</p>
@@ -224,51 +150,54 @@
             <div class="stat-badge">🟢 Stable</div>
         </div>
 
-        <div class="card card-v5">
+        <div class="card theme-v5">
             <h3 style="margin-top:0;">🔥 V5.5 COMPACT THAI <span style="font-size:0.6rem; background:var(--emerald); color:#000; padding:2px 6px; border-radius:4px; vertical-align:middle;">TOP</span></h3>
-            <p style="color:#aaa; font-size:0.85rem;">ตัวเต็มภาษาไทย: ล็อคหัว, อิทบ็อกซ์, มองทะลุ และ No Clip</p>
+            <p style="color:#ddd; font-size:0.85rem;">ตัวท็อปภาษาไทย: ระบบ Hard Lock จิกหัว, Box Hitbox กรอบเขียว, มองทะลุ (ESP) และ No Clip บินทะลุทุกอย่าง!</p>
             <div class="script-box" id="scriptV5">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/MeridianHub_V5.5_Thai.lua"))()</div>
             <button class="btn" onclick="copyScript('scriptV5', this)">COPY SCRIPT</button>
-            <div class="note">⚠️ ข้อควรระวัง: ระบบล็อคหัวและ Box Hitbox ใช้การคำนวณแบบ Real-time แนะนำให้ใช้คู่กับไอดีสำรองเพื่อความปลอดภัยสูงสุด ระบบ No Clip ตัวใหม่ลื่นจัดแต่ระวังบัคใต้แมพบางจุด
-            </div>
+            <div class="note">⚠️ หมายเหตุ: ระบบล็อคหัวและ Box Hitbox ใช้การคำนวณแบบ Real-time แนะนำให้ใช้คู่กับไอดีสำรองเพื่อความปลอดภัยสูงสุด ระบบ No Clip ตัวใหม่ลื่นจัดแต่ระวังบัคใต้แมพบางจุด</div>
         </div>
 
-        <div class="card">
+        <div class="card theme-v2">
             <h3>🚨 Orbit V2 POLICE</h3>
+            <p style="color:#ddd; font-size:0.85rem;">สคริปต์สายล่า: ล็อคเป้าหมายแล้วหมุนรอบตัวแบบอัตโนมัติ ติดหนึบยิ่งกว่าเงา เหมาะสำหรับไล่ล่าโจร!</p>
             <div class="script-box" id="scriptV2">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/MeridianHub_V2.lua"))()</div>
-            <button class="btn" style="background:#1a1a24; border:1px solid #333;" onclick="copyScript('scriptV2', this)">COPY SCRIPT</button>
-            <div class="note">⚠️ ข้อควรระวัง: ระบบ Orbit ค่อนข้างใช้พลังงานการประมวลผลสูง เพื่อความเสถียรแนะนำให้ตั้งค่า Speed ที่ 1-5 และ Height ให้พอดีกับตัวละคร ห้ามตั้งค่าเป็น 0 เพราะจะทำให้ Logic ของสคริปต์ขัดข้อง
-            </div>
+            <button class="btn" style="background:rgba(26,26,36,0.8); border:1px solid #333;" onclick="copyScript('scriptV2', this)">COPY SCRIPT</button>
+            <div class="note">⚠️ ข้อควรระวัง: ระบบ Orbit ใช้พลังงานสูง เพื่อความเสถียรแนะนำให้ตั้งค่า Speed ที่ 1-5 ห้ามตั้งค่าเป็น 0 เพราะจะทำให้ Logic ขัดข้อง</div>
         </div>
 
-        <div class="card">
+        <div class="card theme-pro">
             <h3>⚡ Optimizer Pro</h3>
+            <p style="color:#ddd; font-size:0.85rem;">ตัวช่วยสาย FPS: ปรับแต่งกราฟิกให้ลื่นไหล ลดส่วนเกินที่ทำให้เครื่องแลค เพิ่มระยะการมองเห็นและเช็ค FPS ได้ในตัว!</p>
             <div class="script-box" id="scriptPro">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Optimizer_Pro.lua"))()</div>
-            <button class="btn" style="background:#1a1a24; border:1px solid #333;" onclick="copyScript('scriptPro', this)">COPY SCRIPT</button>
+            <button class="btn" style="background:rgba(26,26,36,0.8); border:1px solid #333;" onclick="copyScript('scriptPro', this)">COPY SCRIPT</button>
         </div>
 
-        <div class="card">
+        <div class="card theme-hitbox">
             <h3>🎯 Hitbox Pro</h3>
+            <p style="color:#ddd; font-size:0.85rem;">เพิ่มโอกาสชนะ: ขยายขนาดตัวศัตรูให้ตีง่ายขึ้น ยิงโดนแม่นขึ้นแบบเนียนๆ ปรับขนาดได้ตามใจชอบ!</p>
             <div class="script-box" id="scriptHitbox">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Hitbox_Pro.lua"))()</div>
-            <button class="btn" style="background:#1a1a24; border:1px solid #333;" onclick="copyScript('scriptHitbox', this)">COPY SCRIPT</button>
+            <button class="btn" style="background:rgba(26,26,36,0.8); border:1px solid #333;" onclick="copyScript('scriptHitbox', this)">COPY SCRIPT</button>
+            <div class="note">** หมายเหตุ: อาจใช้งานไม่ได้ในบางแมพที่มีระบบป้องกันสูง หากรันไม่ติดทางเราจะรีบอัปเดตให้ในเวอร์ชันถัดไป</div>
         </div>
 
-        <div class="card">
+        <div class="card theme-v3">
             <h3>🚀 V3 Ultimate</h3>
+            <p style="color:#ddd; font-size:0.85rem;">เวอร์ชันคลาสสิก: รวมฟังก์ชันพื้นฐานที่จำเป็น เน้นความเสถียรสูงสุดและประหยัดทรัพยากรเครื่อง เหมาะสำหรับมือถือสเปกต่ำ</p>
             <div class="script-box" id="scriptV3">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/main/Meridian_Tle.lua"))()</div>
-            <button class="btn" style="background:#1a1a24; border:1px solid #333;" onclick="copyScript('scriptV3', this)">COPY SCRIPT</button>
+            <button class="btn" style="background:rgba(26,26,36,0.8); border:1px solid #333;" onclick="copyScript('scriptV3', this)">COPY SCRIPT</button>
         </div>
 
         <a href="https://www.tiktok.com/@meridian_tle" style="text-decoration:none;">
             <div class="card" style="text-align:center; border: 1px dashed #444; background:transparent;">
-                <h3 style="margin:0; color:var(--accent);">TIKTOK: @meridian_tle</h3>
+                <h3 style="margin:0; color:var(--accent);">FOLLOW US ON TIKTOK: @meridian_tle</h3>
             </div>
         </a>
 
         <div class="footer">
             © 2026 MERIDIAN FINAL GOD EDITION
             <br><br>
-            <span onclick="clearAccess()" style="cursor:pointer; color:#333;">[ LOGOUT ]</span>
+            <span onclick="clearAccess()" style="cursor:pointer; color:#333;">[ LOGOUT SYSTEM ]</span>
         </div>
     </div>
 </div>
@@ -309,11 +238,11 @@ function copyScript(id, btn) {
     toast.className = "show";
     setTimeout(() => { toast.className = ""; }, 2500);
 
-    let oldText = btn.innerText;
-    btn.innerText = "✅ COPIED!";
+    let oldText = btn.innerHTML;
+    btn.innerHTML = "✅ COPIED!";
     btn.style.color = "#00ff88";
     setTimeout(() => { 
-        btn.innerText = oldText; 
+        btn.innerHTML = oldText; 
         btn.style.color = "";
     }, 2000);
 }
@@ -324,17 +253,17 @@ function initParticles() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     let p = [];
-    for(let i=0; i<100; i++) {
+    for(let i=0; i<80; i++) {
         p.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            r: Math.random() * 1.5,
-            s: Math.random() * 0.5 + 0.2
+            r: Math.random() * 1.8,
+            s: Math.random() * 0.6 + 0.1
         });
     }
     function draw() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle = "rgba(255, 100, 255, 0.4)";
+        ctx.fillStyle = "rgba(255, 100, 255, 0.3)";
         p.forEach(a => {
             ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 6.28); ctx.fill();
             a.y += a.s; if(a.y > canvas.height) a.y = 0;
