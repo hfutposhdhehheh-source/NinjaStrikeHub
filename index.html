@@ -13,6 +13,7 @@
             --emerald: #00ff88;
             --danger: #ff4747;
             --gold: #ffcc00;
+            --phantom: #a347ff; /* สีพิเศษสำหรับ Phantom */
             --bg: #030305;
             --card-bg: rgba(10, 10, 18, 0.9);
         }
@@ -27,7 +28,6 @@
 
         canvas { position: fixed; top: 0; left: 0; z-index: -1; }
 
-        /* --- Animations --- */
         @keyframes glowText { from { filter: drop-shadow(0 0 5px var(--primary)); } to { filter: drop-shadow(0 0 15px var(--secondary)); } }
         @keyframes borderFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes pulseDot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
@@ -39,7 +39,6 @@
             letter-spacing: 2px; color: var(--accent); font-weight: bold;
         }
 
-        /* --- Auth Section --- */
         #key-auth-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
         .key-card {
             background: var(--card-bg); backdrop-filter: blur(25px); padding: 50px 30px;
@@ -53,7 +52,6 @@
         }
         .key-input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(255,100,255,0.3); }
 
-        /* --- Main Content --- */
         #main-site-content { display: none; padding-top: 80px; padding-bottom: 50px; }
         .header {
             font-size: clamp(2.2rem, 9vw, 3.8rem); text-align: center; padding: 40px 0 10px;
@@ -71,7 +69,6 @@
             border: 1px solid rgba(0, 255, 136, 0.3);
         }
 
-        /* --- Card GOD Design --- */
         .card {
             background: var(--card-bg); backdrop-filter: blur(20px);
             border-radius: 24px; padding: 25px; margin-bottom: 35px;
@@ -80,19 +77,18 @@
         }
         .card:hover { transform: translateY(-12px); }
 
-        /* Neon Border Flow */
         .card::before {
             content: ""; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
             background-size: 400%; z-index: -1; border-radius: 25px;
             animation: borderFlow 10s linear infinite;
         }
 
-        /* แยกสีตามธีม */
         .theme-v5::before { background: linear-gradient(45deg, #ff00cc, #3333ff, #00ff88, #ff00cc); }
         .theme-v2::before { background: linear-gradient(45deg, #32e1ff, #6432ff, #32e1ff); }
         .theme-pro::before { background: linear-gradient(45deg, #ffcc00, #ff64ff, #ffcc00); }
         .theme-hitbox::before { background: linear-gradient(45deg, #ff4747, #ff9647, #ff4747); }
         .theme-v3::before { background: linear-gradient(45deg, #444, #999, #444); }
+        .theme-phantom::before { background: linear-gradient(45deg, #a347ff, #4b0082, #000000, #a347ff); }
 
         .status-label {
             display: flex; align-items: center; font-size: 0.7rem; 
@@ -133,7 +129,6 @@
         .footer { text-align: center; color: #333; padding: 40px 0; font-size: 0.75rem; letter-spacing: 1px; }
         .logout-btn { color: #555; cursor: pointer; text-decoration: underline; transition: 0.3s; }
         .logout-btn:hover { color: var(--danger); }
-
     </style>
 </head>
 <body>
@@ -156,6 +151,17 @@
     <div class="header">MERIDIAN</div>
     <div class="container" style="text-align: center;">
         <div class="status-badge-global">🟢 ALL SYSTEMS OPERATIONAL</div>
+
+        <div class="card theme-phantom">
+            <div class="status-label"><span class="dot" style="background:var(--phantom);"></span> STATUS: ONLINE (STABLE)</div>
+            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">👻 PHANTOM (BODY MOD)</h3>
+            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">เสกหัวล่องหนและขากุด (Headless/Korblox) พร้อม GUI มินิขยับได้ รองรับ R6 และ R15</p>
+            <div class="script-box" id="scriptPhantom">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Phantom.lua"))()</div>
+            <button class="btn" onclick="copyScript('scriptPhantom', this)" style="background: linear-gradient(45deg, #4b0082, var(--phantom));">GET SCRIPT</button>
+            <div class="note-box" style="border-left-color: var(--phantom);">
+                <div class="note-text"><strong>⚠️ หมายเหตุ:</strong> แสดงผลเฉพาะที่หน้าจอเราเท่านั้น และจะรันใหม่อัตโนมัติทุกครั้งที่ตัวละครตายหรือเกิดใหม่</div>
+            </div>
+        </div>
 
         <div class="card theme-v5">
             <div class="status-label"><span class="dot"></span> STATUS: ONLINE (STABLE)</div>
@@ -284,8 +290,11 @@ function initParticles() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
         p.forEach(a => {
             ctx.fillStyle = `rgba(255, 100, 255, ${a.o})`;
-            ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 6.28); ctx.fill();
-            a.y += a.s; if(a.y > canvas.height) a.y = 0;
+            ctx.beginPath();
+            ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
+            ctx.fill();
+            a.y -= a.s;
+            if (a.y < 0) a.y = canvas.height;
         });
         requestAnimationFrame(draw);
     }
@@ -294,5 +303,4 @@ function initParticles() {
 </script>
 </body>
 </html>
-
 
