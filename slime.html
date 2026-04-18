@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CHAOS SLIME 100-IN-1</title>
+    <style>
+        body { margin: 0; padding: 0; height: 100vh; overflow: hidden; background: #050505; touch-action: none; font-family: 'Kanit', sans-serif; }
+        
+        #pet {
+            width: 80px; height: 80px;
+            background: #00ff55;
+            border-radius: 50% 50% 45% 45%;
+            position: absolute;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 20px rgba(0,255,85,0.4);
+            transition: background 0.3s, transform 0.1s, opacity 0.5s;
+            z-index: 100;
+        }
+
+        .eye { width: 12px; height: 12px; background: #000; border-radius: 50%; margin: 6px; transition: 0.2s; }
+        .mouth { width: 25px; height: 5px; background: #000; position: absolute; bottom: 20px; border-radius: 5px; transition: 0.2s; }
+
+        /* ร่างต่างๆ */
+        .mad { background: #ff0055 !important; box-shadow: 0 0 30px #ff0055 !important; }
+        .sad { background: #00d1ff !important; box-shadow: 0 0 30px #00d1ff !important; }
+        .gold { background: #ffcc00 !important; box-shadow: 0 0 40px #ffcc00 !important; }
+
+        #bubble {
+            position: absolute; top: -40px; background: white; padding: 5px 10px;
+            border-radius: 10px; font-size: 12px; font-weight: bold; color: black;
+            display: none; white-space: nowrap; pointer-events: none;
+        }
+        #bubble::after { content: ''; position: absolute; bottom: -5px; left: 50%; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid white; transform: translateX(-50%); }
+
+        #info { position: fixed; bottom: 20px; width: 100%; text-align: center; color: #333; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<div id="info">จิ้ม, ลาก, เขย่า, หรือปล่อยนิ่งๆ ดูลูกเล่นน้องสิ!</div>
+<div id="pet">
+    <div id="bubble">โอ๊ย!</div>
+    <div class="eye"></div>
+    <div class="eye"></div>
+    <div class="mouth"></div>
+</div>
+
+<script>
+    const pet = document.getElementById('pet');
+    const bubble = document.getElementById('bubble');
+    const mouth = document.querySelector('.mouth');
+    let x = 100, y = 100, vx = 2, vy = 2;
+    let isDragging = false;
+    let pokeCount = 0;
+    let scale = 1;
+
+    const phrases = ["หยุดนะ!", "เจ็บนะเว้ย", "แบร่!", "อย่าจิ้มตา!", "จะฟ้องแม่", "หิวข้าวว", "ไปไกลๆ!", "ง่วงนอนน"];
+
+    function update() {
+        if (!isDragging) {
+            x += vx; y += vy;
+
+            // ชนขอบ
+            if (x + 80 > window.innerWidth || x < 0) {
+                vx *= -1;
+                speak("ปึ้ง!");
+            }
+            if (y + 80 > window.innerHeight || y < 0) {
+                vy *= -1;
+                speak("โอ๊ย!");
+            }
+
+            pet.style.left = x + 'px';
+            pet.style.top = y + 'px';
+            
+            // แอนิเมชันขยับตัว
+            let wobble = 1 + Math.sin(Date.now() / 150) * 0.1;
+            pet.style.transform = `scale(${scale}, ${wobble})`;
+
+            // ระบบแอบ (Stealth)
+            if (Math.random() < 0.001) pet.style.opacity = "0.2";
+        }
+        requestAnimationFrame(update);
+    }
+
+    function speak(txt) {
+        bubble.innerText = txt || phrases[Math.floor(Math.random() * phrases.length)];
+        bubble.style.display = 'block';
+        setTimeout(() => bubble.style.display = 'none', 1000);
+    }
+
+    pet.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        pokeCount++;
+        pet.style.opacity = "1";
+        pet.classList.add('mad');
+        speak();
+        
+        // วิวัฒนาการตามจำนวนจิ้ม
+        if (pokeCount > 10) pet.className = 'gold';
+        if (pokeCount > 20) {
+            scale = 1.5;
+            speak("ร่างทองมาแล้ว!");
+        }
+    });
+
+    window.addEventListener('touchmove', (e) => {
+        if (isDragging) {
+            let touch = e.touches[0];
+            x = touch.clientX - 40;
+            y = touch.clientY - 40;
+            pet.style.left = x + 'px';
+            pet.style.top = y + 'px';
+        }
+    });
+
+    window.addEventListener('touchend', () => {
+        if (isDragging) {
+            isDragging = false;
+            pet.classList.remove('mad');
+            // แรงเหวี่ยง
+            vx = (Math.random() - 0.5) * 15;
+            vy = (Math.random() - 0.5) * 15;
+        }
+    });
+
+    // ระบบสุ่มอารมณ์ทุก 5 วินาที
+    setInterval(() => {
+        if (!isDragging) {
+            const r = Math.random();
+            if (r < 0.3) {
+                vx *= 2; vy *= 2; speak("คึกโว้ยยย!");
+                setTimeout(() => { vx /= 2; vy /= 2; }, 2000);
+            } else if (r < 0.5) {
+                pet.classList.add('sad');
+                speak("เหงาจัง...");
+                setTimeout(() => pet.classList.remove('sad'), 3000);
+            }
+        }
+    }, 5000);
+
+    update();
+</script>
+</body>
+</html>
+
