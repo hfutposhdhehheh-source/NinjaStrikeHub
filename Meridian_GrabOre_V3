@@ -1,0 +1,197 @@
+-- [[ GRAB ORE! SUPREME VISION V3 - OXYGEN EDITION ]] --
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local Title = Instance.new("TextLabel")
+
+local Page1Frame = Instance.new("Frame") -- หน้ามองระดับ
+local Page2Frame = Instance.new("Frame") -- หน้ามองแร่
+local Page3Frame = Instance.new("Frame") -- หน้าพิเศษ (Oxygen)
+
+local UIList1 = Instance.new("UIListLayout")
+local UIList2 = Instance.new("UIListLayout")
+local UIList3 = Instance.new("UIListLayout")
+
+local NextPageBtn = Instance.new("TextButton")
+local HideButton = Instance.new("TextButton")
+
+-- ตั้งค่าหลัก
+ScreenGui.Name = "OreVisionV3"
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.ResetOnSpawn = false
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+MainFrame.Position = UDim2.new(0.05, 0, 0.4, 0)
+MainFrame.Size = UDim2.new(0, 180, 0, 240) -- ปรับความสูงเพิ่ม
+MainFrame.Active = true
+MainFrame.Draggable = true
+UICorner.Parent = MainFrame
+
+Title.Parent = MainFrame
+Title.Size = UDim2.new(1, 0, 0, 35)
+Title.Text = "ORE VISION V3"
+Title.TextColor3 = Color3.fromRGB(0, 255, 136)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 14
+Title.BackgroundTransparency = 1
+
+-- ฟังก์ชันสร้าง Page Frame
+local function CreatePage(name, visible)
+    local f = Instance.new("Frame")
+    f.Name = name
+    f.Parent = MainFrame
+    f.BackgroundTransparency = 1
+    f.Position = UDim2.new(0, 0, 0, 40)
+    f.Size = UDim2.new(1, 0, 0, 160)
+    f.Visible = visible
+    return f
+end
+
+Page1Frame = CreatePage("Page1", true)
+Page2Frame = CreatePage("Page2", false)
+Page3Frame = CreatePage("Page3", false)
+
+UIList1.Parent = Page1Frame; UIList1.Padding = UDim.new(0, 5); UIList1.HorizontalAlignment = "Center"
+UIList2.Parent = Page2Frame; UIList2.Padding = UDim.new(0, 5); UIList2.HorizontalAlignment = "Center"
+UIList3.Parent = Page3Frame; UIList3.Padding = UDim.new(0, 5); UIList3.HorizontalAlignment = "Center"
+
+-- ระบบ Toggle สถานะ
+local Toggles = {
+    ["Secret"] = false, ["Mythic"] = false, ["Divine"] = false, -- หน้า 1
+    ["Nightrite"] = false, ["Frostite"] = false, ["Celestite"] = false, ["Voidite"] = false, -- หน้า 2
+    ["InfOxygen"] = false -- หน้า 3
+}
+
+-- [ ระบบ ESP ] --
+local function UpdateESP(part, name, isEnabled)
+    local tag = "OreESP_" .. name
+    if isEnabled then
+        if not part:FindFirstChild(tag) then
+            local highlight = Instance.new("Highlight")
+            highlight.Name = tag
+            highlight.Parent = part
+            highlight.FillColor = Color3.fromRGB(0, 255, 0)
+            highlight.FillTransparency = 0.4
+            highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+        end
+    else
+        if part:FindFirstChild(tag) then part[tag]:Destroy() end
+    end
+end
+
+-- [ ระบบ Infinite Oxygen ] --
+task.spawn(function()
+    while task.wait(0.5) do
+        if Toggles["InfOxygen"] then
+            local char = game.Players.LocalPlayer.Character
+            if char then
+                -- ลองหาค่า Oxygen ในตัวละคร (ส่วนใหญ่อยู่ในสถานะ หรือถังออกซิเจน)
+                local oxygen = char:FindFirstChild("Oxygen") or char:FindFirstChild("Air") or (char:FindFirstChild("Humanoid") and char.Humanoid:FindFirstChild("Oxygen"))
+                if oxygen and oxygen:IsA("NumberValue") or oxygen:IsA("IntValue") then
+                    oxygen.Value = 100 -- ล็อคไว้ที่ 100 ตลอด
+                end
+            end
+        end
+    end
+end)
+
+-- สแกนแร่
+task.spawn(function()
+    while task.wait(1) do
+        for _, ore in pairs(game.Workspace:GetDescendants()) do
+            if ore:IsA("BasePart") or ore:IsA("Model") then
+                for name, enabled in pairs(Toggles) do
+                    if name ~= "InfOxygen" then
+                        if enabled and (ore.Name:find(name) or (ore:FindFirstChild("Tier") and ore.Tier.Value == name)) then
+                            UpdateESP(ore, name, true)
+                        else
+                            UpdateESP(ore, name, false)
+                        end
+                    end
+                end
+            end
+        end
+    end
+end)
+
+-- ฟังก์ชันสร้างปุ่ม
+local function CreateBtn(name, displayName, parent)
+    local btn = Instance.new("TextButton")
+    btn.Parent = parent
+    btn.Size = UDim2.new(0.9, 0, 0, 30)
+    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    btn.Text = displayName
+    btn.TextColor3 = Color3.new(1, 1, 1)
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 12
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+
+    btn.MouseButton1Click:Connect(function()
+        Toggles[name] = not Toggles[name]
+        btn.BackgroundColor3 = Toggles[name] and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(40, 40, 40)
+        btn.Text = displayName .. (Toggles[name] and ": ON" or "")
+    end)
+end
+
+-- ใส่ปุ่มหน้า 1
+CreateBtn("Secret", "Secret", Page1Frame)
+CreateBtn("Mythic", "Mythic", Page1Frame)
+CreateBtn("Divine", "Divine", Page1Frame)
+
+-- ใส่ปุ่มหน้า 2
+CreateBtn("Nightrite", "Nightrite", Page2Frame)
+CreateBtn("Frostite", "Frostite", Page2Frame)
+CreateBtn("Celestite", "Celestite", Page2Frame)
+CreateBtn("Voidite", "Voidite", Page2Frame)
+
+-- ใส่ปุ่มหน้า 3
+CreateBtn("InfOxygen", "🚀 Infinite Oxygen", Page3Frame)
+
+-- ระบบสลับหน้า
+local currentPage = 1
+local pages = {Page1Frame, Page2Frame, Page3Frame}
+
+NextPageBtn.Parent = MainFrame
+NextPageBtn.Size = UDim2.new(0.45, 0, 0, 25)
+NextPageBtn.Position = UDim2.new(0.05, 0, 0.88, 0)
+NextPageBtn.Text = "Page 1/3"
+NextPageBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+NextPageBtn.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", NextPageBtn)
+
+NextPageBtn.MouseButton1Click:Connect(function()
+    pages[currentPage].Visible = false
+    currentPage = currentPage + 1
+    if currentPage > #pages then currentPage = 1 end
+    pages[currentPage].Visible = true
+    NextPageBtn.Text = "Page " .. currentPage .. "/3"
+end)
+
+-- ปุ่มซ่อน GUI
+HideButton.Parent = MainFrame
+HideButton.Size = UDim2.new(0.45, 0, 0, 25)
+HideButton.Position = UDim2.new(0.5, 0, 0.88, 0)
+HideButton.Text = "Hide"
+HideButton.BackgroundColor3 = Color3.fromRGB(100, 30, 30)
+HideButton.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", HideButton)
+
+local guiHidden = false
+HideButton.MouseButton1Click:Connect(function()
+    guiHidden = not guiHidden
+    if guiHidden then
+        MainFrame:TweenSize(UDim2.new(0, 180, 0, 35), "Out", "Quart", 0.3, true)
+        for _, p in pairs(pages) do p.Visible = false end
+        NextPageBtn.Visible = false
+        HideButton.Text = "Open"
+    else
+        MainFrame:TweenSize(UDim2.new(0, 180, 0, 240), "Out", "Quart", 0.3, true)
+        task.wait(0.3)
+        pages[currentPage].Visible = true
+        NextPageBtn.Visible = true
+        HideButton.Text = "Hide"
+    end
+end)
+
