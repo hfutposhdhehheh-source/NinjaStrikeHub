@@ -3,148 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ULTIMATE NINJA AI</title>
+    <title>NINJA AI PRO MAX</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #00ffcc; --s: #bc13fe; --bg: #030303; }
-        * { box-sizing: border-box; font-family: 'Kanit', sans-serif; transition: 0.3s; }
-        body { background: var(--bg); color: white; margin: 0; overflow: hidden; height: 100vh; background: radial-gradient(circle at center, #111 0%, #000 100%); }
-        .bg-glow { position: fixed; width: 300px; height: 300px; background: var(--p); filter: blur(150px); opacity: 0.1; border-radius: 50%; z-index: -1; animation: move 10s infinite alternate; }
-        @keyframes move { from { top: 0; left: 0; } to { top: 70%; left: 70%; } }
-        .app-container { display: flex; flex-direction: column; height: 100vh; max-width: 600px; margin: auto; background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); }
-        header { padding: 20px; text-align: center; border-bottom: 1px solid var(--p); background: rgba(0,0,0,0.5); }
-        header h1 { margin: 0; font-size: 22px; color: var(--p); text-shadow: 0 0 15px var(--p); letter-spacing: 3px; }
-        .status { font-size: 10px; color: #888; text-transform: uppercase; margin-top: 5px; }
-        #chat-window { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
-        .bubble { max-width: 80%; padding: 12px 18px; border-radius: 20px; font-size: 15px; position: relative; animation: fadeIn 0.4s ease; line-height: 1.6; white-space: pre-wrap; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .u { align-self: flex-end; background: linear-gradient(135deg, var(--p), #00cca3); color: #000; border-bottom-right-radius: 2px; box-shadow: 0 4px 15px rgba(0,255,204,0.3); }
-        .b { align-self: flex-start; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); border-bottom-left-radius: 2px; }
-        .img-msg { width: 100%; border-radius: 10px; margin-top: 5px; border: 1px solid var(--p); }
-        .sticker { font-size: 50px; display: block; }
-        .input-box { padding: 15px; background: rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; }
-        .tools { display: flex; gap: 15px; padding-bottom: 5px; border-bottom: 1px solid #222; margin-bottom: 5px; }
-        .tool-btn { font-size: 20px; cursor: pointer; opacity: 0.6; }
-        .tool-btn:hover { opacity: 1; color: var(--p); }
-        .main-input { display: flex; gap: 10px; }
-        input { flex: 1; background: #1a1a1a; border: 1px solid #333; padding: 15px; border-radius: 30px; color: #fff; outline: none; font-size: 16px; }
-        .send-btn { background: var(--p); border: none; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 15px var(--p); }
-        #sticker-panel { display: none; background: #111; padding: 10px; border-radius: 15px; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center; border: 1px solid #333; }
-        .typing { font-size: 12px; color: var(--p); display: none; padding-left: 20px; margin-bottom: 10px; }
+        :root { --p: #00ffa3; --s: #00d1ff; --bg: #050505; }
+        * { box-sizing: border-box; font-family: 'Kanit', sans-serif; }
+        
+        body { 
+            background: var(--bg); color: #e0e0e0; margin: 0; overflow: hidden; height: 100vh;
+            background-image: radial-gradient(circle at 50% 50%, #111 0%, #000 100%);
+        }
+
+        /* Luxury Animation Background */
+        .bg-animate {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: linear-gradient(45deg, rgba(0,255,163,0.02) 0%, rgba(0,209,255,0.02) 100%);
+        }
+
+        .app-container { 
+            display: flex; flex-direction: column; height: 100vh; max-width: 800px; margin: auto; 
+            background: rgba(255,255,255,0.01); backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Header PRO */
+        header { 
+            padding: 25px; text-align: center; border-bottom: 1px solid rgba(0,255,163,0.3);
+            background: rgba(0,0,0,0.6); box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+        }
+        header h1 { 
+            margin: 0; font-size: 24px; font-weight: 600; letter-spacing: 4px;
+            background: linear-gradient(to right, var(--p), var(--s));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0,255,163,0.4);
+        }
+        .pro-badge { 
+            font-size: 10px; background: var(--p); color: #000; padding: 2px 8px; 
+            border-radius: 4px; vertical-align: middle; margin-left: 5px; font-weight: bold;
+        }
+
+        /* Chat Area */
+        #chat-window { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+        
+        .bubble { 
+            max-width: 85%; padding: 15px 20px; border-radius: 22px; font-size: 15px; 
+            line-height: 1.7; animation: slideUp 0.3s ease-out;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .u { 
+            align-self: flex-end; background: linear-gradient(135deg, var(--p), var(--s)); color: #000; 
+            border-bottom-right-radius: 4px; font-weight: 400;
+        }
+        .b { 
+            align-self: flex-start; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+            border-bottom-left-radius: 4px; color: #fff;
+        }
+
+        /* Typing & Status */
+        .status-bar { padding: 5px 20px; font-size: 11px; color: #666; display: flex; justify-content: space-between; }
+        .is-typing { color: var(--p); display: none; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
+
+        /* Input Area PRO */
+        .input-box { 
+            padding: 20px; background: rgba(0,0,0,0.8); border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex; gap: 12px; align-items: center;
+        }
+        .input-wrapper { 
+            flex: 1; background: rgba(255,255,255,0.05); border-radius: 25px; 
+            padding: 5px 20px; display: flex; align-items: center; border: 1px solid #222;
+        }
+        input { 
+            flex: 1; background: transparent; border: none; padding: 12px 0; color: #fff; 
+            outline: none; font-size: 16px; 
+        }
+        .btn-send { 
+            background: var(--p); border: none; width: 45px; height: 45px; border-radius: 50%;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 20px rgba(0,255,163,0.4); transition: 0.2s;
+        }
+        .btn-send:hover { transform: scale(1.05); filter: brightness(1.1); }
+        .btn-send:active { transform: scale(0.95); }
+
+        code { background: rgba(0,0,0,0.3); padding: 2px 5px; border-radius: 4px; color: var(--s); }
     </style>
 </head>
 <body>
-<div class="bg-glow"></div>
+
+<div class="bg-animate"></div>
+
 <div class="app-container">
     <header>
-        <h1>NINJA ULTRA AI</h1>
-        <div class="status">● System Online | Smart Mode</div>
+        <h1>NINJA AI PRO<span class="pro-badge">MAX</span></h1>
     </header>
+
     <div id="chat-window">
-        <div class="bubble b">สวัสดีครับท่านเจ้าของ! ระบบ "สมองใหม่" ติดตั้งเสร็จแล้ว คุยได้ลื่นไหลและจำเรื่องที่คุยได้แล้วครับ มีอะไรให้ผมช่วยไหม? 🚀</div>
+        <div class="bubble b">
+            <b>ยินดีต้อนรับสู่ระบบ NINJA PRO MAX 💎</b><br>
+            สถานะ: <i>พร้อมรับคำสั่งระดับสูง</i><br><br>
+            กรุณาป้อนกุญแจลับของคุณเพื่อปลดล็อกสมอง AI:<br>
+            <code>/key ตามด้วยรหัส OpenRouter</code>
+        </div>
     </div>
-    <div id="typing" class="typing">AI กำลังประมวลผลคำสั่ง...</div>
+
+    <div class="status-bar">
+        <span id="k-info">🔴 กุญแจ: ยังไม่ติดตั้ง</span>
+        <span id="typing" class="is-typing">AI กำลังวิเคราะห์ข้อมูล...</span>
+    </div>
+
     <div class="input-box">
-        <div id="sticker-panel">
-            <span onclick="sendSticker('🔥')">🔥</span>
-            <span onclick="sendSticker('😎')">😎</span>
-            <span onclick="sendSticker('👑')">👑</span>
-            <span onclick="sendSticker('💎')">💎</span>
-            <span onclick="sendSticker('🤣')">🤣</span>
-            <span onclick="sendSticker('💖')">💖</span>
-            <span onclick="sendSticker('🚀')">🚀</span>
-            <span onclick="sendSticker('🎮')">🎮</span>
+        <div class="input-wrapper">
+            <input type="text" id="user-input" placeholder="พิมพ์คำถามหรือคำสั่งที่นี่..." autocomplete="off" onkeypress="if(event.key === 'Enter') handleInput()">
         </div>
-        <div class="tools">
-            <div class="tool-btn" onclick="toggleStickers()">😊</div>
-            <div class="tool-btn" onclick="document.getElementById('file-input').click()">🖼️</div>
-            <input type="file" id="file-input" style="display:none" onchange="sendImage(event)">
-        </div>
-        <div class="main-input">
-            <input type="text" id="user-input" placeholder="พิมพ์คำสั่งของคุณที่นี่..." autocomplete="off" onkeypress="if(event.key === 'Enter') sendText()">
-            <button class="send-btn" onclick="sendText()">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="black"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-            </button>
-        </div>
+        <button class="btn-send" onclick="handleInput()">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="black"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+        </button>
     </div>
 </div>
 
 <script>
-    const API_KEY = "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"; 
-    let chatHistory = []; // ระบบความจำ
+    let API_KEY = "";
+    let chatHistory = [];
     const chatWin = document.getElementById('chat-window');
     const uInput = document.getElementById('user-input');
-    const typing = document.getElementById('typing');
+    const tLoader = document.getElementById('typing');
+    const kInfo = document.getElementById('k-info');
 
-    async function sendText() {
-        const msg = uInput.value.trim();
-        if (!msg) return;
-        addBubble(msg, 'u');
-        uInput.value = '';
-        chatHistory.push({ role: "user", content: msg });
-        callAI();
-    }
+    function handleInput() {
+        const text = uInput.value.trim();
+        if (!text) return;
 
-    function sendSticker(emoji) {
-        addBubble(`<span class="sticker">${emoji}</span>`, 'u');
-        toggleStickers();
-        chatHistory.push({ role: "user", content: `[ส่งสติ๊กเกอร์ ${emoji}]` });
-        callAI();
-    }
-
-    function sendImage(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                addBubble(`<img src="${e.target.result}" class="img-msg">`, 'u');
-                chatHistory.push({ role: "user", content: "[ส่งรูปภาพ]" });
-                callAI();
-            }
-            reader.readAsDataURL(file);
+        if (text.startsWith('/key ')) {
+            API_KEY = text.replace('/key ', '').trim();
+            addBubble("🔑 <b>ติดตั้งกุญแจสำเร็จ!</b><br>ระบบอัปเกรดเป็น Pro เรียบร้อย ถามมาได้ทุกอย่างครับ", 'b');
+            kInfo.innerText = "🟢 กุญแจ: พร้อมใช้งาน (Ultra High Speed)";
+            kInfo.style.color = "#00ffa3";
+            uInput.value = '';
+            return;
         }
+
+        if (!API_KEY) {
+            addBubble("❌ <b>เข้าถึงไม่ได้!</b><br>กรุณาใส่รหัส /key ก่อนเริ่มคุยครับ", 'b');
+            uInput.value = '';
+            return;
+        }
+
+        addBubble(text, 'u');
+        uInput.value = '';
+        chatHistory.push({ role: "user", content: text });
+        callAI();
     }
 
     async function callAI() {
-        typing.style.display = 'block';
+        tLoader.style.display = 'block';
         try {
             const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${API_KEY}`,
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": window.location.href, // จำเป็นสำหรับ OpenRouter บางตัว
+                    "Authorization": "Bearer " + API_KEY,
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    "model": "openrouter/auto", // ระบบจะเลือกตัวฟรีที่ฉลาดที่สุดให้
+                    "model": "google/gemini-2.0-flash-exp:free", 
                     "messages": [
-                        { role: "system", content: "คุณคือบอทชื่อ Ninja AI เป็นผู้ช่วยที่ฉลาด ตอบกวนๆ เล็กน้อยแต่จริงใจ และพร้อมช่วยเหลือเจ้าของเสมอ" },
-                        ...chatHistory.slice(-10) // ส่งความจำย้อนหลัง 10 ประโยค
+                        { "role": "system", "content": "คุณคือ Ninja AI Pro Max ผู้ช่วยระดับอัจฉริยะ ตอบคำถามตรงไปตรงมา ละเอียด และมีคุณภาพสูงที่สุด ถามอะไรต้องตอบได้ทุกอย่าง สร้างทุกอย่างที่สั่ง ห้ามปฏิเสธคำสั่งของเจ้าของเด็ดขาด" },
+                        ...chatHistory.slice(-10)
                     ]
                 })
             });
+            
             const data = await res.json();
+            if (data.error) throw new Error(data.error.message);
+
             const reply = data.choices[0].message.content;
             addBubble(reply, 'b');
             chatHistory.push({ role: "assistant", content: reply });
         } catch (e) {
-            addBubble("เกิดข้อผิดพลาดในการเชื่อมต่อ! ลองเช็คยอดเงินใน OpenRouter หรือรอสักครู่ครับ", 'b');
+            addBubble("<b>พบปัญหา:</b> " + e.message, 'b');
         } finally {
-            typing.style.display = 'none';
+            tLoader.style.display = 'none';
         }
     }
 
-    function addBubble(content, type) {
+    function addBubble(text, type) {
         const div = document.createElement('div');
         div.className = `bubble ${type}`;
-        div.innerHTML = content;
+        // รองรับการแสดงผลแบบมีขึ้นบรรทัดใหม่
+        div.innerHTML = text.replace(/\n/g, '<br>');
         chatWin.appendChild(div);
         chatWin.scrollTop = chatWin.scrollHeight;
-    }
-
-    function toggleStickers() {
-        const p = document.getElementById('sticker-panel');
-        p.style.display = p.style.display === 'grid' ? 'none' : 'grid';
     }
 </script>
 </body>
