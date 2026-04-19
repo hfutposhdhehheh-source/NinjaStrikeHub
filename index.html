@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meridian Hub V12 SUPREME GOD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff64ff;
+            --secondary: #6432ff;
+            --accent: #32e1ff;
+            --emerald: #00ff88;
+            --danger: #ff4747;
+            --gold: #ffcc00;
+            --phantom: #a347ff;
+            --ore: #00ffd0;
+            --bg: #030305;
+            --card-bg: rgba(10, 10, 18, 0.9);
+        }
+
+        body { margin: 0; font-family: 'Prompt', sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; }
+
+        @keyframes borderFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes pulseDot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
+
+        .topbar {
+            position: fixed; top: 0; width: 100%; text-align: center;
+            background: rgba(0,0,0,0.85); padding: 12px; font-size: 0.7rem;
+            backdrop-filter: blur(15px); z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.05);
+            letter-spacing: 2px; color: var(--accent); font-weight: bold;
+        }
+
+        #key-auth-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .key-card {
+            background: var(--card-bg); backdrop-filter: blur(25px); padding: 50px 30px;
+            border-radius: 30px; text-align: center; border: 1px solid rgba(255,100,255,0.2);
+            box-shadow: 0 0 50px rgba(100, 50, 255, 0.2); width: 85%; max-width: 400px;
+        }
+        .key-input {
+            padding: 15px; width: 100%; margin: 25px 0; border-radius: 15px; border: 1px solid #222;
+            background: rgba(0,0,0,0.7); color: var(--primary); text-align: center; font-size: 1.1rem;
+            box-sizing: border-box; outline: none; transition: 0.3s;
+        }
+
+        #main-site-content { display: none; padding-top: 80px; padding-bottom: 50px; }
+        .header {
+            font-size: clamp(2.2rem, 9vw, 3.8rem); text-align: center; padding: 40px 0 10px;
+            font-family: 'Orbitron', sans-serif; font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--secondary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .container { max-width: 750px; margin: auto; padding: 0 20px; }
+
+        .card {
+            background: var(--card-bg); backdrop-filter: blur(20px);
+            border-radius: 24px; padding: 25px; margin-bottom: 35px;
+            position: relative; transition: 0.4s; z-index: 1; overflow: hidden;
+        }
+        .card::before {
+            content: ""; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background-size: 400%; z-index: -1; border-radius: 25px;
+            animation: borderFlow 10s linear infinite;
+        }
+
+        .theme-v5::before { background: linear-gradient(45deg, #ff00cc, #3333ff, #00ff88, #ff00cc); }
+        .theme-v2::before { background: linear-gradient(45deg, #32e1ff, #6432ff, #32e1ff); }
+        .theme-pro::before { background: linear-gradient(45deg, #ffcc00, #ff64ff, #ffcc00); }
+        .theme-hitbox::before { background: linear-gradient(45deg, #ff4747, #ff9647, #ff4747); }
+        .theme-v3::before { background: linear-gradient(45deg, #444, #999, #444); }
+        .theme-phantom::before { background: linear-gradient(45deg, #a347ff, #4b0082, #000000, #a347ff); }
+        .theme-ore::before { background: linear-gradient(45deg, #00ffd0, #0088ff, #00ff88, #00ffd0); }
+
+        .preview-img {
+            width: 100%; border-radius: 12px; margin: 15px 0;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .status-label { display: flex; align-items: center; font-size: 0.7rem; color: var(--emerald); margin-bottom: 10px; font-weight: bold; }
+        .dot { height: 8px; width: 8px; background: var(--emerald); border-radius: 50%; margin-right: 8px; animation: pulseDot 1.5s infinite; }
+
+        .script-box {
+            background: rgba(0,0,0,0.7); padding: 18px; border-radius: 15px;
+            font-family: 'Courier New', monospace; font-size: 0.75rem; color: #888;
+            margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); word-break: break-all;
+        }
+
+        .btn {
+            padding: 16px; border: none; border-radius: 15px; width: 100%;
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            color: white; cursor: pointer; font-weight: 700; transition: 0.3s;
+            text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; margin-bottom: 10px;
+        }
+        .btn-join { background: linear-gradient(45deg, #1db954, #1ed760); color: black; }
+        .btn-discord { background: linear-gradient(45deg, #5865F2, #7289da); color: white; margin-top: 10px; }
+
+        .note-box { background: rgba(255, 204, 0, 0.05); border-left: 4px solid var(--gold); padding: 12px; margin-top: 15px; border-radius: 4px 12px 12px 4px; text-align: left; }
+        .note-text { font-size: 0.72rem; color: #eec; line-height: 1.5; }
+
+        #toast {
+            visibility: hidden; min-width: 250px; background: var(--emerald);
+            color: #000; text-align: center; border-radius: 50px;
+            padding: 16px; position: fixed; z-index: 1000;
+            left: 50%; bottom: 40px; transform: translateX(-50%); font-weight: 900;
+        }
+        #toast.show { visibility: visible; animation: fadeInOut 2.5s; }
+        @keyframes fadeInOut { 0% { bottom: 0; opacity: 0; } 15% { bottom: 40px; opacity: 1; } 85% { bottom: 40px; opacity: 1; } 100% { bottom: 0; opacity: 0; } }
+        .footer { text-align: center; color: #333; padding: 40px 0; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<div id="toast">SYSTEM: SCRIPT COPIED! ✅</div>
+<div class="topbar">MERIDIAN • SUPREME HUB • SECURE ACCESS</div>
+
+<div id="key-auth-container">
+    <div class="key-card">
+        <h2 style="font-family: 'Orbitron'; color: var(--primary);">LOGIN</h2>
+        <input type="password" id="user-key" class="key-input" placeholder="••••••••">
+        <button class="btn" onclick="validateKey()">AUTHENTICATE</button>
+        <button class="btn btn-discord" onclick="window.location.href='https://discord.gg/4KRwXhWM2'">🌐 GET KEY IN DISCORD</button>
+    </div>
+</div>
+
+<div id="main-site-content">
+    <div class="header">MERIDIAN</div>
+    <div class="container" style="text-align: center;">
+        <button class="btn btn-discord" style="margin-bottom: 25px; width: auto; padding: 10px 30px;" onclick="window.location.href='https://discord.gg/4KRwXhWM2'">🌐 JOIN DISCORD SERVER</button>
+        
+        <div class="status-badge-global" style="background: rgba(0, 255, 136, 0.1); color: var(--emerald); padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; border: 1px solid var(--emerald); display: inline-block; margin-bottom: 20px; width: 100%; box-sizing: border-box;">🟢 ALL SYSTEMS OPERATIONAL</div>
+
+        <div class="card theme-ore">
+            <div class="status-label"><span class="dot" style="background:var(--ore);"></span> STATUS: STABLE</div>
+            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">💎 GRAB ORE! V3</h3>
+            <img src="https://i.postimg.cc/FzM1Xx9j/IMG-20260418-182444.jpg" class="preview-img" alt="Grab Ore Preview">
+            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ระบบส่องแร่ตามระดับ และส่องตามชื่อเฉพาะ (Nightrite/Voidite) พร้อมเมนู 3 หน้า</p>
+            <div class="script-box" id="scriptGrabOre">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_GrabOre_V3"))()</div>
+            <button class="btn" onclick="copyScript('scriptGrabOre', this)">GET SCRIPT</button>
+            <button class="btn btn-join" onclick="window.location.href='roblox://experiences/start?placeId=82806856224736'">🎮 JOIN GAME (GRAB ORES)</button>
+            <div class="note-box" style="border-left-color: var(--ore);">
+                <div class="note-text"><strong>⚠️ หมายเหตุ:</strong> ฟังก์ชัน Infinite Oxygen ปัจจุบันยังใช้งานไม่ได้ แต่ระบบส่องแร่อื่นๆ ใช้งานได้ปกติ 100%</div>
+            </div>
+        </div>
+
+        <div class="card theme-phantom">
+            <div class="status-label"><span class="dot" style="background:var(--phantom);"></span> STATUS: ONLINE</div>
+            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">👻 PHANTOM (BODY MOD)</h3>
+            <img src="https://i.postimg.cc/wvB1Xvfb/IMG-20260418-182517.jpg" class="preview-img" alt="Phantom Preview">
+            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">เสกหัวล่องหนและขากุด (Headless/Korblox) พร้อม GUI มินิขยับได้ รองรับ R6 และ R15</p>
+            <div class="script-box" id="scriptPhantom">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Phantom.lua"))()</div>
+            <button class="btn" onclick="copyScript('scriptPhantom', this)">GET SCRIPT</button>
+            <div class="note-box" style="border-left-color: var(--phantom);">
+                <div class="note-text"><strong>🌍 ข้อมูล:</strong> สคริปต์นี้เป็นแบบ <b>Universal (ใช้ได้ทุกแมพ)</b> และจะรันใหม่อัตโนมัติทุกครั้งที่เกิดใหม่</div>
+            </div>
+        </div>
+
+        <div class="card theme-v5">
+            <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
+            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🔥 V5.5 COMPACT THAI</h3>
+            <img src="https://i.postimg.cc/HLzJ852r/IMG-20260418-182535.jpg" class="preview-img" alt="V5.5 Preview">
+            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ที่สุดของสคริปต์ภาษาไทย: ล็อคหัวจิกๆ, มองทะลุ (ESP), และระบบบิน No Clip ที่เสถียรที่สุด</p>
+            <div class="script-box" id="scriptV5">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/MeridianHub_V5.5_Thai.lua"))()</div>
+            <button class="btn" onclick="copyScript('scriptV5', this)">GET SCRIPT</button>
+            <div class="note-box">
+                <div class="note-text"><strong>🌍 ข้อมูล:</strong> สคริปต์นี้เป็นแบบ <b>Universal (ใช้ได้ทุกแมพ)</b> และแนะนำให้ปรับแต่งค่าให้เนียนป้องกันการถูกรีพอร์ต</div>
+            </div>
+        </div>
+
+        <div class="card theme-v2">
+            <div class="status-label"><span class="dot"></span> STATUS: STABLE</div>
+            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🚨 ORBIT V2 POLICE</h3>
+            <img src="https://i.postimg.cc/JzbHmSHd/IMG-20260418-182554.jpg" class="preview-img" alt="Orbit Preview">
+            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">สคริปต์หมุนรอบตัว (Orbit) สำหรับสายไล่ล่าโจร ล็อคติดหนึบ ไม่หลุดโฟกัส</p>
+            <div class="script-box" id="scriptV2">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/MeridianHub_V2.lua"))()</div>
+            <button class="btn" onclick="copyScript('scriptV2', this)">GET SCRIPT</button>
+            <button class="btn btn-join" onclick="window.location.href='roblox://experiences/start?placeId=3351674303'">🎮 JOIN GAME (DRIVING EMPIRE)</button>
+            <div class="note-box" style="border-left-color: var(--accent);">
+                <div class="note-text"><strong>⚠️ คำเตือน:</strong> ห้ามปรับ Speed เป็น 0 หรือค่าติดลบเด็ดขาด เพราะจะทำให้ระบบฟิสิกส์ค้าง</div>
+            </div>
+        </div>
+
+        <div class="card theme-pro">
+            <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
+            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">⚡ Optimizer Pro</h3>
+            <img src="https://i.postimg.cc/654Gb8WX/IMG-20260418-182610.jpg" class="preview-img" alt="Optimizer Preview">
+            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ลบส่วนเกินในแมพ เพิ่ม FPS ให้พุ่งกระฉูด เหมาะสำหรับเครื่องสเปกต่ำ</p>
+            <div class="script-box" id="scriptPro">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Optimizer_Pro.lua"))()</div>
+            <button class="btn" onclick="copyScript('scriptPro', this)">GET SCRIPT</button>
+            <div class="note-box">
+                <div class="note-text"><strong>🌍 ข้อมูล:</strong> สคริปต์นี้เป็นแบบ <b>Universal (ใช้ได้ทุกแมพ)</b> ช่วยลดความร้อนเครื่องขณะเล่นนานๆ</div>
+            </div>
+        </div>
+
+        <div class="card theme-hitbox">
+            <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
+            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🎯 Hitbox Pro</h3>
+            <img src="https://i.postimg.cc/R0Lt12MZ/IMG-20260418-182626.jpg" class="preview-img" alt="Hitbox Preview">
+            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ขยาย Hitbox ตัวละครศัตรูให้ใหญ่ขึ้น ยิงที่ไหนก็โดน ตีที่ไหนก็เข้า!</p>
+            <div class="script-box" id="scriptHitbox">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Hitbox_Pro.lua"))()</div>
+            <button class="btn" onclick="copyScript('scriptHitbox', this)">GET SCRIPT</button>
+            <div class="note-box" style="border-left-color: var(--danger);">
+                <div class="note-text"><strong>🌍 ข้อมูล:</strong> สคริปต์นี้เป็นแบบ <b>Universal (ใช้ได้ทุกแมพ)</b> หากรันไม่ติดให้ลองลดขนาด Hitbox ลง</div>
+            </div>
+        </div>
+
+        <div class="card theme-v3">
+            <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
+            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🚀 V3 Ultimate</h3>
+            <img src="https://i.postimg.cc/9XJpHwHf/IMG-20260418-182644.jpg" class="preview-img" alt="V3 Preview">
+            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">เวอร์ชันเบาหวิว (Classic) สำหรับคนที่ต้องการแค่ฟังก์ชันหลัก ไม่กินทรัพยากร</p>
+            <div class="script-box" id="scriptV3">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/main/Meridian_Tle.lua"))()</div>
+            <button class="btn" onclick="copyScript('scriptV3', this)">GET SCRIPT</button>
+            <div class="note-box">
+                <div class="note-text"><strong>🌍 ข้อมูล:</strong> สคริปต์นี้เป็นแบบ <b>Universal (ใช้ได้ทุกแมพ)</b> เสถียรและเบาที่สุด</div>
+            </div>
+        </div>
+
+        <div class="footer">© 2026 MERIDIAN SUPREME GOD EDITION</div>
+    </div>
+</div>
+
+<script>
+const MY_KEY = "MERIDIAN_666";
+window.onload = function() { if (localStorage.getItem("meridian_access") === MY_KEY) unlockHub(); initParticles(); }
+function validateKey() { if (document.getElementById("user-key").value === MY_KEY) { localStorage.setItem("meridian_access", MY_KEY); unlockHub(); } }
+function unlockHub() { document.getElementById("key-auth-container").style.display = "none"; document.getElementById("main-site-content").style.display = "block"; }
+function copyScript(id, btn) {
+    navigator.clipboard.writeText(document.getElementById(id).innerText);
+    document.getElementById("toast").className = "show";
+    setTimeout(() => { document.getElementById("toast").className = ""; }, 2500);
+    let old = btn.innerHTML; btn.innerHTML = "✅ COPIED";
+    setTimeout(() => { btn.innerHTML = old; }, 2000);
+}
+function initParticles() {
+    const canvas = document.getElementById("bg"); const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    let p = []; for(let i=0; i<60; i++) p.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5, s: Math.random()*0.4+0.1, o: Math.random()});
+    function draw() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        p.forEach(a => { ctx.fillStyle = `rgba(255, 100, 255, ${a.o})`; ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, Math.PI*2); ctx.fill(); a.y -= a.s; if(a.y < 0) a.y = canvas.height; });
+        requestAnimationFrame(draw);
+    }
+    draw();
+}
+</script>
+</body>
+  </html>
+
