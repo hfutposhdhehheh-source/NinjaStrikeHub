@@ -1,4 +1,4 @@
-her-- [[ MERIDIAN HUB V5.5 - COMPACT THAI EDITION (RE-MOD) ]] --
+-- [[ MERIDIAN HUB V5.5 - COMPACT THAI EDITION (RE-MOD) ]] --
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
