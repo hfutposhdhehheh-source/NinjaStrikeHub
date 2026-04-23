@@ -71,6 +71,8 @@
         .theme-v3::before { background: linear-gradient(45deg, #444, #999, #444); }
         .theme-phantom::before { background: linear-gradient(45deg, #a347ff, #4b0082, #000000, #a347ff); }
         .theme-ore::before { background: linear-gradient(45deg, #00ffd0, #0088ff, #00ff88, #00ffd0); }
+        /* สไตล์เพิ่มเติมสำหรับ Theme ใหม่ */
+        .theme-music::before { background: linear-gradient(45deg, #00ff88, #32e1ff, #00ff88); }
 
         .preview-img {
             width: 100%; border-radius: 12px; margin: 15px 0;
@@ -142,6 +144,18 @@
             <button class="btn btn-join" onclick="window.location.href='roblox://experiences/start?placeId=82806856224736'">🎮 JOIN GAME (GRAB ORES)</button>
             <div class="note-box" style="border-left-color: var(--ore);">
                 <div class="note-text"><strong>⚠️ หมายเหตุ:</strong> ฟังก์ชัน Infinite Oxygen ปัจจุบันยังใช้งานไม่ได้ แต่ระบบส่องแร่อื่นๆ ใช้งานได้ปกติ 100%</div>
+            </div>
+        </div>
+
+        <div class="card theme-music" style="--emerald: #00ff88;">
+            <div class="status-label"><span class="dot" style="background:#00ff88;"></span> STATUS: ONLINE</div>
+            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🎵 DANCE ID HUB V4</h3>
+            <img src="https://i.postimg.cc/m2mDLR9p/IMG-20260423-090000.jpg" class="preview-img" alt="Dance Hub Preview">
+            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ศูนย์รวมไอดีเพลงกว่า 100+ เพลง (แดนซ์/เพลงเพราะ/ต่างชาติ) พร้อมระบบเครื่องเล่นเพลงและปรับเสียงในตัว</p>
+            <div class="script-box" id="scriptDanceHub">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/UltimateDanceHub.lua"))()</div>
+            <button class="btn" onclick="copyScript('scriptDanceHub', this)">GET SCRIPT</button>
+            <div class="note-box" style="border-left-color: #00ff88;">
+                <div class="note-text"><strong>🎼 ข้อมูล:</strong> เมื่อกดชื่อเพลง ระบบจะคัดลอก ID เข้าเครื่องอัตโนมัติ | ⚠️ หมายเหตุ: บางไอดีอาจไม่มีเสียงเนื่องจากติดลิขสิทธิ์ของทาง Roblox</div>
             </div>
         </div>
 
@@ -247,5 +261,5 @@ function initParticles() {
 }
 </script>
 </body>
-  </html>
+</html>
 
