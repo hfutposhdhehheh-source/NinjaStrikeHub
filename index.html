@@ -15,6 +15,7 @@
             --gold: #ffcc00;
             --phantom: #a347ff;
             --ore: #00ffd0;
+            --cinema: #9d00ff;
             --bg: #030305;
             --card-bg: rgba(10, 10, 18, 0.9);
         }
@@ -51,6 +52,16 @@
             background: linear-gradient(90deg, var(--accent), var(--primary), var(--secondary));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
+
+        /* --- Search System --- */
+        .search-container { max-width: 750px; margin: 20px auto; padding: 0 20px; position: sticky; top: 70px; z-index: 99; }
+        .search-bar {
+            width: 100%; padding: 15px 25px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(20, 20, 30, 0.95); color: white; font-family: 'Prompt'; outline: none;
+            backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .search-bar:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(255,100,255,0.3); }
+
         .container { max-width: 750px; margin: auto; padding: 0 20px; }
 
         .card {
@@ -67,11 +78,12 @@
         .theme-v5::before { background: linear-gradient(45deg, #ff00cc, #3333ff, #00ff88, #ff00cc); }
         .theme-v2::before { background: linear-gradient(45deg, #32e1ff, #6432ff, #32e1ff); }
         .theme-pro::before { background: linear-gradient(45deg, #ffcc00, #ff64ff, #ffcc00); }
-        .theme-hitbox::before { background: linear-gradient(45deg, #ff4747, #ff9647, #ff4747); }
+        .theme-hitbox::before { background: linear-gradient(45deg, #ff4747, #551111, #ff4747); } /* Darker Red */
         .theme-v3::before { background: linear-gradient(45deg, #444, #999, #444); }
         .theme-phantom::before { background: linear-gradient(45deg, #a347ff, #4b0082, #000000, #a347ff); }
         .theme-ore::before { background: linear-gradient(45deg, #00ffd0, #0088ff, #00ff88, #00ffd0); }
         .theme-music::before { background: linear-gradient(45deg, #00ff88, #32e1ff, #00ff88); }
+        .theme-cinema::before { background: linear-gradient(45deg, #9d00ff, #ff00ff, #9d00ff); }
 
         .preview-img {
             width: 100%; border-radius: 12px; margin: 15px 0;
@@ -96,6 +108,7 @@
         }
         .btn-join { background: linear-gradient(45deg, #1db954, #1ed760); color: black; }
         .btn-discord { background: linear-gradient(45deg, #5865F2, #7289da); color: white; margin-top: 10px; }
+        .btn-disabled { background: #333 !important; cursor: not-allowed; color: #666; }
 
         .note-box { background: rgba(255, 204, 0, 0.05); border-left: 4px solid var(--gold); padding: 12px; margin-top: 15px; border-radius: 4px 12px 12px 4px; text-align: left; }
         .note-text { font-size: 0.72rem; color: #eec; line-height: 1.5; }
@@ -114,7 +127,7 @@
 <body>
 
 <canvas id="bg"></canvas>
-<div id="toast">SYSTEM: SCRIPT COPIED! ✅</div>
+<div id="toast">SYSTEM: ACTION COMPLETED! ✅</div>
 <div class="topbar">MERIDIAN • SUPREME HUB • SECURE ACCESS</div>
 
 <div id="key-auth-container">
@@ -128,106 +141,125 @@
 
 <div id="main-site-content">
     <div class="header">MERIDIAN</div>
+    
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-bar" placeholder="🔍 ค้นหาสคริปต์ที่ต้องการ..." onkeyup="searchScripts()">
+    </div>
+
     <div class="container" style="text-align: center;">
         <button class="btn btn-discord" style="margin-bottom: 25px; width: auto; padding: 10px 30px;" onclick="window.location.href='https://discord.gg/4KRwXhWM2'">🌐 JOIN DISCORD SERVER</button>
         
         <div class="status-badge-global" style="background: rgba(0, 255, 136, 0.1); color: var(--emerald); padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; border: 1px solid var(--emerald); display: inline-block; margin-bottom: 20px; width: 100%; box-sizing: border-box;">🟢 ALL SYSTEMS OPERATIONAL</div>
 
-        <div class="card theme-ore">
-            <div class="status-label"><span class="dot" style="background:var(--ore);"></span> STATUS: STABLE</div>
-            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">💎 GRAB ORE! V3</h3>
-            <img src="https://i.postimg.cc/FzM1Xx9j/IMG-20260418-182444.jpg" class="preview-img" alt="Grab Ore Preview">
-            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ระบบส่องแร่ตามระดับ และส่องตามชื่อเฉพาะ (Nightrite/Voidite) พร้อมเมนู 3 หน้า</p>
-            <div class="script-box" id="scriptGrabOre">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_GrabOre_V3"))()</div>
-            <button class="btn" onclick="copyScript('scriptGrabOre', this)">GET SCRIPT</button>
-            <button class="btn btn-join" onclick="window.location.href='roblox://experiences/start?placeId=82806856224736'">🎮 JOIN GAME (GRAB ORES)</button>
-            <div class="note-box" style="border-left-color: var(--ore);">
-                <div class="note-text"><strong>⚠️ หมายเหตุ:</strong> ฟังก์ชัน Infinite Oxygen ปัจจุบันยังใช้งานไม่ได้ แต่ระบบส่องแร่อื่นๆ ใช้งานได้ปกติ 100%</div>
+        <div id="scriptList">
+            <div class="card theme-cinema script-item">
+                <div class="status-label"><span class="dot" style="background:var(--cinema);"></span> STATUS: ONLINE</div>
+                <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🎥 [V8] CINEMA MASTER</h3>
+                <img src="https://i.postimg.cc/9XJpHwHf/IMG-20260418-182644.jpg" class="preview-img" alt="Cinema Master Preview">
+                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ที่สุดของสคริปต์กล้องบิน (Freecam) สำหรับสายถ่ายคลิป: ปรับความเร็วได้ละเอียด 0.01 - 100, ปรับกราฟิก Ultra HD ในตัว</p>
+                <div class="script-box" id="scriptCinema">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/%5BV8%5DCinema_Master.lua"))()</div>
+                <button class="btn" onclick="copyScript('scriptCinema', this)">GET SCRIPT</button>
+                <div class="note-box" style="border-left-color: var(--cinema);">
+                    <div class="note-text"><strong>🎬 ข้อมูล:</strong> รองรับการบินแบบสมูทด้วยระบบ Joystick ล่องหน และสามารถซ่อนเมนูเพื่อถ่าย RECORD ได้เนียนๆ อย่ากดภาพสวยเกิน 1 ครั้งไม่งั้นบัค</div>
+                </div>
             </div>
-        </div>
 
-        <div class="card theme-music" style="--emerald: #00ff88;">
-            <div class="status-label"><span class="dot" style="background:#00ff88;"></span> STATUS: ONLINE</div>
-            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🎵 DANCE ID HUB V4</h3>
-            <img src="https://cdn.phototourl.com/free/2026-04-23-3590fca9-d338-4478-95f6-7a0c83aba00b.jpg" class="preview-img" alt="Dance Hub Preview">
-            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ศูนย์รวมไอดีเพลงกว่า 100+ เพลง (แดนซ์/เพลงเพราะ/ต่างชาติ) พร้อมระบบเครื่องเล่นเพลงและปรับเสียงในตัว</p>
-            <div class="script-box" id="scriptDanceHub">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/UltimateDanceHub.lua"))()</div>
-            <button class="btn" onclick="copyScript('scriptDanceHub', this)">GET SCRIPT</button>
-            <div class="note-box" style="border-left-color: #00ff88;">
-                <div class="note-text"><strong>🎼 ข้อมูล:</strong> เมื่อกดชื่อเพลง ระบบจะคัดลอก ID เข้าเครื่องอัตโนมัติ | ⚠️ หมายเหตุ: บางไอดีอาจไม่มีเสียงเนื่องจากติดลิขสิทธิ์ของทาง Roblox</div>
+            <div class="card theme-ore script-item">
+                <div class="status-label"><span class="dot" style="background:var(--ore);"></span> STATUS: STABLE</div>
+                <h3 style="margin:0; text-align:left; font-family:'Orbitron';">💎 GRAB ORE! V3</h3>
+                <img src="https://i.postimg.cc/FzM1Xx9j/IMG-20260418-182444.jpg" class="preview-img" alt="Grab Ore Preview">
+                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ระบบส่องแร่ตามระดับ และส่องตามชื่อเฉพาะ (Nightrite/Voidite) พร้อมเมนู 3 หน้า</p>
+                <div class="script-box" id="scriptGrabOre">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_GrabOre_V3"))()</div>
+                <button class="btn" onclick="copyScript('scriptGrabOre', this)">GET SCRIPT</button>
+                <button class="btn btn-join" onclick="window.location.href='roblox://experiences/start?placeId=82806856224736'">🎮 JOIN GAME (GRAB ORES)</button>
+                <div class="note-box" style="border-left-color: var(--ore);">
+                    <div class="note-text"><strong>⚠️ หมายเหตุ:</strong> ฟังก์ชัน Infinite Oxygen ปัจจุบันยังใช้งานไม่ได้ แต่ระบบส่องแร่อื่นๆ ใช้งานได้ปกติ 100%</div>
+                </div>
             </div>
-        </div>
 
-        <div class="card theme-phantom">
-            <div class="status-label"><span class="dot" style="background:var(--phantom);"></span> STATUS: ONLINE</div>
-            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">👻 PHANTOM (BODY MOD)</h3>
-            <img src="https://i.postimg.cc/wvB1Xvfb/IMG-20260418-182517.jpg" class="preview-img" alt="Phantom Preview">
-            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">เสกหัวล่องหนและขากุด (Headless/Korblox) พร้อม GUI มินิขยับได้ รองรับ R6 และ R15</p>
-            <div class="script-box" id="scriptPhantom">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Phantom.lua"))()</div>
-            <button class="btn" onclick="copyScript('scriptPhantom', this)">GET SCRIPT</button>
-            <div class="note-box" style="border-left-color: var(--phantom);">
-                <div class="note-text"><strong>🌍 ข้อมูล:</strong> สคริปต์นี้เป็นแบบ <b>Universal (ใช้ได้ทุกแมพ)</b> และจะรันใหม่อัตโนมัติทุกครั้งที่เกิดใหม่</div>
+            <div class="card theme-music script-item">
+                <div class="status-label"><span class="dot" style="background:#00ff88;"></span> STATUS: ONLINE</div>
+                <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🎵 DANCE ID HUB V4</h3>
+                <img src="https://cdn.phototourl.com/free/2026-04-23-3590fca9-d338-4478-95f6-7a0c83aba00b.jpg" class="preview-img" alt="Dance Hub Preview">
+                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ศูนย์รวมไอดีเพลงกว่า 100+ เพลง (แดนซ์/เพลงเพราะ/ต่างชาติ) พร้อมระบบเครื่องเล่นเพลงและปรับเสียงในตัว</p>
+                <div class="script-box" id="scriptDanceHub">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/UltimateDanceHub.lua"))()</div>
+                <button class="btn" onclick="copyScript('scriptDanceHub', this)">GET SCRIPT</button>
+                <div class="note-box" style="border-left-color: #00ff88;">
+                    <div class="note-text"><strong>🎼 ข้อมูล:</strong> เมื่อกดชื่อเพลง ระบบจะคัดลอก ID เข้าเครื่องอัตโนมัติ | ⚠️ หมายเหตุ: บางไอดีอาจไม่มีเสียงเนื่องจากติดลิขสิทธิ์ของทาง Roblox</div>
+                </div>
             </div>
-        </div>
 
-        <div class="card theme-v5">
-            <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
-            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🔥 V5.5 COMPACT THAI</h3>
-            <img src="https://i.postimg.cc/HLzJ852r/IMG-20260418-182535.jpg" class="preview-img" alt="V5.5 Preview">
-            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ที่สุดของสคริปต์ภาษาไทย: ล็อคหัวจิกๆ, มองทะลุ (ESP) ที่เสถียรที่สุด</p>
-            <div class="script-box" id="scriptV5">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/MeridianHub_V5.5_Thai.lua"))()</div>
-            <button class="btn" onclick="copyScript('scriptV5', this)">GET SCRIPT</button>
-            <div class="note-box">
-                <div class="note-text"><strong>🌍 ข้อมูล:</strong> สคริปต์นี้เป็นแบบ <b>Universal (ใช้ได้ทุกแมพ)</b> และแนะนำให้ปรับแต่งค่าให้เนียนป้องกันการถูกรีพอร์ต</div>
+            <div class="card theme-phantom script-item">
+                <div class="status-label"><span class="dot" style="background:var(--phantom);"></span> STATUS: ONLINE</div>
+                <h3 style="margin:0; text-align:left; font-family:'Orbitron';">👻 PHANTOM (BODY MOD)</h3>
+                <img src="https://i.postimg.cc/wvB1Xvfb/IMG-20260418-182517.jpg" class="preview-img" alt="Phantom Preview">
+                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">เสกหัวล่องหนและขากุด (Headless/Korblox) พร้อม GUI มินิขยับได้ รองรับ R6 และ R15</p>
+                <div class="script-box" id="scriptPhantom">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Phantom.lua"))()</div>
+                <button class="btn" onclick="copyScript('scriptPhantom', this)">GET SCRIPT</button>
+                <div class="note-box" style="border-left-color: var(--phantom);">
+                    <div class="note-text"><strong>🌍 ข้อมูล:</strong> สคริปต์นี้เป็นแบบ <b>Universal (ใช้ได้ทุกแมพ)</b> และจะรันใหม่อัตโนมัติทุกครั้งที่เกิดใหม่</div>
+                </div>
             </div>
-        </div>
 
-        <div class="card theme-v2">
-            <div class="status-label"><span class="dot"></span> STATUS: STABLE</div>
-            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🚨 ORBIT V2 POLICE</h3>
-            <img src="https://i.postimg.cc/JzbHmSHd/IMG-20260418-182554.jpg" class="preview-img" alt="Orbit Preview">
-            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">สคริปต์หมุนรอบตัว (Orbit) สำหรับสายไล่ล่าโจร ล็อคติดหนึบ ไม่หลุดโฟกัส</p>
-            <div class="script-box" id="scriptV2">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/MeridianHub_V2.lua"))()</div>
-            <button class="btn" onclick="copyScript('scriptV2', this)">GET SCRIPT</button>
-            <button class="btn btn-join" onclick="window.location.href='roblox://experiences/start?placeId=3351674303'">🎮 JOIN GAME (DRIVING EMPIRE)</button>
-            <div class="note-box" style="border-left-color: var(--accent);">
-                <div class="note-text"><strong>⚠️ คำเตือน:</strong> ห้ามปรับ Speed เป็น 0 หรือค่าติดลบเด็ดขาด เพราะจะทำให้ระบบฟิสิกส์ค้าง</div>
+            <div class="card theme-v5 script-item">
+                <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
+                <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🔥 V5.5 COMPACT THAI</h3>
+                <img src="https://i.postimg.cc/HLzJ852r/IMG-20260418-182535.jpg" class="preview-img" alt="V5.5 Preview">
+                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ที่สุดของสคริปต์ภาษาไทย: ล็อคหัวจิกๆ, มองทะลุ (ESP) ที่เสถียรที่สุด</p>
+                <div class="script-box" id="scriptV5">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/MeridianHub_V5.5_Thai.lua"))()</div>
+                <button class="btn" onclick="copyScript('scriptV5', this)">GET SCRIPT</button>
+                <div class="note-box">
+                    <div class="note-text"><strong>🌍 ข้อมูล:</strong> สคริปต์นี้เป็นแบบ <b>Universal (ใช้ได้ทุกแมพ)</b> และแนะนำให้ปรับแต่งค่าให้เนียนป้องกันการถูกรีพอร์ต</div>
+                </div>
             </div>
-        </div>
 
-        <div class="card theme-pro">
-            <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
-            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">⚡ Optimizer Pro</h3>
-            <img src="https://i.postimg.cc/654Gb8WX/IMG-20260418-182610.jpg" class="preview-img" alt="Optimizer Preview">
-            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ลบส่วนเกินในแมพ เพิ่ม FPS ให้พุ่งกระฉูด เหมาะสำหรับเครื่องสเปกต่ำ</p>
-            <div class="script-box" id="scriptPro">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Optimizer_Pro.lua"))()</div>
-            <button class="btn" onclick="copyScript('scriptPro', this)">GET SCRIPT</button>
-            <div class="note-box">
-                <div class="note-text"><strong>🌍 ข้อมูล:</strong> สคริปต์นี้เป็นแบบ <b>Universal (ใช้ได้ทุกแมพ)</b> ช่วยลดความร้อนเครื่องขณะเล่นนานๆ</div>
+            <div class="card theme-v2 script-item">
+                <div class="status-label"><span class="dot"></span> STATUS: STABLE</div>
+                <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🚨 ORBIT V2 POLICE</h3>
+                <img src="https://i.postimg.cc/JzbHmSHd/IMG-20260418-182554.jpg" class="preview-img" alt="Orbit Preview">
+                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">สคริปต์หมุนรอบตัว (Orbit) สำหรับสายไล่ล่าโจร ล็อคติดหนึบ ไม่หลุดโฟกัส</p>
+                <div class="script-box" id="scriptV2">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/MeridianHub_V2.lua"))()</div>
+                <button class="btn" onclick="copyScript('scriptV2', this)">GET SCRIPT</button>
+                <button class="btn btn-join" onclick="window.location.href='roblox://experiences/start?placeId=3351674303'">🎮 JOIN GAME (DRIVING EMPIRE)</button>
+                <div class="note-box" style="border-left-color: var(--accent);">
+                    <div class="note-text"><strong>⚠️ คำเตือน:</strong> ห้ามปรับ Speed เป็น 0 หรือค่าติดลบเด็ดขาด เพราะจะทำให้ระบบฟิสิกส์ค้าง</div>
+                </div>
             </div>
-        </div>
 
-        <div class="card theme-hitbox">
-            <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
-            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🎯 Hitbox Pro</h3>
-            <img src="https://i.postimg.cc/R0Lt12MZ/IMG-20260418-182626.jpg" class="preview-img" alt="Hitbox Preview">
-            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ขยาย Hitbox ตัวละครศัตรูให้ใหญ่ขึ้น ยิงที่ไหนก็โดน ตีที่ไหนก็เข้า!</p>
-            <div class="script-box" id="scriptHitbox">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Hitbox_Pro.lua"))()</div>
-            <button class="btn" onclick="copyScript('scriptHitbox', this)">GET SCRIPT</button>
-            <div class="note-box" style="border-left-color: var(--danger);">
-                <div class="note-text"><strong>🌍 ข้อมูล:</strong> สคริปต์นี้เป็นแบบ <b>Universal (ใช้ได้ทุกแมพ)</b> หากรันไม่ติดให้ลองลดขนาด Hitbox ลง</div>
+            <div class="card theme-pro script-item">
+                <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
+                <h3 style="margin:0; text-align:left; font-family:'Orbitron';">⚡ Optimizer Pro</h3>
+                <img src="https://i.postimg.cc/654Gb8WX/IMG-20260418-182610.jpg" class="preview-img" alt="Optimizer Preview">
+                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ลบส่วนเกินในแมพ เพิ่ม FPS ให้พุ่งกระฉูด เหมาะสำหรับเครื่องสเปกต่ำ</p>
+                <div class="script-box" id="scriptPro">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Optimizer_Pro.lua"))()</div>
+                <button class="btn" onclick="copyScript('scriptPro', this)">GET SCRIPT</button>
+                <div class="note-box">
+                    <div class="note-text"><strong>🌍 ข้อมูล:</strong> สคริปต์นี้เป็นแบบ <b>Universal (ใช้ได้ทุกแมพ)</b> ช่วยลดความร้อนเครื่องขณะเล่นนานๆ</div>
+                </div>
             </div>
-        </div>
 
-        <div class="card theme-v3">
-            <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
-            <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🚀 V3 Ultimate</h3>
-            <img src="https://i.postimg.cc/9XJpHwHf/IMG-20260418-182644.jpg" class="preview-img" alt="V3 Preview">
-            <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">เวอร์ชันเบาหวิว (Classic) สำหรับคนที่ต้องการแค่ฟังก์ชันหลัก ไม่กินทรัพยากร</p>
-            <div class="script-box" id="scriptV3">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/main/Meridian_Tle.lua"))()</div>
-            <button class="btn" onclick="copyScript('scriptV3', this)">GET SCRIPT</button>
-            <div class="note-box">
-                <div class="note-text"><strong>🌍 ข้อมูล:</strong> สคริปต์นี้เป็นแบบ <b>Universal (ใช้ได้ทุกแมพ)</b> เสถียรและเบาที่สุด</div>
+            <div class="card theme-hitbox script-item">
+                <div class="status-label"><span class="dot" style="background:var(--danger); animation:none;"></span> <span style="color:var(--danger)">STATUS: OUTDATED / PATCHED</span></div>
+                <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🎯 Hitbox Pro</h3>
+                <img src="https://i.postimg.cc/R0Lt12MZ/IMG-20260418-182626.jpg" class="preview-img" alt="Hitbox Preview">
+                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ขยาย Hitbox ตัวละครศัตรูให้ใหญ่ขึ้น ยิงที่ไหนก็โดน ตีที่ไหนก็เข้า!</p>
+                <div class="script-box" id="scriptHitbox">สคริปต์นี้ใช้งานไม่ได้</div>
+                <button class="btn btn-disabled" onclick="copyScript('scriptHitbox', this)">DISABLED</button>
+                <div class="note-box" style="border-left-color: var(--danger);">
+                    <div class="note-text"><strong>🌍 ข้อมูล:</strong> ปัจจุบันสคริปต์นี้ถูก Roblox ตรวจสอบและแก้ไขแล้ว จึงไม่สามารถใช้งานได้ในเวอร์ชันปัจจุบัน</div>
+                </div>
+            </div>
+
+            <div class="card theme-v3 script-item">
+                <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
+                <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🚀 V3 Ultimate</h3>
+                <img src="https://i.postimg.cc/9XJpHwHf/IMG-20260418-182644.jpg" class="preview-img" alt="V3 Preview">
+                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">เวอร์ชันเบาหวิว (Classic) สำหรับคนที่ต้องการแค่ฟังก์ชันหลัก ไม่กินทรัพยากร</p>
+                <div class="script-box" id="scriptV3">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/main/Meridian_Tle.lua"))()</div>
+                <button class="btn" onclick="copyScript('scriptV3', this)">GET SCRIPT</button>
+                <div class="note-box">
+                    <div class="note-text"><strong>🌍 ข้อมูล:</strong> สคริปต์นี้เป็นแบบ <b>Universal (ใช้ได้ทุกแมพ)</b> เสถียรและเบาที่สุด</div>
+                </div>
             </div>
         </div>
 
@@ -240,25 +272,14 @@ const MY_KEY = "MERIDIAN_666";
 window.onload = function() { if (localStorage.getItem("meridian_access") === MY_KEY) unlockHub(); initParticles(); }
 function validateKey() { if (document.getElementById("user-key").value === MY_KEY) { localStorage.setItem("meridian_access", MY_KEY); unlockHub(); } }
 function unlockHub() { document.getElementById("key-auth-container").style.display = "none"; document.getElementById("main-site-content").style.display = "block"; }
-function copyScript(id, btn) {
-    navigator.clipboard.writeText(document.getElementById(id).innerText);
-    document.getElementById("toast").className = "show";
-    setTimeout(() => { document.getElementById("toast").className = ""; }, 2500);
-    let old = btn.innerHTML; btn.innerHTML = "✅ COPIED";
-    setTimeout(() => { btn.innerHTML = old; }, 2000);
-}
-function initParticles() {
-    const canvas = document.getElementById("bg"); const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    let p = []; for(let i=0; i<60; i++) p.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5, s: Math.random()*0.4+0.1, o: Math.random()});
-    function draw() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        p.forEach(a => { ctx.fillStyle = `rgba(255, 100, 255, ${a.o})`; ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, Math.PI*2); ctx.fill(); a.y -= a.s; if(a.y < 0) a.y = canvas.height; });
-        requestAnimationFrame(draw);
-    }
-    draw();
-}
-</script>
-</body>
-</html>
 
+function copyScript(id, btn) {
+    const text = document.getElementById(id).innerText;
+    
+    // [SPECIAL LOGIC] Hitbox Pro Trap
+    if (id === 'scriptHitbox') {
+        showToast("ERROR: สคริปต์นี้ใช้งานไม่ได้", "#ff4747");
+        return;
+    }
+
+    navigator.clipboard.wri
