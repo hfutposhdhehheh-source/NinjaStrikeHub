@@ -282,4 +282,46 @@ function copyScript(id, btn) {
         return;
     }
 
-    navigator.clipboard.wri
+    navigator.clipboard.writeText(text);
+    showToast("SYSTEM: SCRIPT COPIED! ✅", "#00ff88");
+    let old = btn.innerHTML; btn.innerHTML = "✅ COPIED";
+    setTimeout(() => { btn.innerHTML = old; }, 2000);
+}
+
+function showToast(msg, color) {
+    const toast = document.getElementById("toast");
+    toast.innerText = msg;
+    toast.style.background = color || "var(--emerald)";
+    toast.className = "show";
+    setTimeout(() => { toast.className = ""; }, 2500);
+}
+
+function searchScripts() {
+    let input = document.getElementById('searchInput').value.toLowerCase();
+    let cards = document.getElementsByClassName('script-item');
+    
+    for (let i = 0; i < cards.length; i++) {
+        let title = cards[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+        let desc = cards[i].getElementsByTagName('p')[0].innerText.toLowerCase();
+        if (title.includes(input) || desc.includes(input)) {
+            cards[i].style.display = "";
+        } else {
+            cards[i].style.display = "none";
+        }
+    }
+}
+
+function initParticles() {
+    const canvas = document.getElementById("bg"); const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    let p = []; for(let i=0; i<60; i++) p.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5, s: Math.random()*0.4+0.1, o: Math.random()});
+    function draw() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        p.forEach(a => { ctx.fillStyle = `rgba(255, 100, 255, ${a.o})`; ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, Math.PI*2); ctx.fill(); a.y -= a.s; if(a.y < 0) a.y = canvas.height; });
+        requestAnimationFrame(draw);
+    }
+    draw();
+}
+</script>
+</body>
+</html>
