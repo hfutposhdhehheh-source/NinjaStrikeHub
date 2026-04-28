@@ -21,7 +21,7 @@
         }
 
         body { margin: 0; font-family: 'Prompt', sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
-        canvas { position: fixed; top: 0; left: 0; z-index: -1; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; pointer-events: none; }
 
         @keyframes borderFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes pulseDot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
@@ -33,14 +33,14 @@
             letter-spacing: 2px; color: var(--accent); font-weight: bold;
         }
 
-        #key-auth-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
+        #key-auth-container { display: flex; justify-content: center; align-items: center; height: 100vh; position: relative; z-index: 101; }
         .key-card {
             background: var(--card-bg); backdrop-filter: blur(25px); padding: 50px 30px;
             border-radius: 30px; text-align: center; border: 1px solid rgba(255,100,255,0.2);
             box-shadow: 0 0 50px rgba(100, 50, 255, 0.2); width: 85%; max-width: 400px;
         }
         .key-input {
-            padding: 15px; width: 100%; margin: 25px 0; border-radius: 15px; border: 1px solid #222;
+            padding: 15px; width: 100%; margin: 25px 0; border-radius: 15px; border: 1px solid #333;
             background: rgba(0,0,0,0.7); color: var(--primary); text-align: center; font-size: 1.1rem;
             box-sizing: border-box; outline: none; transition: 0.3s;
         }
@@ -57,7 +57,7 @@
         .search-bar {
             width: 100%; padding: 15px 25px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);
             background: rgba(20, 20, 30, 0.95); color: white; font-family: 'Prompt'; outline: none;
-            backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); box-sizing: border-box;
         }
 
         .container { max-width: 750px; margin: auto; padding: 0 20px; }
@@ -73,6 +73,7 @@
             animation: borderFlow 10s linear infinite;
         }
 
+        /* Themes */
         .theme-v5::before { background: linear-gradient(45deg, #ff00cc, #3333ff, #00ff88, #ff00cc); }
         .theme-v2::before { background: linear-gradient(45deg, #32e1ff, #6432ff, #32e1ff); }
         .theme-pro::before { background: linear-gradient(45deg, #ffcc00, #ff64ff, #ffcc00); }
@@ -99,7 +100,6 @@
             color: white; cursor: pointer; font-weight: 700; transition: 0.3s;
             text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; margin-bottom: 10px;
         }
-        .btn-join { background: linear-gradient(45deg, #1db954, #1ed760); color: black; }
         .btn-discord { background: linear-gradient(45deg, #5865F2, #7289da); color: white; margin-top: 10px; }
         .btn-disabled { background: #333 !important; cursor: not-allowed; color: #666; }
 
@@ -113,7 +113,7 @@
         }
         #toast.show { visibility: visible; animation: fadeInOut 2.5s; }
         @keyframes fadeInOut { 0% { bottom: 0; opacity: 0; } 15% { bottom: 40px; opacity: 1; } 85% { bottom: 40px; opacity: 1; } 100% { bottom: 0; opacity: 0; } }
-        .footer { text-align: center; color: #333; padding: 40px 0; font-size: 0.75rem; }
+        .footer { text-align: center; color: #444; padding: 40px 0; font-size: 0.75rem; }
     </style>
 </head>
 <body>
@@ -127,7 +127,7 @@
         <h2 style="font-family: 'Orbitron'; color: var(--primary);">LOGIN</h2>
         <input type="password" id="user-key" class="key-input" placeholder="••••••••">
         <button class="btn" onclick="validateKey()">AUTHENTICATE</button>
-        <button class="btn btn-discord" onclick="window.location.href='https://discord.gg/4KRwXhWM2'">🌐 GET KEY IN DISCORD</button>
+        <button class="btn btn-discord" onclick="window.open('https://discord.gg/4KRwXhWM2', '_blank')">🌐 GET KEY IN DISCORD</button>
     </div>
 </div>
 
@@ -138,18 +138,19 @@
     </div>
 
     <div class="container" style="text-align: center;">
-        <button class="btn btn-discord" style="margin-bottom: 25px; width: auto; padding: 10px 30px;" onclick="window.location.href='https://discord.gg/4KRwXhWM2'">🌐 JOIN DISCORD</button>
-        <div class="status-badge-global" style="background: rgba(0, 255, 136, 0.1); color: var(--emerald); padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; border: 1px solid var(--emerald); display: inline-block; margin-bottom: 20px; width: 100%; box-sizing: border-box;">🟢 ALL SYSTEMS OPERATIONAL</div>
+        <button class="btn btn-discord" style="margin-bottom: 25px; width: auto; padding: 10px 30px;" onclick="window.open('https://discord.gg/4KRwXhWM2', '_blank')">🌐 JOIN DISCORD</button>
+        <div class="status-badge-global" style="background: rgba(0, 255, 136, 0.1); color: var(--emerald); padding: 8px 15px; border-radius: 50px; font-size: 0.8rem; border: 1px solid var(--emerald); display: inline-block; margin-bottom: 20px; width: 100%; box-sizing: border-box;">🟢 ALL SYSTEMS OPERATIONAL</div>
 
         <div id="scriptList">
+            
             <div class="card theme-cinema script-item">
                 <div class="status-label"><span class="dot" style="background:var(--cinema);"></span> STATUS: ONLINE</div>
                 <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🎥 [V8] CINEMA MASTER</h3>
                 <img src="https://i.postimg.cc/9XJpHwHf/IMG-20260418-182644.jpg" class="preview-img">
-                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ที่สุดของสคริปต์กล้องบิน (Freecam) สำหรับสายถ่ายคลิป ปรับความเร็วได้ละเอียด 0.01 - 100 ปรับกราฟิก Ultra HD และซ่อนเมนูได้</p>
+                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ที่สุดของสคริปต์กล้องบิน ปรับความเร็วได้ละเอียด 0.01 - 100 ปรับกราฟิก Ultra HD และซ่อนเมนูได้</p>
                 <div class="script-box" id="scriptCinema">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/%5BV8%5DCinema_Master.lua"))()</div>
                 <button class="btn" onclick="copyScript('scriptCinema', this)">GET SCRIPT</button>
-                <div class="note-box" style="border-left-color: var(--cinema);"><div class="note-text"><strong>🎬 ข้อมูล:</strong> รองรับการบินสมูทด้วย Joystick ล่องหน และสามารถซ่อนเมนูเพื่อถ่ายคลิปได้เนียน</div></div>
+                <div class="note-box" style="border-left-color: var(--cinema);"><div class="note-text"><strong>🎬 ข้อมูล:</strong> รองรับการบินสมูทด้วย Joystick ล่องหน ซ่อนเมนูถ่ายคลิปได้เนียน</div></div>
             </div>
 
             <div class="card theme-ore script-item">
@@ -169,17 +170,17 @@
                 <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">รวมไอดีเพลงกว่า 100+ เพลง พร้อมระบบเครื่องเล่นในตัว</p>
                 <div class="script-box" id="scriptDanceHub">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/UltimateDanceHub.lua"))()</div>
                 <button class="btn" onclick="copyScript('scriptDanceHub', this)">GET SCRIPT</button>
-                <div class="note-box"><div class="note-text"><strong>🎼 ข้อมูล:</strong> กดชื่อเพลงเพื่อคัดลอก ID เข้าเครื่องอัตโนมัติ | ⚠️ บางไอดีอาจไม่มีเสียง</div></div>
+                <div class="note-box"><div class="note-text"><strong>🎼 ข้อมูล:</strong> กดชื่อเพลงเพื่อคัดลอก ID | ⚠️ บางไอดีอาจไม่มีเสียง</div></div>
             </div>
 
             <div class="card theme-phantom script-item">
                 <div class="status-label"><span class="dot" style="background:var(--phantom);"></span> STATUS: ONLINE</div>
                 <h3 style="margin:0; text-align:left; font-family:'Orbitron';">👻 PHANTOM (BODY MOD)</h3>
                 <img src="https://i.postimg.cc/wvB1Xvfb/IMG-20260418-182517.jpg" class="preview-img">
-                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">เสกหัวล่องหนและขากุด (Headless/Korblox) พร้อม GUI มีปุ่มเปิดปิด รองรับ R6 และ R15</p>
+                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">เสกหัวล่องหนและขากุด (Headless/Korblox) รองรับ R6/R15</p>
                 <div class="script-box" id="scriptPhantom">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Phantom.lua"))()</div>
                 <button class="btn" onclick="copyScript('scriptPhantom', this)">GET SCRIPT</button>
-                <div class="note-box" style="border-left-color: var(--phantom);"><div class="note-text"><strong>🌍 ข้อมูล:</strong> ใช้ได้ทุกแมพ และจะรันใหม่อัตโนมัติเมื่อตัวละครเกิดใหม่</div></div>
+                <div class="note-box" style="border-left-color: var(--phantom);"><div class="note-text"><strong>🌍 ข้อมูล:</strong> ใช้ได้ทุกแมพ รันใหม่อัตโนมัติเมื่อเกิดใหม่</div></div>
             </div>
 
             <div class="card theme-v5 script-item">
@@ -189,17 +190,15 @@
                 <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ที่สุดของสคริปต์ไทย: ล็อคหัว, มองทะลุ (ESP) เสถียรที่สุด</p>
                 <div class="script-box" id="scriptV5">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/MeridianHub_V5.5_Thai.lua"))()</div>
                 <button class="btn" onclick="copyScript('scriptV5', this)">GET SCRIPT</button>
-                <div class="note-box"><div class="note-text"><strong>🌍 ข้อมูล:</strong> ใช้ได้ทุกแมพ แนะนำให้ปรับให้เนียนเพื่อป้องกันการถูกรายงาน</div></div>
             </div>
 
             <div class="card theme-v2 script-item">
                 <div class="status-label"><span class="dot"></span> STATUS: STABLE</div>
                 <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🚨 ORBIT V2 POLICE</h3>
                 <img src="https://i.postimg.cc/JzbHmSHd/IMG-20260418-182554.jpg" class="preview-img">
-                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">สคริปต์หมุนรอบตัว ล็อคติดหนึบ (Orbit) สำหรับสายไล่ล่า</p>
+                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">สคริปต์หมุนรอบตัว ล็อคติดหนึบ สำหรับสายไล่ล่า</p>
                 <div class="script-box" id="scriptV2">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/MeridianHub_V2.lua"))()</div>
                 <button class="btn" onclick="copyScript('scriptV2', this)">GET SCRIPT</button>
-                <div class="note-box" style="border-left-color: var(--accent);"><div class="note-text"><strong>⚠️ คำเตือน:</strong> ห้ามปรับ Speed เป็น 0 หรือค่าติดลบเด็ดขาด เพราะจะทำให้ระบบรวน</div></div>
             </div>
 
             <div class="card theme-pro script-item">
@@ -209,106 +208,101 @@
                 <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ลบส่วนเกินในแมพ เพิ่ม FPS ให้พุ่งกระฉูด สำหรับเครื่องสเปกต่ำ</p>
                 <div class="script-box" id="scriptPro">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/Meridian_Optimizer_Pro.lua"))()</div>
                 <button class="btn" onclick="copyScript('scriptPro', this)">GET SCRIPT</button>
-                <div class="note-box"><div class="note-text"><strong>🌍 ข้อมูล:</strong> ช่วยลดความร้อนของเครื่องขณะเล่นแมพใหญ่ๆ นานๆ</div></div>
             </div>
 
             <div class="card theme-hitbox script-item">
-                <div class="status-label"><span class="dot" style="background:var(--danger); animation:none;"></span> <span style="color:var(--danger)">STATUS: OUTDATED / PATCHED</span></div>
+                <div class="status-label"><span class="dot" style="background:var(--danger); animation:none;"></span> <span style="color:var(--danger)">STATUS: PATCHED</span></div>
                 <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🎯 Hitbox Pro</h3>
                 <img src="https://i.postimg.cc/R0Lt12MZ/IMG-20260418-182626.jpg" class="preview-img">
                 <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ขยาย Hitbox ตัวละครศัตรูให้ใหญ่ขึ้น ยิงง่ายตีแม่น!</p>
                 <div class="script-box" id="scriptHitbox">สคริปต์นี้ใช้งานไม่ได้</div>
-                <button class="btn btn-disabled" onclick="copyScript('scriptHitbox', this)">DISABLED</button>
-                <div class="note-box" style="border-left-color: var(--danger);"><div class="note-text"><strong>⚠️ ข้อมูล:</strong> ปัจจุบันสคริปต์นี้ถูก Roblox ตรวจสอบและแก้โค้ดแล้ว จึงไม่สามารถใช้งานได้</div></div>
+                <button class="btn btn-disabled">DISABLED</button>
             </div>
 
             <div class="card theme-v3 script-item">
                 <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
                 <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🚀 V3 Ultimate</h3>
                 <img src="https://i.postimg.cc/9XJpHwHf/IMG-20260418-182644.jpg" class="preview-img">
-                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">เวอร์ชันคลาสสิก (Classic) สำหรับคนที่ต้องการแค่ฟังก์ชันพื้นฐานแต่เสถียรมาก</p>
+                <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">เวอร์ชันเบาหวิว Classic สำหรับคนที่ต้องการแค่ฟังก์ชันหลัก</p>
                 <div class="script-box" id="scriptV3">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/main/Meridian_Tle.lua"))()</div>
                 <button class="btn" onclick="copyScript('scriptV3', this)">GET SCRIPT</button>
-                <div class="note-box"><div class="note-text"><strong>🌍 ข้อมูล:</strong> เสถียรและเบาที่สุดในทุกรุ่น ใช้ได้กับทุกแมพ</div></div>
             </div>
+
         </div>
         <div class="footer">© 2026 MERIDIAN SUPREME GOD EDITION</div>
     </div>
 </div>
 
 <script>
-const MY_KEY = "MERIDIAN_666";
+    const MY_KEY = "MERIDIAN_666";
 
-window.onload = function() { 
-    if (localStorage.getItem("meridian_access") === MY_KEY) unlockHub(); 
-    initParticles(); 
-}
-
-function validateKey() { 
-    if (document.getElementById("user-key").value === MY_KEY) { 
-        localStorage.setItem("meridian_access", MY_KEY); 
-        unlockHub(); 
-    } 
-}
-
-function unlockHub() { 
-    document.getElementById("key-auth-container").style.display = "none"; 
-    document.getElementById("main-site-content").style.display = "block"; 
-}
-
-function copyScript(id, btn) {
-    if (id === 'scriptHitbox') { 
-        showToast("ERROR: สคริปต์นี้ใช้งานไม่ได้", "#ff4747"); 
-        return; 
+    window.onload = function() {
+        initParticles();
+        if (localStorage.getItem("meridian_access") === MY_KEY) unlockHub();
     }
-    const text = document.getElementById(id).innerText;
-    navigator.clipboard.writeText(text).then(() => {
-        showToast("SYSTEM: SCRIPT COPIED! ✅", "#00ff88");
-        let old = btn.innerHTML; btn.innerHTML = "✅ COPIED";
-        setTimeout(() => { btn.innerHTML = old; }, 2000);
-    });
-}
 
-function showToast(msg, color) {
-    const toast = document.getElementById("toast");
-    toast.innerText = msg; 
-    toast.style.background = color || "var(--emerald)";
-    toast.className = "show"; 
-    setTimeout(() => { toast.className = ""; }, 2500);
-}
-
-function searchScripts() {
-    let input = document.getElementById('searchInput').value.toLowerCase();
-    let cards = document.getElementsByClassName('script-item');
-    
-    for (let i = 0; i < cards.length; i++) {
-        let title = cards[i].querySelector('h3').innerText.toLowerCase();
-        let desc = cards[i].querySelector('p').innerText.toLowerCase();
-        
-        if (title.includes(input) || desc.includes(input)) {
-            cards[i].style.display = "";
+    function validateKey() {
+        if (document.getElementById("user-key").value === MY_KEY) {
+            localStorage.setItem("meridian_access", MY_KEY);
+            unlockHub();
+            showToast("ACCESS GRANTED! ✅", "#00ff88");
         } else {
-            cards[i].style.display = "none";
+            showToast("INVALID KEY! ❌", "#ff4747");
         }
     }
-}
 
-function initParticles() {
-    const canvas = document.getElementById("bg"); 
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth; 
-    canvas.height = window.innerHeight;
-    
-    let p = []; 
-    for(let i=0; i<60; i++) {
-        p.push({
-            x: Math.random()*canvas.width, 
-            y: Math.random()*canvas.height, 
-            r: Math.random()*1.5, 
-            s: Math.random()*0.4+0.1, 
-            o: Math.random()
-        });
+    function unlockHub() {
+        document.getElementById("key-auth-container").style.display = "none";
+        document.getElementById("main-site-content").style.display = "block";
     }
-    
-    function draw() {
-        ctx.clearRect(0,0,canvas.width,canvas.height)
+
+    function copyScript(id, btn) {
+        const text = document.getElementById(id).innerText;
+        if (text.includes("ใช้งานไม่ได้")) return;
+        
+        navigator.clipboard.writeText(text);
+        showToast("SCRIPT COPIED! ✅", "#00ff88");
+        let old = btn.innerHTML;
+        btn.innerHTML = "✅ COPIED";
+        setTimeout(() => { btn.innerHTML = old; }, 2000);
+    }
+
+    function showToast(msg, color) {
+        const toast = document.getElementById("toast");
+        toast.innerText = msg;
+        toast.style.background = color || "var(--emerald)";
+        toast.className = "show";
+        setTimeout(() => { toast.className = ""; }, 2500);
+    }
+
+    function searchScripts() {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        let cards = document.getElementsByClassName('script-item');
+        for (let i = 0; i < cards.length; i++) {
+            let title = cards[i].querySelector('h3').innerText.toLowerCase();
+            let desc = cards[i].querySelector('p').innerText.toLowerCase();
+            cards[i].style.display = (title.includes(input) || desc.includes(input)) ? "" : "none";
+        }
+    }
+
+    function initParticles() {
+        const canvas = document.getElementById("bg");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let p = [];
+        for(let i=0; i<60; i++) p.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5, s: Math.random()*0.4+0.1, o: Math.random()});
+        function draw() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            p.forEach(a => {
+                ctx.fillStyle = `rgba(255, 100, 255, ${a.o})`;
+                ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, Math.PI*2); ctx.fill();
+                a.y -= a.s; if(a.y < 0) a.y = canvas.height;
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    }
+</script>
+</body>
+</html>
