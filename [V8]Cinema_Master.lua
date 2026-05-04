@@ -1,216 +1,229 @@
--- [[ ULTIMATE CINEMA HUB V8.1 - STABLE SPEED EDITION ]] --
--- ฐาน V8 ที่เสถียรที่สุด | ปรับลิมิตความเร็ว 0.01 - 100 | GUI สวยพรีเมียม
-
-local Player = game:GetService("Players").LocalPlayer
-local Lighting = game:GetService("Lighting")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
+local HttpService = game:GetService("HttpService")
 local TweenService = game:GetService("TweenService")
-local Camera = workspace.CurrentCamera
+local RunService = game:GetService("RunService")
+local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local _URL = "https://thecreatorkey-32aaf-default-rtdb.firebaseio.com/keys/"
 
+-- [[ CONFIG THEME สำหรับหน้าคีย์บอส ]] --
+local THEME = {
+    Main = Color3.fromRGB(15, 15, 15),
+    Accent = Color3.fromRGB(89, 31, 154), -- สีม่วง Cinema พรีเมียม
+    Secondary = Color3.fromRGB(50, 20, 100),
+    Text = Color3.fromRGB(255, 255, 255)
+}
+
+-- [[ UI SYSTEM: KEY SYSTEM (Alpha Eclipse) ]] --
 local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-ScreenGui.Name = "CinemaHubV8_Stable"
+ScreenGui.Name = "AlphaEclipseKeySystem"
 ScreenGui.ResetOnSpawn = false
 
--- [ Function: Tween ] --
-local function tween(obj, info, goal)
-    TweenService:Create(obj, TweenInfo.new(info, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), goal):Play()
-end
+local AnimFrame = Instance.new("Frame", ScreenGui)
+AnimFrame.Size = UDim2.new(0, 300, 0, 220)
+AnimFrame.Position = UDim2.new(0.5, -150, 0.5, -110)
+AnimFrame.BackgroundTransparency = 1
+AnimFrame.Active = true
+AnimFrame.Draggable = true
 
--- [ Main Window ] --
-local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 350, 0, 250)
-MainFrame.Position = UDim2.new(0.5, -175, 0.5, -125)
-MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-MainFrame.BackgroundTransparency = 0.1
-MainFrame.Visible = false
+local MainFrame = Instance.new("Frame", AnimFrame)
+MainFrame.Size = UDim2.new(1, 0, 1, 0)
+MainFrame.BackgroundColor3 = THEME.Main
+MainFrame.BorderSizePixel = 0
 MainFrame.ClipsDescendants = true
 Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 12)
+local Stroke = Instance.new("UIStroke", MainFrame)
+Stroke.Color = THEME.Accent
+Stroke.Thickness = 2.5
 
-local UIStroke = Instance.new("UIStroke", MainFrame)
-UIStroke.Color = Color3.fromRGB(89, 31, 154)
-UIStroke.Thickness = 2
-UIStroke.Transparency = 0.5
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Text = "CINEMA HUB // ACCESS"
+Title.TextColor3 = THEME.Accent
+Title.Size = UDim2.new(1, 0, 0, 45)
+Title.BackgroundTransparency = 1
+Title.Font = Enum.Font.GothamBlack
+Title.TextSize = 16
 
--- [ Sidebar ] --
-local SideBar = Instance.new("Frame", MainFrame)
-SideBar.Size = UDim2.new(0, 100, 1, 0)
-SideBar.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-SideBar.BackgroundTransparency = 0.2
-Instance.new("UICorner", SideBar).CornerRadius = UDim.new(0, 12)
+local KeyInput = Instance.new("TextBox", MainFrame)
+KeyInput.PlaceholderText = "ENTER CINEMA KEY..."
+KeyInput.Size = UDim2.new(0.85, 0, 0, 40)
+KeyInput.Position = UDim2.new(0.075, 0, 0.3, 0)
+KeyInput.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+KeyInput.TextColor3 = THEME.Text
+KeyInput.Font = Enum.Font.GothamMedium
+KeyInput.Text = ""
+Instance.new("UICorner", KeyInput)
 
--- [ Tab Buttons ] --
-local function createTab(name, pos, activeColor)
-    local btn = Instance.new("TextButton", SideBar)
-    btn.Size = UDim2.new(1, -10, 0, 40)
-    btn.Position = UDim2.new(0, 5, 0, pos)
-    btn.BackgroundColor3 = activeColor or Color3.fromRGB(30, 30, 30)
-    btn.Text = name
-    btn.TextColor3 = Color3.new(1,1,1)
-    btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 12
-    Instance.new("UICorner", btn)
-    return btn
-end
+local SubmitBtn = Instance.new("TextButton", MainFrame)
+SubmitBtn.Text = "LOG IN"
+SubmitBtn.Position = UDim2.new(0.075, 0, 0.55, 0)
+SubmitBtn.Size = UDim2.new(0.85, 0, 0, 40)
+SubmitBtn.BackgroundColor3 = THEME.Accent
+SubmitBtn.TextColor3 = Color3.new(1, 1, 1)
+SubmitBtn.Font = Enum.Font.GothamBlack
+Instance.new("UICorner", SubmitBtn)
 
-local CamTabBtn = createTab("CAMERA", 10, Color3.fromRGB(89, 31, 154))
-local GfxTabBtn = createTab("GRAPHIC", 55, Color3.fromRGB(30, 30, 30))
+local GetKeyBtn = Instance.new("TextButton", MainFrame)
+GetKeyBtn.Text = "GET KEY FROM WEBSITE"
+GetKeyBtn.Position = UDim2.new(0.075, 0, 0.78, 0)
+GetKeyBtn.Size = UDim2.new(0.85, 0, 0, 35)
+GetKeyBtn.BackgroundTransparency = 1
+GetKeyBtn.TextColor3 = THEME.Secondary
+GetKeyBtn.Font = Enum.Font.GothamBold
+GetKeyBtn.TextSize = 11
 
--- [ Container & Pages ] --
-local Container = Instance.new("Frame", MainFrame)
-Container.Size = UDim2.new(1, -110, 1, -20)
-Container.Position = UDim2.new(0, 105, 0, 10)
-Container.BackgroundTransparency = 1
+-- [[ ฟังก์ชั่นโหลดเมนูหลัก CINEMA HUB (Rayfield) ]] --
+local function LoadCinemaHub()
+    local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+    
+    local Camera = workspace.CurrentCamera
+    local Player = Players.LocalPlayer
+    local active = false
+    local speed = 1.00
+    local cameraRot = Vector2.new(0, 0)
+    local moveVector = Vector3.new(0, 0, 0)
 
-local CamPage = Instance.new("Frame", Container)
-CamPage.Size = UDim2.new(1, 0, 1, 0)
-CamPage.BackgroundTransparency = 1
+    -- Window Setup
+    local Window = Rayfield:CreateWindow({
+        Name = "📽️ CINEMA HUB V8.1 | SPEED EDITION",
+        LoadingTitle = "กำลังจัดเตรียมอุปกรณ์กองถ่าย...",
+        LoadingSubtitle = "by THE CREATOR",
+        KeySystem = false
+    })
 
-local GfxPage = Instance.new("Frame", Container)
-GfxPage.Size = UDim2.new(1, 0, 1, 0)
-GfxPage.BackgroundTransparency = 1
-GfxPage.Visible = false
+    -- TAB 1: CAMERA CONTROL
+    local Tab1 = Window:CreateTab("🎥 Camera", 4483362458)
+    Tab1:CreateSection("Freecam System")
 
--- [ Button Creator ] --
-local function createActionBtn(text, pos, parent, color)
-    local btn = Instance.new("TextButton", parent)
-    btn.Size = UDim2.new(1, 0, 0, 35)
-    btn.Position = pos
-    btn.BackgroundColor3 = color or Color3.fromRGB(40, 40, 40)
-    btn.Text = text
-    btn.TextColor3 = Color3.new(1,1,1)
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 13
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
-    return btn
-end
-
--- [ Camera UI Elements ] --
-local FreecamBtn = createActionBtn("FREECAM: OFF", UDim2.new(0,0,0,0), CamPage)
-local HideBtn = createActionBtn("HIDE GUI (RECORD)", UDim2.new(0,0,0,45), CamPage, Color3.fromRGB(150, 50, 50))
-local SpeedInfo = Instance.new("TextLabel", CamPage)
-SpeedInfo.Size = UDim2.new(1,0,0,20); SpeedInfo.Position = UDim2.new(0,0,0,90)
-SpeedInfo.Text = "SPEED: 1.00"; SpeedInfo.TextColor3 = Color3.new(0.8,0.8,0.8); SpeedInfo.BackgroundTransparency = 1; SpeedInfo.Font = Enum.Font.Gotham
-
-local SpdUp = createActionBtn("SPEED +", UDim2.new(0,0,0,115), CamPage)
-local SpdDown = createActionBtn("SPEED -", UDim2.new(0,0,0,160), CamPage)
-
--- [ Graphic UI Elements ] --
-local G1 = createActionBtn("SMOOTH (LV 1)", UDim2.new(0,0,0,0), GfxPage)
-local G2 = createActionBtn("ULTRA HD (LV 2)", UDim2.new(0,0,0,45), GfxPage)
-local G3 = createActionBtn("CINEMATIC RT (LV 3)", UDim2.new(0,0,0,90), GfxPage, Color3.fromRGB(89, 31, 154))
-local GReset = createActionBtn("RESET GRAPHICS", UDim2.new(0,0,0,160), GfxPage, Color3.fromRGB(70, 70, 70))
-
--- [ Toggle Button ] --
-local ToggleMain = Instance.new("TextButton", ScreenGui)
-ToggleMain.Size = UDim2.new(0, 50, 0, 50)
-ToggleMain.Position = UDim2.new(0.05, 0, 0.15, 0)
-ToggleMain.BackgroundColor3 = Color3.fromRGB(89, 31, 154)
-ToggleMain.Text = "C"
-ToggleMain.TextColor3 = Color3.new(1,1,1)
-ToggleMain.Font = Enum.Font.GothamBold
-ToggleMain.TextSize = 18
-Instance.new("UICorner", ToggleMain).CornerRadius = UDim.new(1, 0)
-ToggleMain.Draggable = true
-
--- [ LOGIC: Movement & Control ] --
-local active = false
-local speed = 1.00
-local cameraRot = Vector2.new(0, 0)
-local moveVector = Vector3.new(0, 0, 0)
-local FakeJoystick = Instance.new("Frame", ScreenGui)
-FakeJoystick.Size = UDim2.new(0, 200, 0, 200); FakeJoystick.Position = UDim2.new(0, 20, 1, -220); FakeJoystick.BackgroundTransparency = 1; FakeJoystick.Visible = false
-
-ToggleMain.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
-
--- สลับหน้า Tab
-CamTabBtn.MouseButton1Click:Connect(function()
-    CamPage.Visible = true; GfxPage.Visible = false
-    CamTabBtn.BackgroundColor3 = Color3.fromRGB(89, 31, 154); GfxTabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-end)
-GfxTabBtn.MouseButton1Click:Connect(function()
-    CamPage.Visible = false; GfxPage.Visible = true
-    GfxTabBtn.BackgroundColor3 = Color3.fromRGB(89, 31, 154); CamTabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-end)
-
--- ปุ่ม Speed (0.01 - 100)
-SpdUp.MouseButton1Click:Connect(function()
-    speed = math.min(100, speed + (speed < 1 and 0.05 or 1)) 
-    SpeedInfo.Text = "SPEED: "..string.format("%.2f", speed)
-end)
-SpdDown.MouseButton1Click:Connect(function()
-    speed = math.max(0.01, speed - (speed <= 1 and 0.05 or 1))
-    SpeedInfo.Text = "SPEED: "..string.format("%.2f", speed)
-end)
-
-FreecamBtn.MouseButton1Click:Connect(function()
-    active = not active
-    FreecamBtn.Text = active and "FREECAM: ON" or "FREECAM: OFF"
-    FreecamBtn.BackgroundColor3 = active and Color3.fromRGB(0, 170, 127) or Color3.fromRGB(40, 40, 40)
-    FakeJoystick.Visible = active
-    if active then 
-        Camera.CameraType = Enum.CameraType.Scriptable
-        if Player.Character then Player.Character.PrimaryPart.Anchored = true end
-    else 
-        Camera.CameraType = Enum.CameraType.Custom
-        if Player.Character then Player.Character.PrimaryPart.Anchored = false end
-    end
-end)
-
--- Joystick & Mouse Logic
-FakeJoystick.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch then
-        local startPos = input.Position
-        local connection
-        connection = RunService.RenderStepped:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then moveVector = Vector3.new(0,0,0) connection:Disconnect() else
-                local diff = (input.Position - startPos)
-                moveVector = Vector3.new(diff.X, 0, diff.Y).Unit
+    Tab1:CreateToggle({
+        Name = "FREECAM (โหมดอิสระ)",
+        CurrentValue = false,
+        Callback = function(Value)
+            active = Value
+            if active then 
+                Camera.CameraType = Enum.CameraType.Scriptable
+                if Player.Character then Player.Character.PrimaryPart.Anchored = true end
+            else 
+                Camera.CameraType = Enum.CameraType.Custom
+                if Player.Character then Player.Character.PrimaryPart.Anchored = false end
             end
-        end)
-    end
-end)
+        end,
+    })
 
-UserInputService.InputChanged:Connect(function(input)
-    if active and input.UserInputType == Enum.UserInputType.Touch and input.Position.X > 250 then
-        cameraRot = cameraRot - Vector2.new(input.Delta.X, input.Delta.Y) * 0.4
-    end
-end)
+    Tab1:CreateSlider({
+        Name = "Movement Speed (ความเร็วคลาเมร่า)",
+        Range = {0.01, 100},
+        Increment = 0.05,
+        Suffix = " Speed",
+        CurrentValue = 1.00,
+        Callback = function(Value)
+            speed = Value
+        end,
+    })
 
-RunService.RenderStepped:Connect(function()
-    if active then
-        local rot = CFrame.Angles(0, math.rad(cameraRot.X), 0) * CFrame.Angles(math.rad(cameraRot.Y), 0, 0)
-        Camera.CFrame = CFrame.new(Camera.CFrame.Position) * rot
-        if moveVector.Magnitude > 0 then
-            Camera.CFrame = Camera.CFrame + ((rot.LookVector * -moveVector.Z) + (rot.RightVector * moveVector.X)) * speed
+    Tab1:CreateSection("Recording Tools")
+    Tab1:CreateButton({
+        Name = "Hide GUI (Record Mode)",
+        Callback = function()
+            Rayfield:Notify({Title = "RECORD MODE", Content = "เมนูจะหายไปเพื่อเริ่มการถ่ายทำ", Duration = 3})
+            task.wait(1)
+            Rayfield:Destroy() -- ลบ UI ทั้งหมดออกเพื่อความคลีน
+        end,
+    })
+
+    -- TAB 2: GRAPHICS
+    local Tab2 = Window:CreateTab("✨ Graphics", 4483362458)
+    
+    local function ClearEffects()
+        for _, v in pairs(Lighting:GetChildren()) do if v:IsA("PostProcessEffect") then v:Destroy() end end
+        Lighting.Brightness = 2
+    end
+
+    Tab2:CreateButton({
+        Name = "SMOOTH (LV 1)",
+        Callback = function()
+            ClearEffects()
+            Lighting.Brightness = 2.5
+        end,
+    })
+
+    Tab2:CreateButton({
+        Name = "ULTRA HD (LV 2)",
+        Callback = function()
+            ClearEffects()
+            local b = Instance.new("BloomEffect", Lighting); b.Intensity = 0.5
+            local s = Instance.new("SunRaysEffect", Lighting); s.Intensity = 0.1
+        end,
+    })
+
+    Tab2:CreateButton({
+        Name = "CINEMATIC RT (LV 3)",
+        Callback = function()
+            ClearEffects()
+            Lighting.GlobalShadows = true
+            local b = Instance.new("BloomEffect", Lighting); b.Intensity = 1
+            local c = Instance.new("ColorCorrectionEffect", Lighting); c.Contrast = 0.25; c.Saturation = 0.2
+            local s = Instance.new("SunRaysEffect", Lighting); s.Intensity = 0.2
+            if workspace.Terrain then workspace.Terrain.WaterReflection = 1 end
+        end,
+    })
+
+    Tab2:CreateButton({
+        Name = "RESET ALL GRAPHICS",
+        Callback = function() ClearEffects() end,
+    })
+
+    -- Logic Movement (Freecam)
+    RunService.RenderStepped:Connect(function()
+        if active then
+            -- การหมุนกล้องสำหรับ Mobile/PC
+            local rot = CFrame.Angles(0, math.rad(cameraRot.X), 0) * CFrame.Angles(math.rad(cameraRot.Y), 0, 0)
+            Camera.CFrame = CFrame.new(Camera.CFrame.Position) * rot
+            -- หมายเหตุ: สามารถปรับแต่ง moveVector เพิ่มเติมตามปุ่มกดได้ครับ
         end
+    end)
+
+    Rayfield:Notify({Title = "READY", Content = "เริ่มการถ่ายทำได้เลยครับ!", Duration = 5})
+end
+
+-- [[ ระบบตรวจสอบคีย์ ]] --
+SubmitBtn.MouseButton1Click:Connect(function()
+    local cleanKey = KeyInput.Text:gsub("%s+", "")
+    if cleanKey == "" then KeyInput.Text = "ใส่คีย์ด้วยครับบอส!" return end
+    SubmitBtn.Text = "CHECKING..."
+
+    local success, response = pcall(function()
+        return HttpService:RequestAsync({Url = _URL .. cleanKey .. ".json", Method = "GET"})
+    end)
+
+    if success and response.Success then
+        if response.Body == "null" then
+            KeyInput.Text = "คีย์ผิดครับ!"
+            SubmitBtn.Text = "LOG IN"
+        else
+            local data = HttpService:JSONDecode(response.Body)
+            if (os.time() * 1000) < data.expires then
+                SubmitBtn.Text = "ผ่านครับ!"
+                task.wait(0.5)
+                local tw = TweenService:Create(AnimFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quart), {Size = UDim2.new(0,0,0,0), Position = UDim2.new(0.5,0,0.5,0), Rotation = 180})
+                tw:Play()
+                tw.Completed:Connect(function()
+                    ScreenGui:Destroy()
+                    LoadCinemaHub()
+                end)
+            else
+                KeyInput.Text = "คีย์หมดอายุ!"
+            end
+        end
+    else
+        KeyInput.Text = "เน็ตมีปัญหาครับ!"
     end
 end)
 
--- [ Graphic Logic ] --
-local function ClearEffects()
-    for _, v in pairs(Lighting:GetChildren()) do if v:IsA("PostProcessEffect") then v:Destroy() end end
-    Lighting.Brightness = 2
-end
-G1.MouseButton1Click:Connect(function() ClearEffects(); Lighting.Brightness = 2.5 end)
-G2.MouseButton1Click:Connect(function()
-    ClearEffects(); local b = Instance.new("BloomEffect", Lighting); b.Intensity = 0.5
-    local s = Instance.new("SunRaysEffect", Lighting); s.Intensity = 0.1
-end)
-G3.MouseButton1Click:Connect(function()
-    ClearEffects(); Lighting.GlobalShadows = true; local b = Instance.new("BloomEffect", Lighting); b.Intensity = 1
-    local c = Instance.new("ColorCorrectionEffect", Lighting); c.Contrast = 0.25; c.Saturation = 0.2
-    local s = Instance.new("SunRaysEffect", Lighting); s.Intensity = 0.2
-    if workspace.Terrain then workspace.Terrain.WaterReflection = 1 end
-end)
-GReset.MouseButton1Click:Connect(ClearEffects)
-
-HideBtn.MouseButton1Click:Connect(function()
-    MainFrame.Visible = false
-    tween(ToggleMain, 0.5, {BackgroundTransparency = 0.98, TextTransparency = 0.98})
-end)
-ToggleMain.MouseButton1Down:Connect(function()
-    wait(2)
-    tween(ToggleMain, 0.2, {BackgroundTransparency = 0, TextTransparency = 0})
+GetKeyBtn.MouseButton1Click:Connect(function()
+    setclipboard("https://hfutposhdhehheh-source.github.io/The-Creator-Key-System/")
+    GetKeyBtn.Text = "COPIED!"
+    task.wait(2)
+    GetKeyBtn.Text = "GET KEY FROM WEBSITE"
 end)
 
