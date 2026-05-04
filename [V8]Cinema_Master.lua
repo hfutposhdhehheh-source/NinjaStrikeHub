@@ -189,7 +189,7 @@ end
 -- [[ ระบบตรวจสอบคีย์ ]] --
 SubmitBtn.MouseButton1Click:Connect(function()
     local cleanKey = KeyInput.Text:gsub("%s+", "")
-    if cleanKey == "" then KeyInput.Text = "ใส่คีย์ด้วยครับบอส!" return end
+    if cleanKey == "" then KeyInput.Text = "ใส่คีย์ด้วยครับ!" return end
     SubmitBtn.Text = "CHECKING..."
 
     local success, response = pcall(function()
