@@ -190,7 +190,7 @@ end
 SubmitBtn.MouseButton1Click:Connect(function()
     local cleanKey = KeyInput.Text:gsub("%s+", "")
     if cleanKey == "" then KeyInput.Text = "ใส่คีย์ด้วยครับ" return end
-    SubmitBtn.Text = "กำลังเช็คคีย์"
+    SubmitBtn.Text = "CHECKING..."
 
     local success, response = pcall(function()
         return HttpService:RequestAsync({Url = _URL .. cleanKey .. ".json", Method = "GET"})
