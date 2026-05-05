@@ -44,7 +44,7 @@ Title.Font = Enum.Font.GothamBlack
 Title.TextSize = 16
 
 local KeyInput = Instance.new("TextBox", MainFrame)
-KeyInput.PlaceholderText = "ใส่คีย์ของเฮียที่นี่..."
+KeyInput.PlaceholderText = "ใส่คีย์ของคุณที่นี้..."
 KeyInput.Size = UDim2.new(0.85, 0, 0, 40)
 KeyInput.Position = UDim2.new(0.075, 0, 0.3, 0)
 KeyInput.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
@@ -63,7 +63,7 @@ SubmitBtn.Font = Enum.Font.GothamBlack
 Instance.new("UICorner", SubmitBtn)
 
 local GetKeyBtn = Instance.new("TextButton", MainFrame)
-GetKeyBtn.Text = "GET KEY (ของดีต้องของเฮีย)"
+GetKeyBtn.Text = "GET KEY"
 GetKeyBtn.Position = UDim2.new(0.075, 0, 0.78, 0)
 GetKeyBtn.Size = UDim2.new(0.85, 0, 0, 35)
 GetKeyBtn.BackgroundTransparency = 1
@@ -77,7 +77,7 @@ local function LoadMeridianV3()
     
     local Window = Rayfield:CreateWindow({
         Name = "💎 MERIDIAN V3 [ULTIMATE]",
-        LoadingTitle = "กำลังโหลดของดี...",
+        LoadingTitle = "กำลังโหลดสคริปต์...",
         LoadingSubtitle = "by Meridian_Tle",
         KeySystem = false 
     })
