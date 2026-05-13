@@ -20,10 +20,10 @@ local gunDropEnabled = false
 -- =========================
 
 local Window = WindUI:CreateWindow({
-Title = "KOMAT UNITY Hub",
+Title = "Meridian_TLE",
 Icon = "cpu",
-Author = "by .komat",
-Folder = "MySuperHub",
+Author = "by .TLE",
+Folder = "ShadowX_Config",
 
 Size = UDim2.fromOffset(580,460),
 MinSize = Vector2.new(560,350),
