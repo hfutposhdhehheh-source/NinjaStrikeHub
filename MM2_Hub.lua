@@ -48,7 +48,7 @@ Icon="settings"
 })
 
 local MainTab = Window:Tab({
-Title="มองผู้อื่น",
+Title="มองผู้เล่น",
 Icon="eye"
 })
 
@@ -58,12 +58,12 @@ Icon="navigation"
 })
 
 local VisualsTab = Window:Tab({
-Title="กวนตีนคนในเซิฟ",
+Title="สำหรับใครที่อยากปั่น",
 Icon="skull"
 })
 
 local MurderTab = Window:Tab({
-Title="หมวดหมู่ฆาตกร",
+Title="ฆาตรกร",
 Icon="knife"
 })
 
@@ -73,12 +73,12 @@ Icon="zap"
 })
 
 local MapTab = Window:Tab({
-Title="ฟามเงิน",
+Title="หามเหรียญ",
 Icon="coins"
 })
 
 local GunTab = Window:Tab({
-Title="เกี่ยวกับนายอำเภอ",
+Title="นายอำเภอ",
 Icon="gun"
 })
 
@@ -205,11 +205,11 @@ end
 local function getText(role)
 
 if role == "Gun" then
-return "ผู้ปราบชั่ว"
+return "นายอำเภอ"
 elseif role == "Knife" then
-return "ไอ้ชั่ว"
+return "ฆาตรกร"
 elseif role == "Good" then
-return "คนดี"
+return "ผู้เล่น"
 end
 
 end
@@ -301,7 +301,7 @@ local label = Instance.new("TextLabel")
 label.Size = UDim2.new(1,0,1,0)
 label.BackgroundTransparency = 1
 label.TextScaled = true
-label.Text = "ปืนปราบคนชั่ว"
+label.Text = "ปืน"
 label.TextColor3 = Color3.fromRGB(255,255,0)
 label.Parent = billboard
 
@@ -350,7 +350,7 @@ end
 -- =========================
 
 MainTab:Toggle({
-Title="มองหาผู้เล่น",
+Title="มองผู้เล่น",
 Default=false,
 Callback=function(state)
 
@@ -482,7 +482,7 @@ end
 -- =========================
 
 TeleportTab:Button({
-Title="วาร์ปไปยังนายอำเภอ",
+Title="วาร์ปไปหานายอำเภอ",
 Callback=function()
 
 local sheriff = findSheriff()
@@ -495,7 +495,7 @@ end
 })
 
 TeleportTab:Button({
-Title="วาร์ปไปยังฆาตรกร",
+Title="วาร์ปไปหาฆาตรกร",
 Callback=function()
 
 local murderer = findMurderer()
