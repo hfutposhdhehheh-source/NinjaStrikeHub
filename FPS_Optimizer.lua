@@ -839,7 +839,12 @@ function UI.Init(Engine)
         }
     end
 
+    -- ... (โค้ดระบบหลังบ้านของมึงด้านบน) ...
     print("[NerdEngine] UI System and 6 Optimization Categories fully generated and compiled successfully!")
-end
+end -- ปีกกาปิดของฟังก์ชัน UI.Init
 
-return UI
+-- ✅ วางตรงนี้! (ก่อนหน้า return UI) เพื่อสั่งให้ระบบเริ่มทำงานทันทีที่โหลดสคริปต์
+local Engine = {}
+UI.Init(Engine)
+
+return UI -- บรรทัดนี้ต้องอยู่ "ล่างสุด" เสมอ ห้ามมีอะไรอยู่ใต้คำว่า return อีก
