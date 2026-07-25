@@ -7,44 +7,34 @@ local SCRIPT_OWNER = "@im_new125eoxe"
 local Players = game:GetService("Players")
 local PhysicsService = game:GetService("PhysicsService")
 local CoreGui = game:GetService("CoreGui")
+local Workspace = game:GetService("Workspace")
 
 local localPlayer = Players.LocalPlayer
-local activeCylinders = {}
+local activeCylinders = {} -- เก็บข้อมูลทรงกระบอกของ Player และ Dummy
 local isEnabled = false
 
 local cylinderSize = Vector3.new(6, 4, 4)
 local cylinderTransparency = 0
 local canCollideEnabled = true
 
--- สร้าง Collision Group เฉพาะตัวละครและทรงกระบอก เพื่อไม่ให้ไปชนกับกำแพง/สิ่งของ
 local groupName = "CustomPlayerCylinders"
 pcall(function()
     PhysicsService:RegisterCollisionGroup(groupName)
     PhysicsService:CollisionGroupSetCollidable(groupName, "Default", false)
 end)
 
-local function removeCylinder(player)
-    if activeCylinders[player] then
-        if activeCylinders[player].Part then
-            activeCylinders[player].Part:Destroy()
+local function removeCylinder(target)
+    if activeCylinders[target] then
+        if activeCylinders[target].Part then
+            activeCylinders[target].Part:Destroy()
         end
-        activeCylinders[player] = nil
+        activeCylinders[target] = nil
     end
 end
 
-local function createCylinder(player)
+local function applyCylinderToModel(target, rootPart)
     if not isEnabled then return end
-    -- 🛑 เช็กถ้ารู้ว่าเป็นตัวเราเอง (เทียบทั้ง Object และชื่อใน Roblox) ให้ข้ามทันทีไม่สร้าง
-    if player == localPlayer or player.Name == "DFGHJKL_782" then 
-        return 
-    end
-    
-    removeCylinder(player)
-
-    local character = player.Character
-    if not character then return end
-    local root = character:FindFirstChild("HumanoidRootPart")
-    if not root then return end
+    removeCylinder(target)
 
     local cylinder = Instance.new("Part")
     cylinder.Name = "GlobalPersistentCylinder"
@@ -60,27 +50,54 @@ local function createCylinder(player)
     end)
 
     local weld = Instance.new("WeldConstraint")
-    weld.Part0 = root
+    weld.Part0 = rootPart
     weld.Part1 = cylinder
     weld.Parent = cylinder
 
-    cylinder.CFrame = root.CFrame * CFrame.Angles(0, 0, math.rad(90))
-    cylinder.Parent = character
+    cylinder.CFrame = rootPart.CFrame * CFrame.Angles(0, 0, math.rad(90))
+    cylinder.Parent = target
 
-    activeCylinders[player] = {
+    activeCylinders[target] = {
         Part = cylinder,
-        Root = root
+        Root = rootPart
     }
 
-    character.ChildRemoved:Connect(function(child)
-        if child.Name == "HumanoidRootPart" then
-            removeCylinder(player)
+    target.ChildRemoved:Connect(function(child)
+        if child.Name == "HumanoidRootPart" or child.Name == "Torso" or child.Name == "LowerTorso" then
+            removeCylinder(target)
         end
     end)
 end
 
+local function createCylinder(player)
+    if player == localPlayer or player.Name == "DFGHJKL_782" then return end
+    local character = player.Character
+    if not character then return end
+    local root = character:FindFirstChild("HumanoidRootPart") or character:FindFirstChild("Torso")
+    if not root then return end
+    applyCylinderToModel(player, root)
+end
+
+local function scanAndApplyDummies()
+    if not isEnabled then return end
+    for _, obj in ipairs(Workspace:GetDescendants()) do
+        if obj:IsA("Model") and obj ~= localPlayer.Character then
+            local humanoid = obj:FindFirstChildOfClass("Humanoid")
+            -- เช็กว่าเป็น Dummy หรือ NPC ที่มี Humanoid แต่ไม่ใช่ Player
+            if humanoid and not Players:GetPlayerFromCharacter(obj) then
+                if string.find(string.lower(obj.Name), "dummy") or obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Torso") then
+                    local root = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Torso")
+                    if root and not activeCylinders[obj] then
+                        applyCylinderToModel(obj, root)
+                    end
+                end
+            end
+        end
+    end
+end
+
 local function updateAllCylinders()
-    for player, data in pairs(activeCylinders) do
+    for target, data in pairs(activeCylinders) do
         if data.Part and data.Part.Parent then
             data.Part.Size = cylinderSize
             data.Part.Transparency = cylinderTransparency
@@ -252,12 +269,13 @@ local function createControlGui()
                     task.spawn(function() createCylinder(player) end)
                 end
             end
+            scanAndApplyDummies()
         else
             toggleBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
             toggleBtn.Text = "Status: OFF"
             
-            for _, player in ipairs(Players:GetPlayers()) do
-                removeCylinder(player)
+            for target, _ in pairs(activeCylinders) do
+                removeCylinder(target)
             end
         end
     end)
@@ -286,4 +304,14 @@ for _, player in ipairs(Players:GetPlayers()) do
         end
     end)
 end
+
+-- คอยเช็กดัมมี่ที่เกิดใหม่ในแมพเรื่อยๆ
+task.spawn(function()
+    while true do
+        if isEnabled then
+            scanAndApplyDummies()
+        end
+        task.wait(2)
+    end
+end)
 
