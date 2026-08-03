@@ -60,6 +60,21 @@
             backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); box-sizing: border-box;
         }
 
+        /* Category Filter Buttons */
+        .filter-container {
+            max-width: 750px; margin: 0 auto 20px auto; padding: 0 20px;
+            display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+        }
+        .filter-btn {
+            background: rgba(20, 20, 30, 0.8); border: 1px solid rgba(255,255,255,0.1);
+            color: #aaa; padding: 8px 16px; border-radius: 20px; font-size: 0.75rem;
+            cursor: pointer; transition: 0.3s; font-family: 'Prompt'; font-weight: 600;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            color: white; border-color: transparent; box-shadow: 0 0 15px rgba(100, 50, 255, 0.4);
+        }
+
         .container { max-width: 750px; margin: auto; padding: 0 20px; }
 
         .card {
@@ -134,7 +149,15 @@
 <div id="main-site-content">
     <div class="header">MERIDIAN</div>
     <div class="search-container">
-        <input type="text" id="searchInput" class="search-bar" placeholder="🔍 ค้นหาสคริปต์..." onkeyup="searchScripts()">
+        <input type="text" id="searchInput" class="search-bar" placeholder="🔍 ค้นหาสคริปต์..." onkeyup="filterScripts()">
+    </div>
+
+    <!-- Category Filter Bar -->
+    <div class="filter-container">
+        <button class="filter-btn active" onclick="setCategory('all', this)">ทั้งหมด</button>
+        <button class="filter-btn" onclick="setCategory('aim', this)">ล็อกเป้า / AIM</button>
+        <button class="filter-btn" onclick="setCategory('fun', this)">ฟัน & แฟชั่น</button>
+        <button class="filter-btn" onclick="setCategory('system', this)">ระบบและอื่นๆ</button>
     </div>
 
     <div class="container" style="text-align: center;">
@@ -143,17 +166,17 @@
 
         <div id="scriptList">
             
-            <div class="card theme-cinema script-item">
-                <div class="status-label"><span class="dot" style="background:var(--cinema);"></span> STATUS: ONLINE</div>
+            <div class="card theme-cinema script-item" data-category="system">
+                <div class="status-label"><span class="dot" style="background:var(--gold); animation:none;"></span> <span style="color:var(--gold)">STATUS: FIXING / MAINTENANCE</span></div>
                 <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🎥 [V8] CINEMA MASTER</h3>
                 <img src="https://i.postimg.cc/c1PH1bxY/IMG-20260428-233024.png" class="preview-img">
                 <p style="color:#aaa; font-size:0.8rem; text-align:left; margin:10px 0;">ที่สุดของสคริปต์กล้องบิน ปรับความเร็วได้ละเอียด 0.01 - 100 ปรับกราฟิก Ultra HD และซ่อนเมนูได้</p>
-                <div class="script-box" id="scriptCinema">loadstring(game:HttpGet("https://raw.githubusercontent.com/hfutposhdhehheh-source/NinjaStrikeHub/refs/heads/main/%5BV8%5DCinema_Master.lua"))()</div>
-                <button class="btn" onclick="copyScript('scriptCinema', this)">GET SCRIPT</button>
-                <div class="note-box" style="border-left-color: var(--cinema);"><div class="note-text"><strong>🎬 ข้อมูล:</strong> รองรับการบินสมูทด้วย Joystick ล่องหน ซ่อนเมนูถ่ายคลิปได้เนียน</div></div>
+                <div class="script-box" id="scriptCinema">สคริปต์นี้กำลังอยู่ในช่วงปรับปรุงและแก้ไขบัค</div>
+                <button class="btn btn-disabled">MAINTENANCE</button>
+                <div class="note-box" style="border-left-color: var(--gold);"><div class="note-text"><strong>⚠️ แจ้งเตือน:</strong> ระบบกล้องบินกำลังอยู่ในช่วงแก้ไขบัค กรุณารออัปเดตเร็วๆ นี้</div></div>
             </div>
 
-            <div class="card theme-ore script-item">
+            <div class="card theme-ore script-item" data-category="system">
                 <div class="status-label"><span class="dot" style="background:var(--ore);"></span> STATUS: STABLE</div>
                 <h3 style="margin:0; text-align:left; font-family:'Orbitron';">💎 GRAB ORE! V3</h3>
                 <img src="https://i.postimg.cc/FzM1Xx9j/IMG-20260418-182444.jpg" class="preview-img">
@@ -163,7 +186,7 @@
                 <div class="note-box" style="border-left-color: var(--ore);"><div class="note-text"><strong>⚠️ หมายเหตุ:</strong> Infinite Oxygen ยังใช้ไม่ได้ ส่วนอื่นใช้งานได้ 100%</div></div>
             </div>
 
-            <div class="card theme-music script-item">
+            <div class="card theme-music script-item" data-category="fun">
                 <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
                 <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🎵 DANCE ID HUB V4</h3>
                 <img src="https://cdn.phototourl.com/free/2026-04-23-3590fca9-d338-4478-95f6-7a0c83aba00b.jpg" class="preview-img">
@@ -173,7 +196,7 @@
                 <div class="note-box"><div class="note-text"><strong>🎼 ข้อมูล:</strong> กดชื่อเพลงเพื่อคัดลอก ID | ⚠️ บางไอดีอาจไม่มีเสียง</div></div>
             </div>
 
-            <div class="card theme-phantom script-item">
+            <div class="card theme-phantom script-item" data-category="fun">
                 <div class="status-label"><span class="dot" style="background:var(--phantom);"></span> STATUS: ONLINE</div>
                 <h3 style="margin:0; text-align:left; font-family:'Orbitron';">👻 PHANTOM (BODY MOD)</h3>
                 <img src="https://i.postimg.cc/wvB1Xvfb/IMG-20260418-182517.jpg" class="preview-img">
@@ -183,7 +206,7 @@
                 <div class="note-box" style="border-left-color: var(--phantom);"><div class="note-text"><strong>🌍 ข้อมูล:</strong> ใช้ได้ทุกแมพ รันใหม่อัตโนมัติเมื่อเกิดใหม่</div></div>
             </div>
 
-            <div class="card theme-v5 script-item">
+            <div class="card theme-v5 script-item" data-category="aim">
                 <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
                 <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🔥 V5.5 COMPACT THAI</h3>
                 <img src="https://i.postimg.cc/HLzJ852r/IMG-20260418-182535.jpg" class="preview-img">
@@ -192,7 +215,7 @@
                 <button class="btn" onclick="copyScript('scriptV5', this)">GET SCRIPT</button>
             </div>
 
-            <div class="card theme-v2 script-item">
+            <div class="card theme-v2 script-item" data-category="aim">
                 <div class="status-label"><span class="dot"></span> STATUS: STABLE</div>
                 <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🚨 ORBIT V2 POLICE</h3>
                 <img src="https://i.postimg.cc/JzbHmSHd/IMG-20260418-182554.jpg" class="preview-img">
@@ -201,7 +224,7 @@
                 <button class="btn" onclick="copyScript('scriptV2', this)">GET SCRIPT</button>
             </div>
 
-            <div class="card theme-pro script-item">
+            <div class="card theme-pro script-item" data-category="system">
                 <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
                 <h3 style="margin:0; text-align:left; font-family:'Orbitron';">⚡ Optimizer Pro</h3>
                 <img src="https://i.postimg.cc/654Gb8WX/IMG-20260418-182610.jpg" class="preview-img">
@@ -210,7 +233,7 @@
                 <button class="btn" onclick="copyScript('scriptPro', this)">GET SCRIPT</button>
             </div>
 
-            <div class="card theme-hitbox script-item">
+            <div class="card theme-hitbox script-item" data-category="aim">
                 <div class="status-label"><span class="dot" style="background:var(--danger); animation:none;"></span> <span style="color:var(--danger)">STATUS: PATCHED</span></div>
                 <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🎯 Hitbox Pro</h3>
                 <img src="https://i.postimg.cc/R0Lt12MZ/IMG-20260418-182626.jpg" class="preview-img">
@@ -219,7 +242,7 @@
                 <button class="btn btn-disabled">DISABLED</button>
             </div>
 
-            <div class="card theme-v3 script-item">
+            <div class="card theme-v3 script-item" data-category="system">
                 <div class="status-label"><span class="dot"></span> STATUS: ONLINE</div>
                 <h3 style="margin:0; text-align:left; font-family:'Orbitron';">🚀 V3 Ultimate</h3>
                 <img src="https://i.postimg.cc/9XJpHwHf/IMG-20260418-182644.jpg" class="preview-img">
@@ -235,6 +258,7 @@
 
 <script>
     const MY_KEY = "MERIDIAN_666";
+    let currentCategory = 'all';
 
     window.onload = function() {
         initParticles();
@@ -258,7 +282,7 @@
 
     function copyScript(id, btn) {
         const text = document.getElementById(id).innerText;
-        if (text.includes("ใช้งานไม่ได้")) return;
+        if (text.includes("ใช้งานไม่ได้") || text.includes("กำลังอยู่ในช่วงปรับปรุง")) return;
         
         navigator.clipboard.writeText(text);
         showToast("SCRIPT COPIED! ✅", "#00ff88");
@@ -275,13 +299,26 @@
         setTimeout(() => { toast.className = ""; }, 2500);
     }
 
-    function searchScripts() {
+    function setCategory(category, btn) {
+        currentCategory = category;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterScripts();
+    }
+
+    function filterScripts() {
         let input = document.getElementById('searchInput').value.toLowerCase();
         let cards = document.getElementsByClassName('script-item');
+        
         for (let i = 0; i < cards.length; i++) {
             let title = cards[i].querySelector('h3').innerText.toLowerCase();
             let desc = cards[i].querySelector('p').innerText.toLowerCase();
-            cards[i].style.display = (title.includes(input) || desc.includes(input)) ? "" : "none";
+            let category = cards[i].getAttribute('data-category');
+            
+            let matchesCategory = (currentCategory === 'all' || category === currentCategory);
+            let matchesSearch = (title.includes(input) || desc.includes(input));
+            
+            cards[i].style.display = (matchesCategory && matchesSearch) ? "" : "none";
         }
     }
 
