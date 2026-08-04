@@ -1,7 +1,7 @@
 -- ==============================================
 -- ⚠️ CREDIT PROTECTION
 -- ==============================================
-local SCRIPT_OWNER = "@im_new125eoxe"
+local SCRIPT_OWNER = "@meridian_tle"
 -- ==============================================
 
 local Players = game:GetService("Players")
