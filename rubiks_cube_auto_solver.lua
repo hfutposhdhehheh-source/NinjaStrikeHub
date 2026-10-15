@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------------------------
--- NEXUS MATRIX DRAGON EDITION // ULTIMATE HIGH-LEVEL SECURE KERNEL
+-- NEXUS MATRIX DRAGON EDITION // ULTIMATE HIGH-LEVEL SECURE KERNEL (RE-ENGINEERED)
 ----------------------------------------------------------------------------------------------------
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
@@ -16,14 +16,14 @@ if CoreGui:FindFirstChild("NexusMatrixDragonContainer") then
 end
 
 ----------------------------------------------------------------------------------------------------
--- SYSTEM CONFIGURATION & 5 ULTRA-STABLE SPEED PROFILES
+-- ระบบตั้งค่าความเร็วและโปรไฟล์ความเสถียร (5 ระดับ)
 ----------------------------------------------------------------------------------------------------
 local VelocityMatrixRegistry = {
-    [1] = {Identifier = "Tier I : Stable Core",   DelayDuration = 0.045,   PrecisionRate = "100.0%",  KernelRisk = "Zero"},
-    [2] = {Identifier = "Tier II : Velocity",     DelayDuration = 0.020,   PrecisionRate = "100.0%",  KernelRisk = "Minimal"},
-    [3] = {Identifier = "Tier III : Overclock",   DelayDuration = 0.008,   PrecisionRate = "100.0%",  KernelRisk = "Optimized"},
-    [4] = {Identifier = "Tier IV : Quantum Stream",DelayDuration = 0.003,  PrecisionRate = "99.9%",   KernelRisk = "Balanced"},
-    [5] = {Identifier = "Tier V : Singularity Max",DelayDuration = 0.001,  PrecisionRate = "99.8%",   KernelRisk = "Extreme"}
+    [1] = {Identifier = "ระดับ 1 : เสถียรปลอดภัยสูงสุด (Stable Core)", DelayDuration = 0.045, PrecisionRate = "100.0%", KernelRisk = "ไม่มีความเสี่ยง"},
+    [2] = {Identifier = "ระดับ 2 : ความเร็วมาตรฐาน (Velocity)", DelayDuration = 0.020, PrecisionRate = "100.0%", KernelRisk = "ต่ำมาก"},
+    [3] = {Identifier = "ระดับ 3 : เร่งเครื่องโอเวอร์คล็อก (Overclock)", DelayDuration = 0.008, PrecisionRate = "100.0%", KernelRisk = "ปานกลาง"},
+    [4] = {Identifier = "ระดับ 4 : ควอนตัมสตรีม (Quantum Stream)", DelayDuration = 0.003, PrecisionRate = "99.9%", KernelRisk = "สมดุลสูง"},
+    [5] = {Identifier = "ระดับ 5 : ขีดสุดความเร็วแสง (Singularity Max)", DelayDuration = 0.001, PrecisionRate = "99.8%", KernelRisk = "ระมัดระวัง"}
 }
 
 local activeProfilePointer = 1
@@ -31,6 +31,7 @@ local sequenceMemoryBuffer = ""
 local coreExecutionFlag = false
 local floatingWidgetActiveState = false
 local isInterfaceHiddenState = false
+local isBackgroundScannerActive = true -- เปิดระบบสแกนพื้นหลังตลอดเวลา
 
 ----------------------------------------------------------------------------------------------------
 -- GUI ROOT CONTAINER INITIALIZATION
@@ -42,42 +43,42 @@ RootContainerNode.IgnoreGuiInset = true
 RootContainerNode.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 ----------------------------------------------------------------------------------------------------
--- PRIMARY INTERFACE WINDOW (ADVANCED HACKER METRICS DESIGN)
+-- หน้าต่างหลัก (ดีไซน์ใหม่ ไฮเทค รองรับภาษาไทยสมบูรณ์)
 ----------------------------------------------------------------------------------------------------
 local PrimaryWindowFrame = Instance.new("Frame")
 PrimaryWindowFrame.Name = "MatrixPrimaryInterface"
 PrimaryWindowFrame.Parent = RootContainerNode
-PrimaryWindowFrame.BackgroundColor3 = Color3.fromRGB(6, 7, 10)
-PrimaryWindowFrame.BackgroundTransparency = 0.03
+PrimaryWindowFrame.BackgroundColor3 = Color3.fromRGB(8, 11, 16)
+PrimaryWindowFrame.BackgroundTransparency = 0.02
 PrimaryWindowFrame.Position = UDim2.new(0.1, 0, 0.15, 0)
-PrimaryWindowFrame.Size = UDim2.new(0, 360, 0, 460)
+PrimaryWindowFrame.Size = UDim2.new(0, 380, 0, 480)
 PrimaryWindowFrame.Active = true
 PrimaryWindowFrame.Draggable = true
 
 local WindowCornerRadius = Instance.new("UICorner")
-WindowCornerRadius.CornerRadius = UDim.new(0, 12)
+WindowCornerRadius.CornerRadius = UDim.new(0, 14)
 WindowCornerRadius.Parent = PrimaryWindowFrame
 
 local WindowBorderGlow = Instance.new("UIStroke")
 WindowBorderGlow.Color = Color3.fromRGB(20, 184, 166)
-WindowBorderGlow.Transparency = 0.3
-WindowBorderGlow.Thickness = 1.5
+WindowBorderGlow.Transparency = 0.25
+WindowBorderGlow.Thickness = 1.8
 WindowBorderGlow.Parent = PrimaryWindowFrame
 
--- Top Navigation / Header Bar
+-- แถบหัวข้อด้านบน
 local HeaderNavigationPanel = Instance.new("Frame")
 HeaderNavigationPanel.Name = "HeaderPanel"
 HeaderNavigationPanel.Parent = PrimaryWindowFrame
-HeaderNavigationPanel.BackgroundColor3 = Color3.fromRGB(10, 13, 18)
-HeaderNavigationPanel.Size = UDim2.new(1, 0, 0, 48)
+HeaderNavigationPanel.BackgroundColor3 = Color3.fromRGB(13, 17, 23)
+HeaderNavigationPanel.Size = UDim2.new(1, 0, 0, 50)
 
 local HeaderCornerFix = Instance.new("UICorner")
-HeaderCornerFix.CornerRadius = UDim.new(0, 12)
+HeaderCornerFix.CornerRadius = UDim.new(0, 14)
 HeaderCornerFix.Parent = HeaderNavigationPanel
 
 local HeaderBottomBlocker = Instance.new("Frame")
 HeaderBottomBlocker.Parent = HeaderNavigationPanel
-HeaderBottomBlocker.BackgroundColor3 = Color3.fromRGB(10, 13, 18)
+HeaderBottomBlocker.BackgroundColor3 = Color3.fromRGB(13, 17, 23)
 HeaderBottomBlocker.BorderSizePixel = 0
 HeaderBottomBlocker.Position = UDim2.new(0, 0, 0.7, 0)
 HeaderBottomBlocker.Size = UDim2.new(1, 0, 0.3, 0)
@@ -88,17 +89,17 @@ HeaderTitleLabel.BackgroundTransparency = 1
 HeaderTitleLabel.Position = UDim2.new(0, 18, 0, 0)
 HeaderTitleLabel.Size = UDim2.new(1, -70, 1, 0)
 HeaderTitleLabel.Font = Enum.Font.Code
-HeaderTitleLabel.Text = "NEXUS // DRAGON KERNEL v5.0"
+HeaderTitleLabel.Text = "NEXUS // ระบบแก้รูบิคอัตโนมัติ v5.2"
 HeaderTitleLabel.TextColor3 = Color3.fromRGB(45, 212, 191)
-HeaderTitleLabel.TextSize = 12
+HeaderTitleLabel.TextSize = 11
 HeaderTitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
--- ปุ่มซ่อนสคริปต์ (แปลงร่างเป็นมังกร)
+-- ปุ่มซ่อนหน้าต่าง (แปลงร่างเป็นมังกร 🐉)
 local HideInterfaceButton = Instance.new("TextButton")
 HideInterfaceButton.Parent = HeaderNavigationPanel
 HideInterfaceButton.BackgroundColor3 = Color3.fromRGB(20, 184, 166)
-HideInterfaceButton.Position = UDim2.new(1, -42, 0, 10)
-HideInterfaceButton.Size = UDim2.new(0, 28, 0, 28)
+HideInterfaceButton.Position = UDim2.new(1, -44, 0, 11)
+HideInterfaceButton.Size = UDim2.new(0, 30, 0, 28)
 HideInterfaceButton.Font = Enum.Font.Code
 HideInterfaceButton.Text = "🐉"
 HideInterfaceButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -108,33 +109,33 @@ local hideBtnCorner = Instance.new("UICorner")
 hideBtnCorner.CornerRadius = UDim.new(0, 6)
 hideBtnCorner.Parent = HideInterfaceButton
 
--- Main Scrolling Content Area
+-- พื้นที่เลื่อนเนื้อหาหลัก
 local MainScrollingArea = Instance.new("ScrollingFrame")
 MainScrollingArea.Name = "ScrollingContainer"
 MainScrollingArea.Parent = PrimaryWindowFrame
 MainScrollingArea.BackgroundTransparency = 1
 MainScrollingArea.Position = UDim2.new(0, 16, 0, 60)
 MainScrollingArea.Size = UDim2.new(1, -32, 1, -72)
-MainScrollingArea.CanvasSize = UDim2.new(0, 0, 0, 450)
+MainScrollingArea.CanvasSize = UDim2.new(0, 0, 0, 520)
 MainScrollingArea.ScrollBarThickness = 3
 MainScrollingArea.ScrollBarImageColor3 = Color3.fromRGB(20, 184, 166)
 
 local VerticalLayoutEngine = Instance.new("UIListLayout")
 VerticalLayoutEngine.Parent = MainScrollingArea
 VerticalLayoutEngine.SortOrder = Enum.SortOrder.LayoutOrder
-VerticalLayoutEngine.Padding = UDim.new(0, 14)
+VerticalLayoutEngine.Padding = UDim.new(0, 12)
 
 ----------------------------------------------------------------------------------------------------
--- UI BUILDER UTILITY FUNCTIONS
+-- ฟังก์ชันช่วยสร้างองค์ประกอบ UI (Builder Utilities)
 ----------------------------------------------------------------------------------------------------
 local function constructCategoryHeader(parentContainer, labelTextContent)
     local headerLabel = Instance.new("TextLabel")
     headerLabel.Parent = parentContainer
     headerLabel.BackgroundTransparency = 1
-    headerLabel.Size = UDim2.new(1, 0, 0, 16)
+    headerLabel.Size = UDim2.new(1, 0, 0, 18)
     headerLabel.Font = Enum.Font.Code
     headerLabel.Text = labelTextContent
-    headerLabel.TextColor3 = Color3.fromRGB(100, 116, 139)
+    headerLabel.TextColor3 = Color3.fromRGB(148, 163, 184)
     headerLabel.TextSize = 10
     headerLabel.TextXAlignment = Enum.TextXAlignment.Left
     return headerLabel
@@ -144,7 +145,7 @@ local function constructInteractiveButton(parentContainer, buttonTextContent, th
     local buttonInstance = Instance.new("TextButton")
     buttonInstance.Parent = parentContainer
     buttonInstance.BackgroundColor3 = themeColorCode
-    buttonInstance.Size = UDim2.new(1, 0, 0, 38)
+    buttonInstance.Size = UDim2.new(1, 0, 0, 40)
     buttonInstance.Font = Enum.Font.Code
     buttonInstance.Text = buttonTextContent
     buttonInstance.TextColor3 = Color3.fromRGB(241, 245, 249)
@@ -164,15 +165,15 @@ local function constructInteractiveButton(parentContainer, buttonTextContent, th
 end
 
 ----------------------------------------------------------------------------------------------------
--- COMPONENT RENDERING // SYSTEM METRICS SECTION
+-- ส่วนแสดงผลสถานะระบบ (Telemetry Status)
 ----------------------------------------------------------------------------------------------------
-constructCategoryHeader(MainScrollingArea, ">> SYSTEM TELEMETRY & AUTO-PARSER STATUS")
+constructCategoryHeader(MainScrollingArea, ">> สถานะระบบและการสแกน (System Telemetry)")
 local SystemTelemetryDisplayBox = Instance.new("TextLabel")
 SystemTelemetryDisplayBox.Parent = MainScrollingArea
-SystemTelemetryDisplayBox.BackgroundColor3 = Color3.fromRGB(11, 14, 20)
-SystemTelemetryDisplayBox.Size = UDim2.new(1, 0, 0, 40)
+SystemTelemetryDisplayBox.BackgroundColor3 = Color3.fromRGB(13, 17, 23)
+SystemTelemetryDisplayBox.Size = UDim2.new(1, 0, 0, 42)
 SystemTelemetryDisplayBox.Font = Enum.Font.Code
-SystemTelemetryDisplayBox.Text = "  [STATUS]: AUTO-PARSER ACTIVE // READY"
+SystemTelemetryDisplayBox.Text = "  [สถานะ]: พร้อมทำงาน (ระบบสแกนพื้นหลังเปิดอยู่)"
 SystemTelemetryDisplayBox.TextColor3 = Color3.fromRGB(52, 211, 153)
 SystemTelemetryDisplayBox.TextSize = 10
 SystemTelemetryDisplayBox.TextXAlignment = Enum.TextXAlignment.Left
@@ -187,17 +188,17 @@ telemetryStroke.Thickness = 1
 telemetryStroke.Parent = SystemTelemetryDisplayBox
 
 ----------------------------------------------------------------------------------------------------
--- COMPONENT RENDERING // VELOCITY PROFILE SECTION (5 TIERS)
+-- ส่วนควบคุมเลือกโปรไฟล์ความเร็ว (5 ระดับ)
 ----------------------------------------------------------------------------------------------------
-constructCategoryHeader(MainScrollingArea, ">> EXECUTION VELOCITY PROFILES (5 MODES)")
-local ModeSelectorTriggerButton = constructInteractiveButton(MainScrollingArea, "PROFILE: Tier I : Stable Core", Color3.fromRGB(17, 24, 39))
+constructCategoryHeader(MainScrollingArea, ">> เลือกความเร็วในการแก้รูบิค (Speed Profiles)")
+local ModeSelectorTriggerButton = constructInteractiveButton(MainScrollingArea, "โปรไฟล์: ระดับ 1 : เสถียรปลอดภัยสูงสุด", Color3.fromRGB(17, 24, 39))
 
 local ProfileDetailsDisplayBox = Instance.new("TextLabel")
 ProfileDetailsDisplayBox.Parent = MainScrollingArea
-ProfileDetailsDisplayBox.BackgroundColor3 = Color3.fromRGB(11, 14, 20)
+ProfileDetailsDisplayBox.BackgroundColor3 = Color3.fromRGB(13, 17, 23)
 ProfileDetailsDisplayBox.Size = UDim2.new(1, 0, 0, 45)
 ProfileDetailsDisplayBox.Font = Enum.Font.Code
-ProfileDetailsDisplayBox.Text = "  Delay: 0.04500s | Precision: 100.0% | Risk: Zero"
+ProfileDetailsDisplayBox.Text = "  หน่วงเวลา: 0.04500s | ความแม่นยำ: 100.0% | ความเสี่ยง: ไม่มี"
 ProfileDetailsDisplayBox.TextColor3 = Color3.fromRGB(203, 213, 225)
 ProfileDetailsDisplayBox.TextSize = 10
 ProfileDetailsDisplayBox.TextWrapped = true
@@ -214,15 +215,15 @@ detailsStroke.Thickness = 1
 detailsStroke.Parent = ProfileDetailsDisplayBox
 
 ----------------------------------------------------------------------------------------------------
--- COMPONENT RENDERING // ADVANCED AUTO TEXT MINER
+-- ช่องแสดงรหัสและข้อมูลที่สแกนได้ (Auto-Parser Display)
 ----------------------------------------------------------------------------------------------------
-constructCategoryHeader(MainScrollingArea, ">> DEEP MATRIX AUTO-PARSER REGISTRY")
+constructCategoryHeader(MainScrollingArea, ">> ช่องข้อมูลชุดคำสั่งที่สแกนได้ (Sequence Registry)")
 local SequenceInputField = Instance.new("TextBox")
 SequenceInputField.Parent = MainScrollingArea
-SequenceInputField.BackgroundColor3 = Color3.fromRGB(11, 14, 20)
-SequenceInputField.Size = UDim2.new(1, 0, 0, 44)
+SequenceInputField.BackgroundColor3 = Color3.fromRGB(13, 17, 23)
+SequenceInputField.Size = UDim2.new(1, 0, 0, 45)
 SequenceInputField.Font = Enum.Font.Code
-SequenceInputField.PlaceholderText = "Waiting for auto sequence parse..."
+SequenceInputField.PlaceholderText = "กำลังรอระบบสแกนชุดคำสั่งอัตโนมัติ..."
 SequenceInputField.Text = ""
 SequenceInputField.TextColor3 = Color3.fromRGB(56, 189, 248)
 SequenceInputField.TextSize = 11
@@ -239,23 +240,23 @@ inputStroke.Thickness = 1
 inputStroke.Parent = SequenceInputField
 
 ----------------------------------------------------------------------------------------------------
--- COMPONENT RENDERING // EXECUTION CONTROLS & WIDGET TOGGLE
+-- ปุ่มควบคุมการทำงานหลักและปุ่มลอย
 ----------------------------------------------------------------------------------------------------
-constructCategoryHeader(MainScrollingArea, ">> EXECUTION COMMAND ARSENAL")
-local InitializeEngineButton = constructInteractiveButton(MainScrollingArea, "ENGAGE SOLVER KERNEL ENGINE", Color3.fromRGB(13, 148, 136))
+constructCategoryHeader(MainScrollingArea, ">> คำสั่งควบคุมการทำงานหลัก (Execution Arsenal)")
+local InitializeEngineButton = constructInteractiveButton(MainScrollingArea, "▶ เริ่มต้นรันระบบแก้รูบิคอัตโนมัติ", Color3.fromRGB(13, 148, 136))
 
-constructCategoryHeader(MainScrollingArea, ">> FLOATING WIDGET MODULE")
-local ToggleFloatingInterfaceButton = constructInteractiveButton(MainScrollingArea, "DEPLOY FLOATING WIDGET", Color3.fromRGB(51, 65, 85))
+constructCategoryHeader(MainScrollingArea, ">> ปุ่มลอยด่วนบนหน้าจอ (Floating Widget)")
+local ToggleFloatingInterfaceButton = constructInteractiveButton(MainScrollingArea, "เปิดใช้งานปุ่มลอยด่วน (EXEC)", Color3.fromRGB(51, 65, 85))
 
 ----------------------------------------------------------------------------------------------------
--- SECONDARY SELECTOR MATRIX WINDOW (5 PROFILES MENU)
+-- หน้าต่างเลือกโปรไฟล์ความเร็วแบบป๊อปอัป (Selector Panel)
 ----------------------------------------------------------------------------------------------------
 local SecondarySelectorPanel = Instance.new("Frame")
 SecondarySelectorPanel.Name = "SecondarySelectorMatrix"
 SecondarySelectorPanel.Parent = RootContainerNode
-SecondarySelectorPanel.BackgroundColor3 = Color3.fromRGB(8, 10, 15)
-SecondarySelectorPanel.Position = UDim2.new(0.1, 370, 0.15, 0)
-SecondarySelectorPanel.Size = UDim2.new(0, 230, 0, 240)
+SecondarySelectorPanel.BackgroundColor3 = Color3.fromRGB(10, 14, 20)
+SecondarySelectorPanel.Position = UDim2.new(0.1, 390, 0.15, 0)
+SecondarySelectorPanel.Size = UDim2.new(0, 260, 0, 260)
 SecondarySelectorPanel.Visible = false
 SecondarySelectorPanel.Active = true
 SecondarySelectorPanel.Draggable = true
@@ -275,7 +276,7 @@ SelectorScrollingList.Parent = SecondarySelectorPanel
 SelectorScrollingList.BackgroundTransparency = 1
 SelectorScrollingList.Position = UDim2.new(0, 10, 0, 10)
 SelectorScrollingList.Size = UDim2.new(1, -20, 1, -20)
-SelectorScrollingList.CanvasSize = UDim2.new(0, 0, 0, 260)
+SelectorScrollingList.CanvasSize = UDim2.new(0, 0, 0, 280)
 SelectorScrollingList.ScrollBarThickness = 2
 
 local selectorLayout = Instance.new("UIListLayout")
@@ -287,8 +288,8 @@ for idx, profileData in ipairs(VelocityMatrixRegistry) do
     local profileSelectionButton = constructInteractiveButton(SelectorScrollingList, profileData.Identifier, Color3.fromRGB(17, 24, 39))
     profileSelectionButton.MouseButton1Click:Connect(function()
         activeProfilePointer = idx
-        ModeSelectorTriggerButton.Text = "PROFILE: " .. profileData.Identifier
-        ProfileDetailsDisplayBox.Text = string.format("  Delay: %.5fs | Precision: %s | Risk: %s", profileData.DelayDuration, profileData.PrecisionRate, profileData.KernelRisk)
+        ModeSelectorTriggerButton.Text = "โปรไฟล์: " .. profileData.Identifier
+        ProfileDetailsDisplayBox.Text = string.format("  หน่วงเวลา: %.5fs | ความแม่นยำ: %s | ความเสี่ยง: %s", profileData.DelayDuration, profileData.PrecisionRate, profileData.KernelRisk)
         SecondarySelectorPanel.Visible = false
     end)
 end
@@ -298,14 +299,14 @@ ModeSelectorTriggerButton.MouseButton1Click:Connect(function()
 end)
 
 ----------------------------------------------------------------------------------------------------
--- FLOATING WIDGET (สี่เหลี่ยมเล็กๆ ลากย้ายได้อิสระ)
+-- ปุ่มลอยขนาดเล็กสำหรับกดสั่งงานด่วน (Floating Widget)
 ----------------------------------------------------------------------------------------------------
 local SmallSquareFloatingWidget = Instance.new("TextButton")
 SmallSquareFloatingWidget.Name = "NexusSquareFloatingWidget"
 SmallSquareFloatingWidget.Parent = RootContainerNode
 SmallSquareFloatingWidget.BackgroundColor3 = Color3.fromRGB(13, 148, 136)
 SmallSquareFloatingWidget.Position = UDim2.new(0.85, 0, 0.4, 0)
-SmallSquareFloatingWidget.Size = UDim2.new(0, 50, 0, 50)
+SmallSquareFloatingWidget.Size = UDim2.new(0, 55, 0, 55)
 SmallSquareFloatingWidget.Font = Enum.Font.Code
 SmallSquareFloatingWidget.Text = "EXEC"
 SmallSquareFloatingWidget.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -315,7 +316,7 @@ SmallSquareFloatingWidget.Active = true
 SmallSquareFloatingWidget.Draggable = true
 
 local widgetCorner = Instance.new("UICorner")
-widgetCorner.CornerRadius = UDim.new(0, 8)
+widgetCorner.CornerRadius = UDim.new(0, 10)
 widgetCorner.Parent = SmallSquareFloatingWidget
 
 local widgetStroke = Instance.new("UIStroke")
@@ -328,21 +329,21 @@ ToggleFloatingInterfaceButton.MouseButton1Click:Connect(function()
     floatingWidgetActiveState = not floatingWidgetActiveState
     SmallSquareFloatingWidget.Visible = floatingWidgetActiveState
     if floatingWidgetActiveState then
-        ToggleFloatingInterfaceButton.Text = "TERMINATE FLOATING WIDGET"
+        ToggleFloatingInterfaceButton.Text = "ปิดการใช้งานปุ่มลอย"
         ToggleFloatingInterfaceButton.BackgroundColor3 = Color3.fromRGB(153, 27, 27)
     else
-        ToggleFloatingInterfaceButton.Text = "DEPLOY FLOATING WIDGET"
+        ToggleFloatingInterfaceButton.Text = "เปิดใช้งานปุ่มลอยด่วน (EXEC)"
         ToggleFloatingInterfaceButton.BackgroundColor3 = Color3.fromRGB(51, 65, 85)
     end
 end)
 
 ----------------------------------------------------------------------------------------------------
--- DRAGON GHOST MODE (ซ่อน UI แล้วแปลงร่างเป็นมังกรลอยได้ คลิกเปิดกลับมาได้)
+-- โหมดซ่อนตัวละครหน้าต่าง (Dragon Ghost Mode - แปลงร่างเป็นมังกรซ่อน UI)
 ----------------------------------------------------------------------------------------------------
 local DragonGhostWidget = Instance.new("TextButton")
 DragonGhostWidget.Name = "DragonGhostWidget"
 DragonGhostWidget.Parent = RootContainerNode
-DragonGhostWidget.BackgroundColor3 = Color3.fromRGB(15, 23, 42)
+DragonGhostWidget.BackgroundColor3 = Color3.fromRGB(13, 17, 23)
 DragonGhostWidget.Position = UDim2.new(0.05, 0, 0.15, 0)
 DragonGhostWidget.Size = UDim2.new(0, 50, 0, 50)
 DragonGhostWidget.Font = Enum.Font.Code
@@ -353,7 +354,7 @@ DragonGhostWidget.Active = true
 DragonGhostWidget.Draggable = true
 
 local dragonCorner = Instance.new("UICorner")
-dragonCorner.CornerRadius = UDim.new(1, 0) -- วงกลมมังกรสวยงาม
+dragonCorner.CornerRadius = UDim.new(1, 0)
 dragonCorner.Parent = DragonGhostWidget
 
 local dragonStroke = Instance.new("UIStroke")
@@ -375,7 +376,7 @@ DragonGhostWidget.MouseButton1Click:Connect(function()
 end)
 
 ----------------------------------------------------------------------------------------------------
--- ADVANCED REFACTORED DEEP AUTO-PARSER ENGINE (100% ACCURACY & HIGH SPEED)
+-- ระบบตรวจสอบความแม่นยำข้อความและบายพาสขั้นสูง (Advanced Text Validation & Anti-Bypass Engine)
 ----------------------------------------------------------------------------------------------------
 local function executeAdvancedDiagnosticParsing()
     local targetInterface = LocalPlayer.PlayerGui:FindFirstChild("MatchUI")
@@ -427,11 +428,11 @@ local function verifySequenceIntegrityTriplePass()
     local passAlpha = executeAdvancedDiagnosticParsing()
     if not passAlpha then return nil end
     
-    task.wait(0.005)
+    task.wait(0.003)
     local passBeta = executeAdvancedDiagnosticParsing()
     if not passBeta or passAlpha ~= passBeta then return nil end
     
-    task.wait(0.005)
+    task.wait(0.003)
     local passGamma = executeAdvancedDiagnosticParsing()
     if not passGamma or passBeta ~= passGamma then return nil end
     
@@ -439,14 +440,14 @@ local function verifySequenceIntegrityTriplePass()
 end
 
 ----------------------------------------------------------------------------------------------------
--- STABLE ENGINE STREAM EXECUTION (FIXED MODES 3-5 ZERO-BUG BUFFER)
+-- ระบบสตรีมการส่งคำสั่งเสถียรภาพสูง (Stable Execution Stream & Zero-Bug Buffer)
 ----------------------------------------------------------------------------------------------------
 local function dispatchSolverExecutionStream(sequencePayload)
     if coreExecutionFlag or not sequencePayload or sequencePayload == "" then return end
     coreExecutionFlag = true
     
     local activeProfile = VelocityMatrixRegistry[activeProfilePointer]
-    SystemTelemetryDisplayBox.Text = "  [STATUS]: EXECUTING STREAM [" .. activeProfile.Identifier .. "]"
+    SystemTelemetryDisplayBox.Text = "  [สถานะ]: กำลังประมวลผล [" .. activeProfile.Identifier .. "]"
     SystemTelemetryDisplayBox.TextColor3 = Color3.fromRGB(56, 189, 248)
     
     task.spawn(function()
@@ -461,13 +462,13 @@ local function dispatchSolverExecutionStream(sequencePayload)
                     task.wait(activeProfile.DelayDuration)
                 end
             end)
-            -- Micro-Yield Buffer Protection (ป้องกันบัคในโหมด 3-5)
-            if idx % 8 == 0 then
+            -- ระบบหน่วงจังหวะความปลอดภัยป้องกันอาการแลค (Micro-Yield Buffer)
+            if idx % 6 == 0 then
                 task.wait(0.001)
             end
         end
         
-        SystemTelemetryDisplayBox.Text = "  [STATUS]: STREAM COMPLETE [100% SECURE]"
+        SystemTelemetryDisplayBox.Text = "  [สถานะ]: แก้รูบิคสำเร็จ 100% ปลอดภัย"
         SystemTelemetryDisplayBox.TextColor3 = Color3.fromRGB(52, 211, 153)
         coreExecutionFlag = false
     end)
@@ -487,19 +488,19 @@ local function processExecutionTriggerRoutine()
 end
 
 ----------------------------------------------------------------------------------------------------
--- BACKGROUND AUTO-PARSER LOOP (เรียลไทม์อัตโนมัติ แม่นยำ 100%)
+-- BACKGROUND AUTO-PARSER LOOP (สแกนต่อเนื่องตลอดเวลา แม้จะปิด UI หรือซ่อนหน้าต่างแล้ว)
 ----------------------------------------------------------------------------------------------------
 task.spawn(function()
     local lastRegisteredSequence = ""
-    while task.wait(0.15) do
-        if not coreExecutionFlag and not isInterfaceHiddenState then
+    while task.wait(0.12) do
+        if isBackgroundScannerActive and not coreExecutionFlag then
             pcall(function()
                 local parsedTokenResult = verifySequenceIntegrityTriplePass()
                 if parsedTokenResult and parsedTokenResult ~= lastRegisteredSequence then
                     lastRegisteredSequence = parsedTokenResult
                     sequenceMemoryBuffer = parsedTokenResult
                     SequenceInputField.Text = sequenceMemoryBuffer
-                    SystemTelemetryDisplayBox.Text = "  [STATUS]: AUTO-PARSED [" .. #sequenceMemoryBuffer .. " NODES]"
+                    SystemTelemetryDisplayBox.Text = "  [สถานะ]: สแกนพบกระดานใหม่ (" .. #sequenceMemoryBuffer + 0 .. " โหนด)"
                     SystemTelemetryDisplayBox.TextColor3 = Color3.fromRGB(52, 211, 153)
                 end
             end)
