@@ -1285,7 +1285,7 @@ RunService.RenderStepped:Connect(function()
                         hl.OutlineColor = color
                         hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
                         hl.Parent = char
-                    elseif char:FindFirstChild("RoleESP"] and not espBox then
+                    elseif char:FindFirstChild("RoleESP") and not espBox then
                         char.RoleESP:Destroy()
                     elseif char:FindFirstChild("RoleESP") then
                         char.RoleESP.OutlineColor = color
