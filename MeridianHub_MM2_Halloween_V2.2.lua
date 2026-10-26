@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------------------------
--- 🎃 MERIDIAN HUB // HALLOWEEN ULTIMATE EDITION (V2.2 - ULTRA-STABLE FINAL RELEASE) 👻
+-- 🎃 MERIDIAN HUB // HALLOWEEN ULTIMATE EDITION (V2.6 - FINAL COMPLETE EDITION) 👻
 ----------------------------------------------------------------------------------------------------
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
@@ -92,7 +92,7 @@ local function triggerHalloweenToast(messageTitle, messageBody, notificationType
         titleLabel.Position = UDim2.new(0, 12, 0, 8)
         titleLabel.Size = UDim2.new(1, -20, 0, 18)
         titleLabel.Font = Enum.Font.Code
-        titleLabel.Text = "🎃 " .. messageTitle
+        titleLabel.Text = "🎃 " .. tostring(messageTitle or "Notification")
         titleLabel.TextColor3 = accentColor
         titleLabel.TextSize = 11
         titleLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -104,7 +104,7 @@ local function triggerHalloweenToast(messageTitle, messageBody, notificationType
         bodyLabel.Position = UDim2.new(0, 12, 0, 26)
         bodyLabel.Size = UDim2.new(1, -20, 0, 20)
         bodyLabel.Font = Enum.Font.Code
-        bodyLabel.Text = messageBody
+        bodyLabel.Text = tostring(messageBody or "")
         bodyLabel.TextColor3 = Color3.fromRGB(216, 180, 254)
         bodyLabel.TextSize = 10
         bodyLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -347,6 +347,7 @@ local L = {
         espInnocent = "👤 มองผู้เล่น (Innocent)",
         espMurder = "🔪 มองคนฆ่า (Murderer)",
         espSheriff = "🔫 มองคนยิง (Sheriff/Gun)",
+        espGunDrop = "🎯 มองปืนตกบนพื้น (GunDrop ESP)",
         espTracer = "📈 เส้นลากเป้า ESP (Tracer)",
         espBox = "📦 บล็อกมอง ESP (Bounding Box)",
         -- นายอำเภอ
@@ -378,11 +379,11 @@ local L = {
         farmSecHead = ">> 🛡️ ระบบป้องกันความปลอดภัย",
         farmAntiAfk = "กันโดนเตะ (Anti-AFK)",
         -- อัพเดท
-        upHead = ">> 📝 บันทึกการอัพเดทเวอร์ชันล่าสุด (V2.2 Final)",
-        up1Title = "🎃 ระบบ Dual Language & Loading",
-        up1Desc = "เพิ่มหน้าโหลด 5 วินาที พร้อมระบบเลือกภาษาไทย/อังกฤษสมบูรณ์ 100%",
-        up2Title = "👁️ Advanced ESP & Floating UI",
-        up2Desc = "เพิ่มระบบมองแยกบทบาท, เส้น Tracer, ปุ่มลอยออโต้ยิงทะลุกำแพง และปุ่มเปิด UI ค่ายแบบวิบวับ",
+        upHead = ">> 📝 บันทึกการอัพเดทเวอร์ชันล่าสุด (V2.6)",
+        up1Title = "🎃 เพิ่มฟังก์ชันมองปืนตก (GunDrop ESP)",
+        up1Desc = "เพิ่มระบบส่องหาปืนที่นายอำเภอทำตกบนพื้น พร้อมป้ายชื่อบอกพิกัดชัดเจน",
+        up2Title = "👁️ Optimized ESP & UI Flow",
+        up2Desc = "ปรับปรุงระบบเปิด/ปิดปุ่มลอยอัจฉริยะ และแก้วิธีลบเส้น Tracer ไม่ให้ค้างหน้าจอ",
         up3Title = "🛡️ Anti-Void & Stability Fix",
         up3Desc = "เพิ่มระบบกันโปรดีดออกนอกโลก ปรับปรุงลูปไม่ให้แย่งซีนกัน ทำงานเสถียรไร้บัค",
         -- วิธีใช้งาน
@@ -424,6 +425,7 @@ local L = {
         espInnocent = "👤 Show Innocents",
         espMurder = "🔪 Show Murderer",
         espSheriff = "🔫 Show Sheriff/Gun",
+        espGunDrop = "🎯 Show Dropped Gun (GunDrop ESP)",
         espTracer = "📈 ESP Tracer Lines",
         espBox = "📦 ESP Bounding Box",
         -- Sheriff
@@ -455,12 +457,12 @@ local L = {
         farmSecHead = ">> 🛡️ Security Systems",
         farmAntiAfk = "Anti-AFK",
         -- Update
-        upHead = ">> 📝 Latest Update Logs (V2.2 Final)",
-        up1Title = "🎃 Dual Language & Loading Screen",
-        up1Desc = "Added 5s loading screen and full Thai/English language selection.",
-        up2Title = "👁️ Advanced ESP & Floating Buttons",
-        up2Desc = "Added role-based ESP, Tracer lines, and glowing floating buttons.",
-        up3Title = "🛡️ Anti-Void & Loop Stability",
+        upHead = ">> 📝 Latest Update Logs (V2.6)",
+        up1Title = "🎃 Added GunDrop ESP",
+        up1Desc = "Added dropped gun tracking system with clear 3D indicator tags.",
+        up2Title = "👁️ Optimized ESP & UI Flow",
+        up2Desc = "Optimized floating toggle button visibility and fixed Tracer cleanup bugs.",
+        up3Title = "🛡️ Anti-Void & Stability Fix",
         up3Desc = "Added Anti-Fling protection and optimized loops for zero conflicts.",
         -- Guide
         guHead = ">> 📖 Basic Script User Guide",
@@ -643,7 +645,7 @@ TabMenuContainer.BackgroundTransparency = 1
 TabMenuContainer.Position = UDim2.new(0, 10, 0, 88)
 TabMenuContainer.Size = UDim2.new(1, -20, 1, -98)
 TabMenuContainer.CanvasSize = UDim2.new(0, 0, 0, 320)
-TabMenuContainer.ScrollBarThickness = 2
+TabMenuContainer.ScrollBarThickness = 3
 TabMenuContainer.ZIndex = 7
 
 local tabLayout = Instance.new("UIListLayout")
@@ -687,7 +689,7 @@ local function createTabContent(tabName)
     menuBtn.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
     menuBtn.Size = UDim2.new(1, 0, 0, 32)
     menuBtn.Font = Enum.Font.Code
-    menuBtn.Text = "  👻 " .. tabName
+    menuBtn.Text = "  👻 " .. tostring(tabName)
     menuBtn.TextColor3 = Color3.fromRGB(216, 180, 254)
     menuBtn.TextSize = 10
     menuBtn.TextXAlignment = Enum.TextXAlignment.Left
@@ -718,7 +720,7 @@ local function addHeader(parent, text)
     lbl.BackgroundTransparency = 1
     lbl.Size = UDim2.new(1, 0, 0, 16)
     lbl.Font = Enum.Font.Code
-    lbl.Text = text
+    lbl.Text = tostring(text or "")
     lbl.TextColor3 = Color3.fromRGB(168, 85, 247)
     lbl.TextSize = 10
     lbl.TextXAlignment = Enum.TextXAlignment.Left
@@ -746,7 +748,7 @@ local function addParagraph(parent, title, desc)
     tLbl.Position = UDim2.new(0, 10, 0, 4)
     tLbl.Size = UDim2.new(1, -20, 0, 16)
     tLbl.Font = Enum.Font.Code
-    tLbl.Text = title
+    tLbl.Text = tostring(title or "")
     tLbl.TextColor3 = Color3.fromRGB(255, 140, 0)
     tLbl.TextSize = 10
     tLbl.TextXAlignment = Enum.TextXAlignment.Left
@@ -758,7 +760,7 @@ local function addParagraph(parent, title, desc)
     dLbl.Position = UDim2.new(0, 10, 0, 20)
     dLbl.Size = UDim2.new(1, -20, 0, 22)
     dLbl.Font = Enum.Font.Code
-    dLbl.Text = desc
+    dLbl.Text = tostring(desc or "")
     dLbl.TextColor3 = Color3.fromRGB(216, 180, 254)
     dLbl.TextSize = 9
     dLbl.TextXAlignment = Enum.TextXAlignment.Left
@@ -771,7 +773,7 @@ local function addButton(parent, text, callback)
     btn.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
     btn.Size = UDim2.new(1, 0, 0, 36)
     btn.Font = Enum.Font.Code
-    btn.Text = "  " .. text
+    btn.Text = "  " .. tostring(text or "")
     btn.TextColor3 = Color3.fromRGB(216, 180, 254)
     btn.TextSize = 10
     btn.TextXAlignment = Enum.TextXAlignment.Left
@@ -784,7 +786,9 @@ local function addButton(parent, text, callback)
     stroke.Transparency = 0.4
     stroke.Parent = btn
 
-    btn.MouseButton1Click:Connect(function() callback(btn) end)
+    btn.MouseButton1Click:Connect(function() 
+        if callback then callback(btn) end 
+    end)
     return btn
 end
 
@@ -794,7 +798,7 @@ local function addToggleButton(parent, text, defaultState, callback)
     btn.BackgroundColor3 = defaultState and Color3.fromRGB(255, 140, 0) or Color3.fromRGB(25, 16, 38)
     btn.Size = UDim2.new(1, 0, 0, 36)
     btn.Font = Enum.Font.Code
-    btn.Text = defaultState and ("  [ เปิด ] " .. text) or ("  [ ปิด ] " .. text)
+    btn.Text = defaultState and ("  [ เปิด ] " .. tostring(text or "")) or ("  [ ปิด ] " .. tostring(text or ""))
     btn.TextColor3 = defaultState and Color3.fromRGB(15, 10, 20) or Color3.fromRGB(216, 180, 254)
     btn.TextSize = 10
     btn.TextXAlignment = Enum.TextXAlignment.Left
@@ -806,14 +810,14 @@ local function addToggleButton(parent, text, defaultState, callback)
         state = not state
         if state then
             btn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
-            btn.Text = "  [ เปิด ] " .. text
+            btn.Text = "  [ เปิด ] " .. tostring(text or "")
             btn.TextColor3 = Color3.fromRGB(15, 10, 20)
         else
             btn.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
-            btn.Text = "  [ ปิด ] " .. text
+            btn.Text = "  [ ปิด ] " .. tostring(text or "")
             btn.TextColor3 = Color3.fromRGB(216, 180, 254)
         end
-        callback(state)
+        if callback then callback(state) end
     end)
     return btn
 end
@@ -831,7 +835,7 @@ local function addToggleWithInput(parent, text, defaultVal, callback)
     toggleBtn.BackgroundTransparency = 1
     toggleBtn.Size = UDim2.new(1, -70, 1, 0)
     toggleBtn.Font = Enum.Font.Code
-    toggleBtn.Text = "  [ ปิด ] " .. text
+    toggleBtn.Text = "  [ ปิด ] " .. tostring(text or "")
     toggleBtn.TextColor3 = Color3.fromRGB(216, 180, 254)
     toggleBtn.TextSize = 10
     toggleBtn.TextXAlignment = Enum.TextXAlignment.Left
@@ -843,7 +847,7 @@ local function addToggleWithInput(parent, text, defaultVal, callback)
     inputBox.Size = UDim2.new(0, 55, 0, 26)
     inputBox.Position = UDim2.new(1, -62, 0.5, -13)
     inputBox.Font = Enum.Font.Code
-    inputBox.Text = tostring(defaultVal)
+    inputBox.Text = tostring(defaultVal or "")
     inputBox.TextColor3 = Color3.fromRGB(255, 140, 0)
     inputBox.TextSize = 11
     inputBox.ZIndex = 7
@@ -855,29 +859,29 @@ local function addToggleWithInput(parent, text, defaultVal, callback)
     boxStroke.Parent = inputBox
 
     local activeState = false
-    local currentNum = defaultVal
+    local currentNum = defaultVal or 0
 
     toggleBtn.MouseButton1Click:Connect(function()
         activeState = not activeState
         if activeState then
             frame.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
-            toggleBtn.Text = "  [ เปิด ] " .. text
+            toggleBtn.Text = "  [ เปิด ] " .. tostring(text or "")
             toggleBtn.TextColor3 = Color3.fromRGB(15, 10, 20)
             inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
         else
             frame.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
-            toggleBtn.Text = "  [ ปิด ] " .. text
+            toggleBtn.Text = "  [ ปิด ] " .. tostring(text or "")
             toggleBtn.TextColor3 = Color3.fromRGB(216, 180, 254)
             inputBox.TextColor3 = Color3.fromRGB(255, 140, 0)
         end
-        callback(activeState, currentNum)
+        if callback then callback(activeState, currentNum) end
     end)
 
     inputBox.FocusLost:Connect(function()
         local val = tonumber(inputBox.Text)
         if val then
             currentNum = val
-            if activeState then callback(activeState, currentNum) end
+            if activeState and callback then callback(activeState, currentNum) end
             triggerHalloweenToast("SUCCESS", "Updated value to " .. tostring(currentNum), "SUCCESS")
         else
             inputBox.Text = tostring(currentNum)
@@ -899,7 +903,7 @@ local function addSlider(parent, title, minVal, maxVal, defaultVal, callback)
     lbl.Position = UDim2.new(0, 10, 0, 6)
     lbl.Size = UDim2.new(1, -20, 0, 16)
     lbl.Font = Enum.Font.Code
-    lbl.Text = string.format("  %s: [%d]", title, defaultVal)
+    lbl.Text = string.format("  %s: [%d]", tostring(title or ""), defaultVal or 0)
     lbl.TextColor3 = Color3.fromRGB(216, 180, 254)
     lbl.TextSize = 10
     lbl.TextXAlignment = Enum.TextXAlignment.Left
@@ -911,7 +915,7 @@ local function addSlider(parent, title, minVal, maxVal, defaultVal, callback)
     inputBox.Size = UDim2.new(0, 65, 0, 22)
     inputBox.Position = UDim2.new(1, -72, 0, 21)
     inputBox.Font = Enum.Font.Code
-    inputBox.Text = tostring(defaultVal)
+    inputBox.Text = tostring(defaultVal or 0)
     inputBox.TextColor3 = Color3.fromRGB(255, 140, 0)
     inputBox.TextSize = 10
     inputBox.ZIndex = 7
@@ -922,8 +926,8 @@ local function addSlider(parent, title, minVal, maxVal, defaultVal, callback)
         if val then
             val = math.clamp(val, minVal, maxVal)
             inputBox.Text = tostring(val)
-            lbl.Text = string.format("  %s: [%d]", title, val)
-            callback(val)
+            lbl.Text = string.format("  %s: [%d]", tostring(title or ""), val)
+            if callback then callback(val) end
         else
             inputBox.Text = tostring(defaultVal)
         end
@@ -943,29 +947,30 @@ local function addDropdown(parent, title, options, defaultVal, callback)
     btn.BackgroundTransparency = 1
     btn.Size = UDim2.new(1, 0, 1, 0)
     btn.Font = Enum.Font.Code
-    btn.Text = string.format("  %s: < %s >", title, defaultVal)
+    btn.Text = string.format("  %s: < %s >", tostring(title or ""), tostring(defaultVal or "None"))
     btn.TextColor3 = Color3.fromRGB(216, 180, 254)
     btn.TextSize = 10
     btn.TextXAlignment = Enum.TextXAlignment.Left
     btn.ZIndex = 7
 
     local currentIdx = 1
+    options = options or {}
     for i, opt in ipairs(options) do
         if opt == defaultVal then currentIdx = i break end
     end
 
     local dropdownObj = {}
     function dropdownObj:Refresh(newOptions)
-        options = newOptions
+        options = newOptions or {}
         if #options > 0 then
             currentIdx = math.clamp(currentIdx, 1, #options)
             local selected = options[currentIdx]
-            btn.Text = string.format("  %s: < %s >", title, selected)
-            callback(selected)
+            btn.Text = string.format("  %s: < %s >", tostring(title or ""), tostring(selected))
+            if callback then callback(selected) end
         else
             currentIdx = 1
-            btn.Text = string.format("  %s: < None >", title)
-            callback(nil)
+            btn.Text = string.format("  %s: < None >", tostring(title or ""))
+            if callback then callback(nil) end
         end
     end
 
@@ -974,20 +979,21 @@ local function addDropdown(parent, title, options, defaultVal, callback)
         currentIdx = currentIdx + 1
         if currentIdx > #options then currentIdx = 1 end
         local selected = options[currentIdx]
-        btn.Text = string.format("  %s: < %s >", title, selected)
-        callback(selected)
+        btn.Text = string.format("  %s: < %s >", tostring(title or ""), tostring(selected))
+        if callback then callback(selected) end
     end)
 
     return dropdownObj
 end
 
 local function addFloatingToggle(parent, text, defaultPos, themeColor, borderColor, callback)
+    local safeText = tostring(text or "Button")
     local btn = Instance.new("TextButton")
     btn.Parent = parent
     btn.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
     btn.Size = UDim2.new(1, 0, 0, 36)
     btn.Font = Enum.Font.Code
-    btn.Text = "  [ ปิด ] " .. text
+    btn.Text = "  [ ปิด ] " .. safeText
     btn.TextColor3 = Color3.fromRGB(216, 180, 254)
     btn.TextSize = 10
     btn.TextXAlignment = Enum.TextXAlignment.Left
@@ -1007,13 +1013,13 @@ local function addFloatingToggle(parent, text, defaultPos, themeColor, borderCol
     local function createFloatBtn()
         removeFloatBtn()
         local fBtn = Instance.new("TextButton")
-        fBtn.Name = "Float_" .. text
+        fBtn.Name = "Float_" .. safeText
         fBtn.Parent = FloatGui
         fBtn.BackgroundColor3 = Color3.fromRGB(18, 10, 28)
         fBtn.Size = UDim2.new(0, 145, 0, 48)
-        fBtn.Position = defaultPos
+        fBtn.Position = defaultPos or UDim2.new(0.05, 0, 0.2, 0)
         fBtn.Font = Enum.Font.Code
-        fBtn.Text = text
+        fBtn.Text = safeText
         fBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
         fBtn.TextSize = 12
         fBtn.Active = true
@@ -1025,7 +1031,7 @@ local function addFloatingToggle(parent, text, defaultPos, themeColor, borderCol
         fCorner.Parent = fBtn
 
         local stroke = Instance.new("UIStroke")
-        stroke.Color = borderColor
+        stroke.Color = borderColor or Color3.fromRGB(255, 140, 0)
         stroke.Thickness = 2
         stroke.Transparency = 0.1
         stroke.Parent = fBtn
@@ -1033,36 +1039,38 @@ local function addFloatingToggle(parent, text, defaultPos, themeColor, borderCol
         local innerGlow = Instance.new("Frame")
         innerGlow.Parent = fBtn
         innerGlow.BackgroundTransparency = 0.85
-        innerGlow.BackgroundColor3 = themeColor
+        innerGlow.BackgroundColor3 = themeColor or Color3.fromRGB(255, 140, 0)
         innerGlow.Size = UDim2.new(1, 0, 1, 0)
         innerGlow.ZIndex = 99
         Instance.new("UICorner", innerGlow).CornerRadius = UDim.new(0, 12)
 
-        fBtn.MouseButton1Click:Connect(function() callback(fBtn) end)
+        fBtn.MouseButton1Click:Connect(function() 
+            if callback then callback(fBtn) end 
+        end)
         floatingButtonInstance = fBtn
     end
 
     btn.MouseButton1Click:Connect(function()
         activeState = not activeState
         if activeState then
-            btn.BackgroundColor3 = themeColor
-            btn.Text = "  [ เปิด ] " .. text
+            btn.BackgroundColor3 = themeColor or Color3.fromRGB(255, 140, 0)
+            btn.Text = "  [ เปิด ] " .. safeText
             btn.TextColor3 = Color3.fromRGB(15, 10, 20)
             createFloatBtn()
-            triggerHalloweenToast("SUCCESS", "Spawned floating button [" .. text .. "]", "SUCCESS")
+            triggerHalloweenToast("SUCCESS", "Spawned floating button [" .. safeText .. "]", "SUCCESS")
         else
             btn.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
-            btn.Text = "  [ ปิด ] " .. text
+            btn.Text = "  [ ปิด ] " .. safeText
             btn.TextColor3 = Color3.fromRGB(216, 180, 254)
             removeFloatBtn()
-            triggerHalloweenToast("WARNING", "Removed floating button [" .. text .. "]", "WARNING")
+            triggerHalloweenToast("WARNING", "Removed floating button [" .. safeText .. "]", "WARNING")
         end
     end)
     return btn
 end
 
 ----------------------------------------------------------------------------------------------------
--- [9] สร้างเนื้อหาแต่ละแท็บ
+-- [9] สร้างเนื้อหาแต่ละแท็บ (ครบทั้ง 8 หมวดหมู่)
 ----------------------------------------------------------------------------------------------------
 
 -- 1. เมนูหลัก
@@ -1205,19 +1213,21 @@ addToggleButton(tabMain, T.mFpsBoost, false, function(state)
 end)
 
 
--- 2. มองผู้เล่น (Role ESP)
+-- 2. มองผู้เล่น (Role ESP & GunDrop ESP)
 local tabESP = createTabContent(T.tabESP)
 addHeader(tabESP, T.espHead)
 
 local espInnocent = false
 local espMurderer = false
 local espSheriff = false
+local espGunDrop = false
 local espTracer = false
 local espBox = false
 
 addToggleButton(tabESP, T.espInnocent, false, function(state) espInnocent = state end)
 addToggleButton(tabESP, T.espMurderer, false, function(state) espMurderer = state end)
 addToggleButton(tabESP, T.espSheriff, false, function(state) espSheriff = state end)
+addToggleButton(tabESP, T.espGunDrop, false, function(state) espGunDrop = state end)
 addToggleButton(tabESP, T.espTracer, false, function(state) espTracer = state end)
 addToggleButton(tabESP, T.espBox, false, function(state) espBox = state end)
 
@@ -1234,6 +1244,13 @@ local function getRole(plr)
 end
 
 local tracerLines = {}
+Players.PlayerRemoving:Connect(function(plr)
+    if tracerLines[plr] then
+        pcall(function() tracerLines[plr]:Remove() end)
+        tracerLines[plr] = nil
+    end
+end)
+
 local function removeESP(char)
     if not char then return end
     local hl = char:FindFirstChild("RoleESP")
@@ -1243,83 +1260,119 @@ local function removeESP(char)
 end
 
 RunService.RenderStepped:Connect(function()
+    -- ระบบมองผู้เล่นปกติ
     for _, plr in pairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer and plr.Character then
+        if plr ~= LocalPlayer then
             local char = plr.Character
-            local role = getRole(plr)
-            local shouldShow = false
+            local line = tracerLines[plr]
 
-            if role == "Good" and espInnocent then shouldShow = true end
-            if role == "Knife" and espMurderer then shouldShow = true end
-            if role == "Gun" and espSheriff then shouldShow = true end
+            if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChild("Humanoid") and char.Humanoid.Health > 0 then
+                local role = getRole(plr)
+                local shouldShow = false
 
-            local color = role == "Knife" and Color3.fromRGB(239, 68, 68) or (role == "Gun" and Color3.fromRGB(59, 130, 246) or Color3.fromRGB(34, 197, 94))
-            local text = role == "Knife" and "🔪 Murderer" or (role == "Gun" and "🔫 Sheriff" or "👤 Innocent")
+                if role == "Good" and espInnocent then shouldShow = true end
+                if role == "Knife" and espMurderer then shouldShow = true end
+                if role == "Gun" and espSheriff then shouldShow = true end
 
-            if shouldShow or espBox then
-                if not char:FindFirstChild("RoleESP") and espBox then
-                    local hl = Instance.new("Highlight")
-                    hl.Name = "RoleESP"
-                    hl.FillTransparency = 0.6
-                    hl.OutlineColor = color
-                    hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-                    hl.Parent = char
-                elseif char:FindFirstChild("RoleESP") and not espBox then
-                    char.RoleESP:Destroy()
-                elseif char:FindFirstChild("RoleESP") then
-                    char.RoleESP.OutlineColor = color
+                local color = role == "Knife" and Color3.fromRGB(239, 68, 68) or (role == "Gun" and Color3.fromRGB(59, 130, 246) or Color3.fromRGB(34, 197, 94))
+                local text = role == "Knife" and "🔪 Murderer" or (role == "Gun" and "🔫 Sheriff" or "👤 Innocent")
+
+                if shouldShow or espBox then
+                    if not char:FindFirstChild("RoleESP") and espBox then
+                        local hl = Instance.new("Highlight")
+                        hl.Name = "RoleESP"
+                        hl.FillTransparency = 0.6
+                        hl.OutlineColor = color
+                        hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+                        hl.Parent = char
+                    elseif char:FindFirstChild("RoleESP"] and not espBox then
+                        char.RoleESP:Destroy()
+                    elseif char:FindFirstChild("RoleESP") then
+                        char.RoleESP.OutlineColor = color
+                    end
+
+                    if shouldShow then
+                        local head = char:FindFirstChild("Head")
+                        if head and not char:FindFirstChild("RoleTag") then
+                            local bb = Instance.new("BillboardGui")
+                            bb.Name = "RoleTag"
+                            bb.Size = UDim2.new(0, 160, 0, 30)
+                            bb.StudsOffset = Vector3.new(0, 2, 0)
+                            bb.AlwaysOnTop = true
+                            bb.Adornee = head
+                            bb.Parent = char
+
+                            local lbl = Instance.new("TextLabel")
+                            lbl.Size = UDim2.new(1, 0, 1, 0)
+                            lbl.BackgroundTransparency = 1
+                            lbl.TextScaled = true
+                            lbl.Text = text
+                            lbl.TextColor3 = color
+                            lbl.Font = Enum.Font.Code
+                            lbl.Parent = bb
+                        end
+                    else
+                        if char:FindFirstChild("RoleTag") then char.RoleTag:Destroy() end
+                    end
+                else
+                    removeESP(char)
                 end
 
-                if shouldShow then
-                    local head = char:FindFirstChild("Head")
-                    if head and not char:FindFirstChild("RoleTag") then
+                if espTracer and shouldShow then
+                    local rootPart = char.HumanoidRootPart
+                    local vector, onScreen = Camera:WorldToViewportPoint(rootPart.Position)
+                    if onScreen then
+                        if not line then
+                            line = Drawing.new("Line")
+                            line.Thickness = 1.5
+                            line.Transparency = 0.8
+                            tracerLines[plr] = line
+                        end
+                        line.From = Vector2.new(Camera.ViewportSize.X / 2, 0)
+                        line.To = Vector2.new(vector.X, vector.Y)
+                        line.Color = color
+                        line.Visible = true
+                    else
+                        if line then line.Visible = false end
+                    end
+                else
+                    if line then line.Visible = false end
+                end
+            else
+                removeESP(char)
+                if line then line.Visible = false end
+            end
+        end
+    end
+
+    -- ระบบเพิ่มใหม่: มองปืนตกบนพื้น (GunDrop ESP)
+    for _, obj in pairs(Workspace:GetDescendants()) do
+        if obj.Name == "GunDrop" then
+            local part = obj:IsA("Model") and (obj:FindFirstChild("Handle") or obj:FindFirstChildWhichIsA("BasePart")) or (obj:IsA("BasePart") and obj)
+            if part then
+                if espGunDrop then
+                    if not obj:FindFirstChild("GunDropTag") then
                         local bb = Instance.new("BillboardGui")
-                        bb.Name = "RoleTag"
+                        bb.Name = "GunDropTag"
                         bb.Size = UDim2.new(0, 160, 0, 30)
                         bb.StudsOffset = Vector3.new(0, 2, 0)
                         bb.AlwaysOnTop = true
-                        bb.Adornee = head
-                        bb.Parent = char
+                        bb.Adornee = part
+                        bb.Parent = obj
 
                         local lbl = Instance.new("TextLabel")
                         lbl.Size = UDim2.new(1, 0, 1, 0)
                         lbl.BackgroundTransparency = 1
                         lbl.TextScaled = true
-                        lbl.Text = text
-                        lbl.TextColor3 = color
+                        lbl.Text = "🎯 [ ปืนตกบนพื้น ]"
+                        lbl.TextColor3 = Color3.fromRGB(255, 165, 0)
                         lbl.Font = Enum.Font.Code
                         lbl.Parent = bb
                     end
                 else
-                    if char:FindFirstChild("RoleTag") then char.RoleTag:Destroy() end
+                    if obj:FindFirstChild("GunDropTag") then obj.GunDropTag:Destroy() end
                 end
-            else
-                removeESP(char)
             end
-
-            local line = tracerLines[plr]
-            if espTracer and shouldShow and char:FindFirstChild("HumanoidRootPart") then
-                local rootPart = char.HumanoidRootPart
-                local vector, onScreen = Camera:WorldToViewportPoint(rootPart.Position)
-                if onScreen then
-                    if not line then
-                        line = Drawing.new("Line")
-                        line.Thickness = 1.5
-                        line.Transparency = 0.8
-                        tracerLines[plr] = line
-                    end
-                    line.From = Vector2.new(Camera.ViewportSize.X / 2, 0)
-                    line.To = Vector2.new(vector.X, vector.Y)
-                    line.Color = color
-                    line.Visible = true
-                else
-                    if line then line.Visible = false end
-                end
-            else
-                if line then line.Visible = false end
-            end
-        else
-            if tracerLines[plr] then tracerLines[plr].Visible = false end
         end
     end
 end)
@@ -1558,7 +1611,7 @@ Players.PlayerRemoving:Connect(refreshPlayers)
 
 
 -- 6. ฟาร์มฮาโลวีน
-local tabFarm = createTabContent(T.tabFarm)
+    local tabFarm = createTabContent(T.tabFarm)
 addHeader(tabFarm, T.farmHead)
 addParagraph(tabFarm, T.farmWarnTitle, T.farmWarnDesc)
 
@@ -1798,7 +1851,7 @@ task.spawn(function()
 end)
 
 ----------------------------------------------------------------------------------------------------
--- [11] ปุ่มลอยเปิด/ปิด UI หลัก (สไตล์ + [ Meridian Hub ] ขอบวิบวับใหญ่ กดง่าย ลากย้ายได้)
+-- [11] ปุ่มลอยเปิด/ปิด UI หลัก (ขึ้นเฉพาะตอนปิดหน้าต่างหลัก และซ่อนตอนเปิด)
 ----------------------------------------------------------------------------------------------------
 local ToggleHubGui = Instance.new("ScreenGui")
 ToggleHubGui.Name = "MeridianToggleHubGui"
@@ -1819,6 +1872,7 @@ HubFloatBtn.TextSize = 12
 HubFloatBtn.Active = true
 HubFloatBtn.Draggable = true
 HubFloatBtn.ZIndex = 200
+HubFloatBtn.Visible = false
 Instance.new("UICorner", HubFloatBtn).CornerRadius = UDim.new(0, 12)
 
 local HubStroke = Instance.new("UIStroke")
@@ -1836,14 +1890,15 @@ HubGlow.ZIndex = 199
 Instance.new("UICorner", HubGlow).CornerRadius = UDim.new(0, 12)
 
 HubFloatBtn.MouseButton1Click:Connect(function()
-    local isVisible = not PrimaryWindowFrame.Visible
-    PrimaryWindowFrame.Visible = isVisible
-    triggerHalloweenToast("SUCCESS", isVisible and T.showUIToast or T.hideUIToast, isVisible and "SUCCESS" or "WARNING")
+    PrimaryWindowFrame.Visible = true
+    HubFloatBtn.Visible = false
+    triggerHalloweenToast("SUCCESS", T.showUIToast, "SUCCESS")
 end)
 
 HideWindowButton.MouseButton1Click:Connect(function()
     PrimaryWindowFrame.Visible = false
+    HubFloatBtn.Visible = true
     triggerHalloweenToast("WARNING", T.hideUIToast, "WARNING")
 end)
 
-print("MERIDIAN HUB: Halloween Spooky V2.2 Ultra-Stable Edition Loaded Successfully! Ready to Share!")
+print("MERIDIAN HUB: Halloween Spooky V2.6 Final Complete Edition Loaded Successfully!")
