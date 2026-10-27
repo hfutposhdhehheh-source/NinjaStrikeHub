@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------------------------
--- 🎃 MERIDIAN HUB // HALLOWEEN ULTIMATE EDITION (V2.6 - FINAL COMPLETE EDITION) 👻
+-- 🎃 MERIDIAN HUB // HALLOWEEN ULTIMATE EDITION (V2.8 - ULTIMATE STABLE RELEASE) 👻
 ----------------------------------------------------------------------------------------------------
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
@@ -166,7 +166,7 @@ LoadSub.BackgroundTransparency = 1
 LoadSub.Position = UDim2.new(0, 20, 0, 48)
 LoadSub.Size = UDim2.new(1, -40, 0, 20)
 LoadSub.Font = Enum.Font.Code
-LoadSub.Text = "🦇 กำลังเตรียมระบบแจกความหลอนฮาโลวีน..."
+LoadSub.Text = "🦇 กำลังเตรียมระบบสำหรับแมพ MM2 โปรดรอสักครู่..."
 LoadSub.TextColor3 = Color3.fromRGB(216, 180, 254)
 LoadSub.TextSize = 10
 LoadSub.TextXAlignment = Enum.TextXAlignment.Left
@@ -320,22 +320,25 @@ local L = {
     TH = {
         hubTitle = "🎃 MERIDIAN HUB // HALLOWEEN EDITION 👻",
         hideUI = "🦇 ซ่อน UI",
-        showUI = "คืนชีพ UI",
+        showUI = "🤡 คืนชีพ UI",
         showUIToast = "เปิดหน้าต่างฮาโลวีนสำเร็จ",
-        hideUIToast = "จำศีลหน้าต่างแล้ว (กดปุ่ม + ค่ายเพื่อเปิด)",
-        tabMain = "เมนูหลัก",
-        tabESP = "มองผู้เล่น",
-        tabGun = "นายอำเภอ",
-        tabMurder = "ฆาตรกร",
-        tabTeleport = "วาร์ป",
-        tabFarm = "ฟาร์มฮาโลวีน",
-        tabUpdate = "บันทึกอัพเดท",
-        tabGuide = "วิธีใช้งาน",
+        hideUIToast = "ปิดหน้าต่างแล้ว (กดปุ่ม + ค่ายเพื่อเปิด)",
+        tabMain = "เมนูหลัก🪟",
+        tabESP = "มองผู้เล่น👥",
+        tabGun = "นายอำเภอ🔫",
+        tabMurder = "ฆาตรกร🔪",
+        tabTeleport = "วาร์ป👤",
+        tabFarm = "ฟาร์มฮาโลวีน🎃",
+        tabUpdate = "บันทึกอัพเดท💯",
+        tabGuide = "วิธีใช้งาน✅",
         -- เมนูหลัก
         mMoveHead = ">> ⚡ ระบบปรับแต่งการเคลื่อนไหว (Movement)",
         mWalk = "เปิดฟังก์ชันวิ่งเร็ว",
         mJump = "เปิดฟังก์ชันกระโดดสูง",
         mInfJump = "⚡ กระโดดไม่จำกัด (Infinite Jump)",
+        mDashHead = ">> 🚀 ระบบดีดตัวพุ่งไปข้างหน้า",
+        mDashToggle = "ปุ่มลอยดีดตัวด่วน",
+        mDashPower = "ความแรงดีดตัว",
         mUtilHead = ">> 👻 ระบบช่วยเหลือผู้เล่น & ป้องกัน",
         mWalkThrough = "เดินทะลุเพื่อน",
         mAntiFling = "🛡️ กันโปรดีดออกนอกโลก (Anti-Fling)",
@@ -354,7 +357,6 @@ local L = {
         gunHead = ">> 🔮 เสกปุ่มลอยฉุกเฉิน (ธีมฮาโลวีน)",
         gunGrab = "🎃 วาร์ปเก็บปืน",
         gunShoot = "💀 ยิงปราบผีดิบ",
-        gunAuto = "🎯 ออโต้ยิงทะลุ",
         -- ฆาตกร
         murdHead = ">> 🔪 ขยายฮิตบล็อก (ช่วยให้ปามีดโดนง่ายขึ้น)",
         murdHitbox = "ขยายฮิตบล็อกผู้เล่น",
@@ -379,9 +381,9 @@ local L = {
         farmSecHead = ">> 🛡️ ระบบป้องกันความปลอดภัย",
         farmAntiAfk = "กันโดนเตะ (Anti-AFK)",
         -- อัพเดท
-        upHead = ">> 📝 บันทึกการอัพเดทเวอร์ชันล่าสุด (V2.6)",
-        up1Title = "🎃 เพิ่มฟังก์ชันมองปืนตก (GunDrop ESP)",
-        up1Desc = "เพิ่มระบบส่องหาปืนที่นายอำเภอทำตกบนพื้น พร้อมป้ายชื่อบอกพิกัดชัดเจน",
+        upHead = ">> 📝 บันทึกการอัพเดทเวอร์ชันล่าสุด (V2.8)",
+        up1Title = "🎃 ระบบดีดตัว & แก้บัค ESP ชื่อ",
+        up1Desc = "เพิ่มปุ่มลอยดีดตัวพุ่งตามมุมกล้อง และแก้ปัญหาชื่อบนหัว ESP บัคค้างหลังจบเกม",
         up2Title = "👁️ Optimized ESP & UI Flow",
         up2Desc = "ปรับปรุงระบบเปิด/ปิดปุ่มลอยอัจฉริยะ และแก้วิธีลบเส้น Tracer ไม่ให้ค้างหน้าจอ",
         up3Title = "🛡️ Anti-Void & Stability Fix",
@@ -391,7 +393,7 @@ local L = {
         gu1Title = "1. การเปิด/ปิดเมนูหลัก",
         gu1Desc = "กดที่ปุ่ม '+' บนปุ่มลอยชื่อค่ายเพื่อเปิด/ปิดหน้าต่างหลัก และลากย้ายปุ่มไปไว้ตรงไหนก็ได้ตามต้องการ",
         gu2Title = "2. การใช้งานปุ่มลอย (Floating Buttons)",
-        gu2Desc = "ในหมวดนายอำเภอ สามารถกดเปิดปุ่มลอย (เช่น วาร์ปเก็บปืน, ออโต้ยิงทะลุ) เพื่อกดใช้งานด่วนบนหน้าจอได้ทันที",
+        gu2Desc = "ในหมวดเมนูหลักและนายอำเภอ สามารถกดเปิดปุ่มลอย (เช่น ดีดตัว, วาร์ปเก็บปืน) เพื่อกดใช้งานด่วนบนหน้าจอได้ทันที",
         gu3Title = "3. การฟาร์มเหรียญอีเว้นท์",
         gu3Desc = "เลือกความเร็วฟาร์มไม่เกิน 19 และเปิดฟังก์ชันฟาร์มอัตโนมัติในหมวดฟาร์มฮาโลวีนเพื่อความปลอดภัยสูงสุด"
     },
@@ -414,6 +416,9 @@ local L = {
         mWalk = "Enable WalkSpeed",
         mJump = "Enable JumpPower",
         mInfJump = "⚡ Infinite Jump",
+        mDashHead = ">> 🚀 Forward Dash System",
+        mDashToggle = "Forward Dash Floating Button",
+        mDashPower = "Dash Power",
         mUtilHead = ">> 👻 Player Utility & Protection",
         mWalkThrough = "Walk Through Players",
         mAntiFling = "🛡️ Anti-Fling (Protect from Void)",
@@ -432,7 +437,6 @@ local L = {
         gunHead = ">> 🔮 Emergency Floating Buttons",
         gunGrab = "🎃 Teleport Gun",
         gunShoot = "💀 Shoot Murderer",
-        gunAuto = "🎯 Auto Shoot Wall",
         -- Murderer
         murdHead = ">> 🔪 Hitbox Extender (Easy Knife Throw)",
         murdHitbox = "Expand Player Hitbox",
@@ -457,9 +461,9 @@ local L = {
         farmSecHead = ">> 🛡️ Security Systems",
         farmAntiAfk = "Anti-AFK",
         -- Update
-        upHead = ">> 📝 Latest Update Logs (V2.6)",
-        up1Title = "🎃 Added GunDrop ESP",
-        up1Desc = "Added dropped gun tracking system with clear 3D indicator tags.",
+        upHead = ">> 📝 Latest Update Logs (V2.8)",
+        up1Title = "🎃 Forward Dash & ESP Fix",
+        up1Desc = "Added dash floating button and fixed ESP name glitch after rounds.",
         up2Title = "👁️ Optimized ESP & UI Flow",
         up2Desc = "Optimized floating toggle button visibility and fixed Tracer cleanup bugs.",
         up3Title = "🛡️ Anti-Void & Stability Fix",
@@ -469,7 +473,7 @@ local L = {
         gu1Title = "1. Opening/Closing Main Menu",
         gu1Desc = "Click the '+' on the hub floating button to toggle the main UI. Drag it anywhere on screen.",
         gu2Title = "2. Floating Buttons Usage",
-        gu2Desc = "In the Sheriff tab, toggle floating buttons (Gun Grab, Auto Shoot Wall) for quick mobile access.",
+        gu2Desc = "In the Main and Sheriff tabs, toggle floating buttons (Dash, Gun Grab) for quick mobile access.",
         gu3Title = "3. Safe Event Farming",
         gu3Desc = "Keep fly speed under 19 and enable auto-farm in the Halloween Farm tab for maximum safety."
     }
@@ -1097,6 +1101,25 @@ addToggleButton(tabMain, T.mInfJump, false, function(state)
     infJumpEnabled = state
 end)
 
+-- ระบบดีดตัว (Forward Dash) พร้อมสไลด์ปรับความแรง 1-1000
+addHeader(tabMain, T.mDashHead)
+local dashPowerValue = 100
+addSlider(tabMain, T.mDashPower, 1, 1000, 100, function(v)
+    dashPowerValue = v
+end)
+
+addFloatingToggle(tabMain, T.mDashToggle, UDim2.new(0.05, 0, 0.35, 0), Color3.fromRGB(168, 85, 247), Color3.fromRGB(216, 180, 254), function(btn)
+    pcall(function()
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            local hrp = char.HumanoidRootPart
+            local lookVector = Camera.CFrame.LookVector
+            hrp.AssemblyLinearVelocity = Vector3.new(lookVector.X * dashPowerValue, hrp.AssemblyLinearVelocity.Y, lookVector.Z * dashPowerValue)
+            triggerHalloweenToast("SUCCESS", "🚀 Dash activated!", "SUCCESS")
+        end
+    end)
+end)
+
 RunService.RenderStepped:Connect(function()
     pcall(function()
         local char = LocalPlayer.Character
@@ -1213,7 +1236,7 @@ addToggleButton(tabMain, T.mFpsBoost, false, function(state)
 end)
 
 
--- 2. มองผู้เล่น (Role ESP & GunDrop ESP)
+-- 2. มองผู้เล่น (Role ESP & GunDrop ESP + แก้บัคชื่อ ESP เป็นคำว่าผู้เล่นหลังจบเกม)
 local tabESP = createTabContent(T.tabESP)
 addHeader(tabESP, T.espHead)
 
@@ -1260,7 +1283,7 @@ local function removeESP(char)
 end
 
 RunService.RenderStepped:Connect(function()
-    -- ระบบมองผู้เล่นปกติ
+    -- ระบบมองผู้เล่นปกติพร้อมรีเฟรชชื่อบทบาทให้ตรงทุกรอบเกม ไม่ให้ขึ้นคำว่าผู้เล่นค้าง
     for _, plr in pairs(Players:GetPlayers()) do
         if plr ~= LocalPlayer then
             local char = plr.Character
@@ -1293,23 +1316,30 @@ RunService.RenderStepped:Connect(function()
 
                     if shouldShow then
                         local head = char:FindFirstChild("Head")
-                        if head and not char:FindFirstChild("RoleTag") then
-                            local bb = Instance.new("BillboardGui")
-                            bb.Name = "RoleTag"
-                            bb.Size = UDim2.new(0, 160, 0, 30)
-                            bb.StudsOffset = Vector3.new(0, 2, 0)
-                            bb.AlwaysOnTop = true
-                            bb.Adornee = head
-                            bb.Parent = char
+                        if head then
+                            local bb = char:FindFirstChild("RoleTag")
+                            if not bb then
+                                bb = Instance.new("BillboardGui")
+                                bb.Name = "RoleTag"
+                                bb.Size = UDim2.new(0, 160, 0, 30)
+                                bb.StudsOffset = Vector3.new(0, 2, 0)
+                                bb.AlwaysOnTop = true
+                                bb.Adornee = head
+                                bb.Parent = char
 
-                            local lbl = Instance.new("TextLabel")
-                            lbl.Size = UDim2.new(1, 0, 1, 0)
-                            lbl.BackgroundTransparency = 1
-                            lbl.TextScaled = true
-                            lbl.Text = text
-                            lbl.TextColor3 = color
-                            lbl.Font = Enum.Font.Code
-                            lbl.Parent = bb
+                                local lbl = Instance.new("TextLabel")
+                                lbl.Name = "RoleLabel"
+                                lbl.Size = UDim2.new(1, 0, 1, 0)
+                                lbl.BackgroundTransparency = 1
+                                lbl.TextScaled = true
+                                lbl.Font = Enum.Font.Code
+                                lbl.Parent = bb
+                            end
+                            local lbl = bb:FindFirstChild("RoleLabel")
+                            if lbl then
+                                lbl.Text = text
+                                lbl.TextColor3 = color
+                            end
                         end
                     else
                         if char:FindFirstChild("RoleTag") then char.RoleTag:Destroy() end
@@ -1345,7 +1375,7 @@ RunService.RenderStepped:Connect(function()
         end
     end
 
-    -- ระบบเพิ่มใหม่: มองปืนตกบนพื้น (GunDrop ESP)
+    -- ระบบมองปืนตกบนพื้น (GunDrop ESP)
     for _, obj in pairs(Workspace:GetDescendants()) do
         if obj.Name == "GunDrop" then
             local part = obj:IsA("Model") and (obj:FindFirstChild("Handle") or obj:FindFirstChildWhichIsA("BasePart")) or (obj:IsA("BasePart") and obj)
@@ -1378,7 +1408,7 @@ RunService.RenderStepped:Connect(function()
 end)
 
 
--- 3. นายอำเภอ
+-- 3. นายอำเภอ (ลบระบบยิงทะลุกำแพงออกเรียบร้อย)
 local tabGun = createTabContent(T.tabGun)
 addHeader(tabGun, T.gunHead)
 
@@ -1454,38 +1484,6 @@ local function getMurderer()
     end
     return nil
 end
-
-local autoShootWall = false
-addFloatingToggle(tabGun, T.gunAuto, UDim2.new(0.05, 0, 0.50, 0), Color3.fromRGB(59, 130, 246), Color3.fromRGB(147, 197, 253), function(btn)
-    autoShootWall = not autoShootWall
-end)
-
-local function shootMurderer()
-    local char = LocalPlayer.Character
-    if not char then return end
-    local gun = char:FindFirstChild("Gun") or char:FindFirstChild("Revolver") or LocalPlayer.Backpack:FindFirstChild("Gun") or LocalPlayer.Backpack:FindFirstChild("Revolver")
-    if not gun then return end
-    if gun.Parent ~= char then gun.Parent = char end
-
-    local remote = gun:FindFirstChild("Shoot")
-    local root = char:FindFirstChild("HumanoidRootPart")
-    local attachment = root and root:FindFirstChild("GunRaycastAttachment")
-    if not remote or not root or not attachment then return end
-
-    local murderer = getMurderer()
-    if not murderer or not murderer.Character or not murderer.Character:FindFirstChild("Head") then return end
-
-    local head = murderer.Character.Head
-    local velocity = head.AssemblyLinearVelocity
-    local predictedPosition = head.Position + velocity * 0.18
-
-    remote:FireServer(attachment.WorldCFrame, CFrame.new(predictedPosition))
-end
-
-RunService.RenderStepped:Connect(function()
-    if not autoShootWall then return end
-    shootMurderer()
-end)
 
 
 -- 4. ฆาตกร
@@ -1611,7 +1609,7 @@ Players.PlayerRemoving:Connect(refreshPlayers)
 
 
 -- 6. ฟาร์มฮาโลวีน
-    local tabFarm = createTabContent(T.tabFarm)
+local tabFarm = createTabContent(T.tabFarm)
 addHeader(tabFarm, T.farmHead)
 addParagraph(tabFarm, T.farmWarnTitle, T.farmWarnDesc)
 
@@ -1901,4 +1899,4 @@ HideWindowButton.MouseButton1Click:Connect(function()
     triggerHalloweenToast("WARNING", T.hideUIToast, "WARNING")
 end)
 
-print("MERIDIAN HUB: Halloween Spooky V2.6 Final Complete Edition Loaded Successfully!")
+print("MERIDIAN HUB: Halloween Spooky V2.8 Ultimate Stable Edition Loaded Successfully!")
