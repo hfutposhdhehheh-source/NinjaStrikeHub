@@ -355,7 +355,7 @@ local L = {
         espBox = "📦 บล็อกมอง ESP (Bounding Box)",
         -- นายอำเภอ
         gunHead = ">> 🔮 เสกปุ่มลอยฉุกเฉิน (ธีมฮาโลวีน)",
-        gunGrab = "🎃 วาร์ปเก็บปืน",
+        gunGrab = "🎃 ดึงปืนเข้าตัว",
         gunShoot = "💀 ยิงดักหน้าขั้นเทพ (Pro Aimbot)",
         -- ฆาตกร
         murdHead = ">> 🔪 ขยายฮิตบล็อก (ช่วยให้ปามีดโดนง่ายขึ้น)",
@@ -1485,69 +1485,45 @@ local function isTargetVisible(targetPart, originPos)
     return true
 end
 
--- ปุ่มลอยยิงดักหน้าขั้นเทพ V3.0 (Pro Prediction Aimbot)
-addFloatingToggle(tabGun, T.gunShoot, UDim2.new(0.05, 0, 0.35, 0), Color3.fromRGB(239, 68, 68), Color3.fromRGB(255, 140, 0), function(btn)
+-- โค้ดใหม่ V3.0 (ระบบดึงปืนมาหาตัวผู้เล่น - ปลอดภัย ไม่โดน Anti-Cheat)
+addFloatingToggle(tabGun, T.gunGrab, UDim2.new(0.05, 0, 0.2, 0), Color3.fromRGB(255, 140, 0), Color3.fromRGB(255, 165, 0), function(btn)
     pcall(function()
-        local character = LocalPlayer.Character
-        if not character or not character:FindFirstChild("HumanoidRootPart") then return end
-        
-        local tool = character:FindFirstChild("Gun") or character:FindFirstChild("Revolver") or LocalPlayer.Backpack:FindFirstChild("Gun") or LocalPlayer.Backpack:FindFirstChild("Revolver")
-        if not tool then
-            triggerHalloweenToast("WARNING", "⚠️ ไม่พบปืนในตัวหรือกระเป๋า!", "WARNING")
-            return
+        local char = LocalPlayer.Character
+        if not char or not char:FindFirstChild("HumanoidRootPart") then 
+            triggerHalloweenToast("ERROR", "❌ ไม่พบตัวละคร", "ERROR")
+            return 
         end
         
-        if tool.Parent ~= character then 
-            tool.Parent = character 
-            task.wait(0.05) 
+        local root = char.HumanoidRootPart
+        local targetPart = nil
+
+        -- ค้นหาปืนที่ตกอยู่บนพื้น
+        for _, v in pairs(Workspace:GetDescendants()) do
+            if v.Name == "GunDrop" then
+                targetPart = v:IsA("Model") and (v:FindFirstChild("Handle") or v:FindFirstChildWhichIsA("BasePart")) or (v:IsA("BasePart") and v)
+                if targetPart then break end
+            end
         end
 
-        local remote = tool:FindFirstChild("Shoot")
-        local root = character.HumanoidRootPart
-        local attachment = root:FindFirstChild("GunRaycastAttachment")
-        if not remote or not attachment then return end
-
-        local targetPlr = getBestTarget()
-        if not targetPlr or not targetPlr.Character or not targetPlr.Character:FindFirstChild("Head") then
-            triggerHalloweenToast("WARNING", "🎯 ไม่พบเป้าหมายฆาตกรในระยะมองเห็น", "WARNING")
+        if not targetPart then
+            triggerHalloweenToast("WARNING", "⚠️ ไม่พบปืนตกอยู่บนพื้น!", "WARNING")
             return
         end
 
-        local targetHead = targetPlr.Character.Head
-        local targetRoot = targetPlr.Character.HumanoidRootPart
-
-        if not isTargetVisible(targetHead, root.Position) then
-            triggerHalloweenToast("ERROR", "❌ ติดกำแพง/สิ่งกีดขวาง ยิงไม่ได้!", "ERROR")
-            return
+        -- ย้ายตำแหน่งปืนมาไว้ด้านหน้าตัวเรา 2 หน่วย
+        targetPart.CFrame = root.CFrame * CFrame.new(0, 0, -2)
+        
+        -- ส่งคำสั่งสัมผัสเพื่อเก็บเข้ากระเป๋าทันที
+        if firetouchinterest then
+            firetouchinterest(root, targetPart, 0)
+            task.wait(0.05)
+            firetouchinterest(root, targetPart, 1)
         end
 
-        -- ระบบคำนวณดักหน้า V3.0 (Prediction Calculation)
-        local ping = LocalPlayer:GetNetworkPing() or 0.05
-        local distance = (targetRoot.Position - root.Position).Magnitude
-        local bulletSpeed = 300 
-        local travelTime = (distance / bulletSpeed) + (ping * 1.2)
-
-        local velocity = targetRoot.AssemblyLinearVelocity
-        local predictedPos = targetHead.Position + (velocity * travelTime)
-
-        remote:FireServer(attachment.WorldCFrame, CFrame.new(predictedPos))
-        triggerHalloweenToast("SUCCESS", "🎯 ยิงดักหน้า " .. targetPlr.Name .. " เข้าเป้าเต็มๆ!", "SUCCESS")
+        triggerHalloweenToast("SUCCESS", "🎯 ดึงปืนเข้าตัวสำเร็จ!", "SUCCESS")
     end)
 end)
 
-local function getSheriff()
-    for _, plr in pairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer and getRole(plr) == "Gun" then return plr end
-    end
-    return nil
-end
-
-local function getMurderer()
-    for _, plr in pairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer and getRole(plr) == "Knife" then return plr end
-    end
-    return nil
-end
 
 
 -- 4. ฆาตกร
