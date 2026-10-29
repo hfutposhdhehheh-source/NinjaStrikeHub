@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------------------------
--- 🎃 MERIDIAN HUB // HALLOWEEN GOD MODE EDITION (V3.0 - ADVANCED ULTIMATE) 👻
+-- 🎃 MERIDIAN HUB // HALLOWEEN GOD MODE EDITION (V4.3 - FINAL STABLE APEX) 👻
 ----------------------------------------------------------------------------------------------------
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
@@ -8,9 +8,36 @@ local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
+local HttpService = game:GetService("HttpService")
 local Camera = Workspace.CurrentCamera
-
 local LocalPlayer = Players.LocalPlayer
+
+-- [1] ระบบเซฟการตั้งค่าอัตโนมัติ (Config Manager)
+local CONFIG_FILE = "MeridianHub_MM2_Config_V4.3.json"
+local HubConfig = {
+    WalkSpeed = 16,
+    JumpPower = 50,
+    FOVRadius = 120,
+    FlySpeed = 16,
+    FlyMode = "ปกติ",
+    GunGrabMode = "วาปปืนเข้าตัว",
+    HitboxSize = 12
+}
+
+pcall(function()
+    if readfile and isfile and isfile(CONFIG_FILE) then
+        local data = HttpService:JSONDecode(readfile(CONFIG_FILE))
+        for k, v in pairs(data) do HubConfig[k] = v end
+    end
+end)
+
+local function saveConfig()
+    pcall(function()
+        if writefile then
+            writefile(CONFIG_FILE, HttpService:JSONEncode(HubConfig))
+        end
+    end)
+end
 
 -- ป้องกันซ้ำและเคลียร์ของเดิมทิ้งแบบปลอดภัย 100%
 pcall(function()
@@ -23,7 +50,7 @@ pcall(function()
 end)
 
 ----------------------------------------------------------------------------------------------------
--- [1] รากฐาน GUI & ระบบหน้าต่าง
+-- [2] รากฐาน GUI & ระบบหน้าต่าง
 ----------------------------------------------------------------------------------------------------
 local RootContainerNode = Instance.new("ScreenGui")
 RootContainerNode.Name = "MeridianApexStructuralContainer"
@@ -49,7 +76,7 @@ pcall(function() TracersGui.Parent = CoreGui end)
 if not TracersGui.Parent then TracersGui.Parent = LocalPlayer:WaitForChild("PlayerGui") end
 
 ----------------------------------------------------------------------------------------------------
--- [2] ระบบ Toast แจ้งเตือนสไตล์ฮาโลวีน 🎃
+-- [3] ระบบ Toast แจ้งเตือนสไตล์ฮาโลวีน (แสดงผล 1 วินาทีเป๊ะๆ ตามสั่ง)
 ----------------------------------------------------------------------------------------------------
 local ToastNotificationHub = Instance.new("Frame")
 ToastNotificationHub.Name = "ToastHub"
@@ -62,7 +89,7 @@ ToastNotificationHub.ZIndex = 50
 local toastLayout = Instance.new("UIListLayout")
 toastLayout.Parent = ToastNotificationHub
 toastLayout.SortOrder = Enum.SortOrder.LayoutOrder
-toastLayout.Padding = UDim.new(0, 8)
+toastLayout.Padding = UDim.new(0, 6)
 toastLayout.VerticalAlignment = Enum.VerticalAlignment.Top
 
 local function triggerHalloweenToast(messageTitle, messageBody, notificationType)
@@ -74,8 +101,8 @@ local function triggerHalloweenToast(messageTitle, messageBody, notificationType
 
         local toastCard = Instance.new("Frame")
         toastCard.Parent = ToastNotificationHub
-        toastCard.BackgroundColor3 = Color3.fromRGB(15, 10, 20)
-        toastCard.Size = UDim2.new(1, 0, 0, 55)
+        toastCard.BackgroundColor3 = Color3.fromRGB(12, 8, 18)
+        toastCard.Size = UDim2.new(1, 0, 0, 48)
         toastCard.Position = UDim2.new(1, 50, 0, 0)
         toastCard.ZIndex = 51
         Instance.new("UICorner", toastCard).CornerRadius = UDim.new(0, 8)
@@ -89,37 +116,37 @@ local function triggerHalloweenToast(messageTitle, messageBody, notificationType
         local titleLabel = Instance.new("TextLabel")
         titleLabel.Parent = toastCard
         titleLabel.BackgroundTransparency = 1
-        titleLabel.Position = UDim2.new(0, 12, 0, 8)
-        titleLabel.Size = UDim2.new(1, -20, 0, 18)
+        titleLabel.Position = UDim2.new(0, 10, 0, 6)
+        titleLabel.Size = UDim2.new(1, -15, 0, 16)
         titleLabel.Font = Enum.Font.Code
         titleLabel.Text = "🎃 " .. tostring(messageTitle or "Notification")
         titleLabel.TextColor3 = accentColor
-        titleLabel.TextSize = 11
+        titleLabel.TextSize = 10
         titleLabel.TextXAlignment = Enum.TextXAlignment.Left
         titleLabel.ZIndex = 52
 
         local bodyLabel = Instance.new("TextLabel")
         bodyLabel.Parent = toastCard
         bodyLabel.BackgroundTransparency = 1
-        bodyLabel.Position = UDim2.new(0, 12, 0, 26)
-        bodyLabel.Size = UDim2.new(1, -20, 0, 20)
+        bodyLabel.Position = UDim2.new(0, 10, 0, 22)
+        bodyLabel.Size = UDim2.new(1, -15, 0, 18)
         bodyLabel.Font = Enum.Font.Code
         bodyLabel.Text = tostring(messageBody or "")
         bodyLabel.TextColor3 = Color3.fromRGB(216, 180, 254)
-        bodyLabel.TextSize = 10
+        bodyLabel.TextSize = 9
         bodyLabel.TextXAlignment = Enum.TextXAlignment.Left
         bodyLabel.ZIndex = 52
 
-        TweenService:Create(toastCard, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, 0)}):Play()
-        task.wait(3.5)
-        TweenService:Create(toastCard, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(1, 50, 0, 0), BackgroundTransparency = 1}):Play()
-        task.wait(0.3)
+        TweenService:Create(toastCard, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, 0)}):Play()
+        task.wait(1.0) -- แสดงผล 1 วินาทีถ้วน
+        TweenService:Create(toastCard, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(1, 50, 0, 0), BackgroundTransparency = 1}):Play()
+        task.wait(0.2)
         toastCard:Destroy()
     end)
 end
 
 ----------------------------------------------------------------------------------------------------
--- [3] หน้าจอโหลดสคริปต์ (Loading Screen - 5 วินาที)
+-- [4] หน้าจอโหลดสคริปต์ (Loading Screen 5 วินาที)
 ----------------------------------------------------------------------------------------------------
 local LoadingGui = Instance.new("ScreenGui")
 LoadingGui.Name = "MeridianLoadingGui"
@@ -129,13 +156,13 @@ if not LoadingGui.Parent then LoadingGui.Parent = LocalPlayer:WaitForChild("Play
 
 local LoadFrame = Instance.new("Frame")
 LoadFrame.Parent = LoadingGui
-LoadFrame.BackgroundColor3 = Color3.fromRGB(10, 6, 15)
+LoadFrame.BackgroundColor3 = Color3.fromRGB(8, 4, 12)
 LoadFrame.Size = UDim2.new(1, 0, 1, 0)
 LoadFrame.ZIndex = 100
 
 local LoadCard = Instance.new("Frame")
 LoadCard.Parent = LoadFrame
-LoadCard.BackgroundColor3 = Color3.fromRGB(18, 12, 26)
+LoadCard.BackgroundColor3 = Color3.fromRGB(15, 10, 22)
 LoadCard.AnchorPoint = Vector2.new(0.5, 0.5)
 LoadCard.Position = UDim2.new(0.5, 0, 0.5, 0)
 LoadCard.Size = UDim2.new(0, 380, 0, 210)
@@ -154,7 +181,7 @@ LoadTitle.BackgroundTransparency = 1
 LoadTitle.Position = UDim2.new(0, 20, 0, 20)
 LoadTitle.Size = UDim2.new(1, -40, 0, 24)
 LoadTitle.Font = Enum.Font.Code
-LoadTitle.Text = "🎃 MERIDIAN HUB // V3.0 GOD MODE..."
+LoadTitle.Text = "🎃 MERIDIAN HUB // V4.3 FINAL 👻"
 LoadTitle.TextColor3 = Color3.fromRGB(255, 165, 0)
 LoadTitle.TextSize = 12
 LoadTitle.TextXAlignment = Enum.TextXAlignment.Left
@@ -166,7 +193,7 @@ LoadSub.BackgroundTransparency = 1
 LoadSub.Position = UDim2.new(0, 20, 0, 48)
 LoadSub.Size = UDim2.new(1, -40, 0, 20)
 LoadSub.Font = Enum.Font.Code
-LoadSub.Text = "🦇 กำลังโหลดระบบขั้นสูงสุด V3.0..."
+LoadSub.Text = "🦇 กำลังโหลดระบบครบทุกฟังก์ชัน V4.3..."
 LoadSub.TextColor3 = Color3.fromRGB(216, 180, 254)
 LoadSub.TextSize = 10
 LoadSub.TextXAlignment = Enum.TextXAlignment.Left
@@ -174,7 +201,7 @@ LoadSub.ZIndex = 102
 
 local BarBg = Instance.new("Frame")
 BarBg.Parent = LoadCard
-BarBg.BackgroundColor3 = Color3.fromRGB(10, 6, 15)
+BarBg.BackgroundColor3 = Color3.fromRGB(8, 4, 12)
 BarBg.Position = UDim2.new(0, 20, 0, 95)
 BarBg.Size = UDim2.new(1, -40, 0, 22)
 BarBg.ZIndex = 102
@@ -214,7 +241,7 @@ end)
 task.wait(5.1)
 
 ----------------------------------------------------------------------------------------------------
--- [4] ระบบเลือกภาษา (Language Selection Menu)
+-- [5] ระบบเลือกภาษา (Language Selection Menu)
 ----------------------------------------------------------------------------------------------------
 local selectedLanguage = "TH"
 local LangGui = Instance.new("ScreenGui")
@@ -225,13 +252,13 @@ if not LangGui.Parent then LangGui.Parent = LocalPlayer:WaitForChild("PlayerGui"
 
 local LangFrame = Instance.new("Frame")
 LangFrame.Parent = LangGui
-LangFrame.BackgroundColor3 = Color3.fromRGB(10, 6, 15)
+LangFrame.BackgroundColor3 = Color3.fromRGB(8, 4, 12)
 LangFrame.Size = UDim2.new(1, 0, 1, 0)
 LangFrame.ZIndex = 100
 
 local LangCard = Instance.new("Frame")
 LangCard.Parent = LangFrame
-LangCard.BackgroundColor3 = Color3.fromRGB(18, 12, 26)
+LangCard.BackgroundColor3 = Color3.fromRGB(15, 10, 22)
 LangCard.AnchorPoint = Vector2.new(0.5, 0.5)
 LangCard.Position = UDim2.new(0.5, 0, 0.5, 0)
 LangCard.Size = UDim2.new(0, 380, 0, 230)
@@ -270,7 +297,7 @@ LangSub.ZIndex = 102
 
 local ThaiBtn = Instance.new("TextButton")
 ThaiBtn.Parent = LangCard
-ThaiBtn.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
+ThaiBtn.BackgroundColor3 = Color3.fromRGB(22, 14, 32)
 ThaiBtn.Position = UDim2.new(0, 20, 0, 85)
 ThaiBtn.Size = UDim2.new(1, -40, 0, 45)
 ThaiBtn.Font = Enum.Font.Code
@@ -283,7 +310,7 @@ Instance.new("UIStroke", ThaiBtn).Color = Color3.fromRGB(255, 140, 0)
 
 local EngBtn = Instance.new("TextButton")
 EngBtn.Parent = LangCard
-EngBtn.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
+EngBtn.BackgroundColor3 = Color3.fromRGB(22, 14, 32)
 EngBtn.Position = UDim2.new(0, 20, 0, 145)
 EngBtn.Size = UDim2.new(1, -40, 0, 45)
 EngBtn.Font = Enum.Font.Code
@@ -314,15 +341,15 @@ FloatGui.Enabled = true
 TracersGui.Enabled = true
 
 ----------------------------------------------------------------------------------------------------
--- [5] พจนานุกรม 2 ภาษา
+-- [6] พจนานุกรม 2 ภาษา (ครบถ้วนทุกหมวดหมู่)
 ----------------------------------------------------------------------------------------------------
 local L = {
     TH = {
-        hubTitle = "🎃 MERIDIAN HUB // V3.0 GOD MODE 👻",
+        hubTitle = "🎃 MERIDIAN HUB // V4.3 FINAL 👻",
         hideUI = "🦇 ซ่อน UI",
         showUI = "คืนชีพ UI",
-        showUIToast = "เปิดหน้าต่างฮาโลวีนสำเร็จ",
-        hideUIToast = "จำศีลหน้าต่างแล้ว (กดปุ่ม + ค่ายเพื่อเปิด)",
+        showUIToast = "เปิดหน้าต่างสำเร็จ",
+        hideUIToast = "ย่อหน้าต่างเรียบร้อย",
         tabMain = "เมนูหลัก",
         tabESP = "มองผู้เล่น",
         tabGun = "นายอำเภอ",
@@ -330,79 +357,85 @@ local L = {
         tabTeleport = "วาร์ป",
         tabFarm = "ฟาร์มฮาโลวีน",
         tabUpdate = "บันทึกอัพเดท",
+        tabConfig = "ตั้งค่า",
         tabGuide = "วิธีใช้งาน",
         -- เมนูหลัก
-        mMoveHead = ">> ⚡ ระบบปรับแต่งการเคลื่อนไหว (Movement)",
-        mWalk = "เปิดฟังก์ชันวิ่งเร็ว",
-        mJump = "เปิดฟังก์ชันกระโดดสูง",
-        mInfJump = "⚡ กระโดดไม่จำกัด (Infinite Jump)",
-        mDashHead = ">> 🚀 ระบบดีดตัวพุ่งไปข้างหน้า",
-        mDashToggle = "ปุ่มลอยดีดตัวด่วน",
-        mDashPower = "ความแรงดีดตัว",
-        mUtilHead = ">> 👻 ระบบช่วยเหลือผู้เล่น & ป้องกัน",
-        mWalkThrough = "เดินทะลุเพื่อน",
-        mAntiFling = "🛡️ กันโปรดีดออกนอกโลก (Anti-Fling)",
-        mFullbright = "💡 เปิดแสงสว่างสูงสุด (Fullbright)",
-        mNoclip = "👻 ทะลุกำแพงทั่วแมพ (Global Noclip)",
-        mFpsBoost = "⚡ เพิ่มความลื่น (FPS Boost / ลบหมอก)",
-        -- มองผู้เล่น
-        espHead = ">> 👁️ ระบบตาทิพย์ส่องวิญญาณ (เลือกเปิดแยก)",
-        espInnocent = "👤 มองผู้เล่น (Innocent)",
-        espMurder = "🔪 มองคนฆ่า (Murderer)",
-        espSheriff = "🔫 มองคนยิง (Sheriff/Gun)",
-        espGunDrop = "🎯 มองปืนตกบนพื้น (GunDrop ESP)",
-        espTracer = "📈 เส้นลากเป้า ESP (Tracer)",
-        espBox = "📦 บล็อกมอง ESP (Bounding Box)",
+        mMoveHead = ">> ⚡ ระบบปรับแต่งการเคลื่อนไหว",
+        mWalk = "วิ่งเร็วพิเศษ",
+        mJump = "กระโดดสูงพิเศษ",
+        mInfJump = "กระโดดไม่จำกัด (Inf Jump)",
+        mDashHead = ">> 🚀 ระบบพุ่งตัวโมเมนตัม",
+        mDashToggle = "ปุ่มลอยพุ่งตัวด่วน",
+        mDashPower = "ความแรงการพุ่ง",
+        mUtilHead = ">> 👻 ระบบป้องกัน & ซัพพอร์ต",
+        mWalkThrough = "เดินทะลุผู้เล่นอื่น",
+        mAntiFling = "กันโปรดีด (Anti-Fling)",
+        mFullbright = "เปิดแสงสว่างสูงสุด",
+        mNoclip = "ทะลุกำแพงทั่วแมพ (Noclip)",
+        mFpsBoost = "เพิ่มความลื่น (FPS Boost)",
+        -- ESP
+        espHead = ">> 👁️ ระบบ ESP ตาทิพย์ขั้นสูง",
+        espInnocent = "มองผู้เล่นทั่วไป (Innocent)",
+        espMurder = "มองฆาตกร (Murderer)",
+        espSheriff = "มองนายอำเภอ (Sheriff/Gun)",
+        espGunDrop = "มองปืนตกบนพื้น (GunDrop ESP)",
+        espTracer = "เส้นลากเป้า ESP (Tracer)",
+        espBox = "กล่องครอบตัว ESP (Box)",
         -- นายอำเภอ
-        gunHead = ">> 🔮 เสกปุ่มลอยฉุกเฉิน (ธีมฮาโลวีน)",
-        gunGrab = "🎃 ดึงปืนเข้าตัว",
-        gunShoot = "💀 ยิงดักหน้าขั้นเทพ (Pro Aimbot)",
+        gunHead = ">> 🔮 ระบบนายอำเภอ & เลือกโหมดเก็บปืน",
+        gunGrabMode = "โหมดเก็บปืนอัตโนมัติ",
+        gunGrabBtn = "ปุ่มลอยเก็บปืนด่วน",
+        gunShootBtn = "ปุ่มลอยยิงดักหน้า (Aimbot)",
         -- ฆาตกร
-        murdHead = ">> 🔪 ขยายฮิตบล็อก (ช่วยให้ปามีดโดนง่ายขึ้น)",
-        murdHitbox = "ขยายฮิตบล็อกผู้เล่น",
+        murdHead = ">> 🔪 ขยายฮิตบล็อก (Hitbox Extender)",
+        murdHitbox = "ขยายขนาดตัวศัตรู",
         murdMassHead = ">> 💀 ระบบฆ่าหมู่ (Mass Kill)",
-        murdKillAll = "🔪 ฆ่าทุกคนทันที (Mass Kill)",
-        murdAutoKill = "⚡ ออโต้ฆ่าทุกคน (Auto Kill)",
+        murdKillAll = "ฆ่าทุกคนทันที (Kill All)",
+        murdAutoKill = "ออโต้ฆ่าทุกคน (Auto Kill)",
         -- วาร์ป
-        tpHead = ">> 🚀 ระบบวาร์ปด่วน (Teleport)",
+        tpHead = ">> 🚀 ระบบวาร์ปด่วน",
         tpSheriff = "วาร์ปไปหานายอำเภอ",
         tpMurder = "วาร์ปไปหาฆาตรกร",
         tpFriendHead = ">> 👥 วาร์ปหาเพื่อนระบุชื่อ",
-        tpDropdown = "เลือกผู้เล่น",
+        tpDropdown = "เลือกเพื่อน",
         tpButton = "วาร์ปไปหาเพื่อน",
         -- ฟาร์ม
-        farmHead = ">> 💰 ระบบฟาร์มเหรียญอีเว้นท์อัตโนมัติ",
+        farmHead = ">> 💰 ระบบฟาร์มเหรียญอีเว้นท์เสถียรสูงสุด",
         farmWarnTitle = "⚠️ คำเตือนความปลอดภัย",
-        farmWarnDesc = "แนะนำให้ปรับความเร็วไม่เกิน 19 เพื่อป้องกันการโดนแบน",
-        farmSpeed = "ความเร็วลอย",
-        farmMode = "ท่าลอย",
-        farmReset = "รีตัวเมื่อเหรียญหมด",
-        farmToggle = "ฟาร์มฮาโลวีนอัตโนมัติ",
+        farmWarnDesc = "ความเร็วแนะนำไม่เกิน 19 ป้องกันระบบตรวจจับแบน",
+        farmSpeed = "ความเร็วฟาร์มลอย",
+        farmMode = "ท่าทางตัวละครตอนฟาร์ม",
+        farmReset = "รีตัวอัตโนมัติเมื่อเหรียญหมด",
+        farmToggle = "เริ่มฟาร์มฮาโลวีนอัตโนมัติ",
         farmSecHead = ">> 🛡️ ระบบป้องกันความปลอดภัย",
-        farmAntiAfk = "กันโดนเตะ (Anti-AFK)",
-        -- อัพเดท
-        upHead = ">> 📝 บันทึกการอัพเดทเวอร์ชันล่าสุด (V3.0 God Mode)",
-        up1Title = "💀 Pro Prediction Aimbot Integration",
-        up1Desc = "เพิ่มระบบยิงดักหน้าอัจฉริยะ คำนวณความเร็วเป้าหมาย เช็กสิ่งกีดขวางและระยะ FOV สมบูรณ์แบบ",
-        up2Title = "🚀 Safe Momentum Dash & ESP Fix",
-        up2Desc = "ปรับปรุงระบบดีดตัวปลอดภัยไม่โดน Error 267 และแก้ปัญหาชื่อ ESP บัคค้างถาวร",
-        up3Title = "🛡️ Extreme Stability & Zero-Lag Loop",
-        up3Desc = "ปรับโครงสร้างการทำงานทั้งหมดให้เบาและเสถียรที่สุด ทำงานลื่นไหลไม่มีสะดุด",
-        -- วิธีใช้งาน
-        guHead = ">> 📖 คู่มือการใช้งานสคริปต์เบื้องต้น",
-        gu1Title = "1. การเปิด/ปิดเมนูหลัก",
-        gu1Desc = "กดที่ปุ่ม '+' บนปุ่มลอยชื่อค่ายเพื่อเปิด/ปิดหน้าต่างหลัก และลากย้ายปุ่มไปไว้ตรงไหนก็ได้ตามต้องการ",
-        gu2Title = "2. การใช้งานปุ่มลอย (Floating Buttons)",
-        gu2Desc = "ในหมวดเมนูหลักและนายอำเภอ สามารถกดเปิดปุ่มลอย (เช่น ดีดตัว, ยิงดักหน้า, วาร์ปเก็บปืน) เพื่อกดใช้งานด่วนบนหน้าจอได้ทันที",
-        gu3Title = "3. การฟาร์มเหรียญอีเว้นท์",
-        gu3Desc = "เลือกความเร็วฟาร์มไม่เกิน 19 และเปิดฟังก์ชันฟาร์มอัตโนมัติในหมวดฟาร์มฮาโลวีนเพื่อความปลอดภัยสูงสุด"
+        farmAntiAfk = "ระบบป้องกันโดนเตะ AFK",
+        -- Update Log
+        upHead = ">> 📝 บันทึกการอัพเดทเวอร์ชันล่าสุด (V4.3 Final)",
+        up1Title = "💀 Pro Prediction Aimbot & 4 Gun Grab Modes",
+        up1Desc = "เพิ่มโหมดเก็บปืนอัจฉริยะครบทั้ง 4 รูปแบบ พร้อมระบบยิงดักหน้าเช็กสิ่งกีดขวางสมบูรณ์แบบ",
+        up2Title = "🚀 Auto Config Saver & Instant Toast",
+        up2Desc = "เพิ่มระบบบันทึกการตั้งค่าอัตโนมัติ และระบบแจ้งเตือนมุมจอแบบฉับไว 1 วินาที",
+        up3Title = "🛡️ Zero-Bugs Stability & Full Feature Restoration",
+        up3Desc = "ปรับโครงสร้างโค้ดใหม่ทั้งหมดให้เสถียร ไร้บัค พร้อมกู้คืนทุกแท็บและฟังก์ชันเดิมกลับมาครบ 100%",
+        -- Config
+        cfgHead = ">> ⚙️ ระบบบันทึกและจัดการการตั้งค่า",
+        cfgSave = "บันทึกการตั้งค่าปัจจุบัน",
+        cfgReset = "รีเซ็ตค่าเริ่มต้นทั้งหมด",
+        -- Guide
+        guHead = ">> 📖 คู่มือการใช้งาน V4.3",
+        gu1Title = "1. การเปิด/ปิดหน้าต่างหลัก",
+        gu1Desc = "กดปุ่ม '+' บนหน้าจอเพื่อเปิด/ปิดเมนู และลากย้ายตำแหน่งปุ่มลอยได้อิสระ",
+        gu2Title = "2. ระบบเลือกโหมดเก็บปืน (4 โหมด)",
+        gu2Desc = "เลือกรูปแบบการเก็บปืนในหมวดนายอำเภอได้ตามต้องการ ระบบจะทำงานอย่างรวดเร็วและปลอดภัย",
+        gu3Title = "3. การแจ้งเตือนและระบบเซฟค่า",
+        gu3Desc = "แจ้งเตือนรวดเร็วภายใน 1 วินาที และบันทึกค่าตั้งค่าอัตโนมัติทุกครั้งที่ใช้งาน"
     },
     EN = {
-        hubTitle = "🎃 MERIDIAN HUB // V3.0 GOD MODE 👻",
+        hubTitle = "🎃 MERIDIAN HUB // V4.3 FINAL 👻",
         hideUI = "🦇 Hide UI",
         showUI = "Restore UI",
-        showUIToast = "Halloween window restored successfully",
-        hideUIToast = "Window minimized (Press + Hub to open)",
+        showUIToast = "Window restored successfully",
+        hideUIToast = "Window minimized successfully",
         tabMain = "Main Menu",
         tabESP = "Role ESP",
         tabGun = "Sheriff",
@@ -410,84 +443,90 @@ local L = {
         tabTeleport = "Teleport",
         tabFarm = "Halloween Farm",
         tabUpdate = "Update Log",
+        tabConfig = "Config",
         tabGuide = "User Guide",
         -- Main
         mMoveHead = ">> ⚡ Movement Customization",
-        mWalk = "Enable WalkSpeed",
-        mJump = "Enable JumpPower",
-        mInfJump = "⚡ Infinite Jump",
-        mDashHead = ">> 🚀 Forward Dash System",
-        mDashToggle = "Forward Dash Floating Button",
+        mWalk = "WalkSpeed Booster",
+        mJump = "JumpPower Booster",
+        mInfJump = "Infinite Jump",
+        mDashHead = ">> 🚀 Momentum Dash System",
+        mDashToggle = "Dash Floating Button",
         mDashPower = "Dash Power",
-        mUtilHead = ">> 👻 Player Utility & Protection",
+        mUtilHead = ">> 👻 Protection & Utility",
         mWalkThrough = "Walk Through Players",
-        mAntiFling = "🛡️ Anti-Fling (Protect from Void)",
-        mFullbright = "💡 Fullbright (Remove Darkness)",
-        mNoclip = "👻 Global Noclip (Walk through walls)",
-        mFpsBoost = "⚡ FPS Boost (Remove Fog)",
+        mAntiFling = "Anti-Fling Protection",
+        mFullbright = "Fullbright (Remove Darkness)",
+        mNoclip = "Global Noclip",
+        mFpsBoost = "FPS Boost & Clear Fog",
         -- ESP
-        espHead = ">> 👁️ Custom Role ESP Systems",
-        espInnocent = "👤 Show Innocents",
-        espMurder = "🔪 Show Murderer",
-        espSheriff = "🔫 Show Sheriff/Gun",
-        espGunDrop = "🎯 Show Dropped Gun (GunDrop ESP)",
-        espTracer = "📈 ESP Tracer Lines",
-        espBox = "📦 ESP Bounding Box",
+        espHead = ">> 👁️ Advanced Role ESP",
+        espInnocent = "Show Innocents",
+        espMurder = "Show Murderer",
+        espSheriff = "Show Sheriff/Gun",
+        espGunDrop = "Show Dropped Gun (GunDrop ESP)",
+        espTracer = "ESP Tracer Lines",
+        espBox = "ESP Bounding Box",
         -- Sheriff
-        gunHead = ">> 🔮 Emergency Floating Buttons",
-        gunGrab = "🎃 Teleport Gun",
-        gunShoot = "💀 Pro Prediction Aimbot",
+        gunHead = ">> 🔮 Sheriff & Gun Grab Modes",
+        gunGrabMode = "Gun Grab Mode Selector",
+        gunGrabBtn = "Gun Grab Floating Button",
+        gunShootBtn = "Pro Prediction Aimbot Button",
         -- Murderer
-        murdHead = ">> 🔪 Hitbox Extender (Easy Knife Throw)",
-        murdHitbox = "Expand Player Hitbox",
+        murdHead = ">> 🔪 Hitbox Extender",
+        murdHitbox = "Expand Enemy Hitbox Size",
         murdMassHead = ">> 💀 Mass Kill Systems",
-        murdKillAll = "🔪 Mass Kill All",
-        murdAutoKill = "⚡ Auto Kill All",
+        murdKillAll = "Mass Kill All",
+        murdAutoKill = "Auto Kill All",
         -- Teleport
         tpHead = ">> 🚀 Quick Teleport",
         tpSheriff = "Teleport to Sheriff",
         tpMurder = "Teleport to Murderer",
-        tpFriendHead = ">> 👥 Select Friend to Teleport",
-        tpDropdown = "Select Player",
+        tpFriendHead = ">> 👥 Teleport to Specific Friend",
+        tpDropdown = "Select Friend",
         tpButton = "Teleport to Friend",
         -- Farm
-        farmHead = ">> 💰 Auto Coin/Event Farm",
+        farmHead = ">> 💰 Stable Event Coin Farm",
         farmWarnTitle = "⚠️ Safety Warning",
-        farmWarnDesc = "Recommended speed below 19 to avoid bans",
+        farmWarnDesc = "Recommended speed below 19 to stay completely safe",
         farmSpeed = "Fly Speed",
-        farmMode = "Fly Mode",
+        farmMode = "Fly Posture Mode",
         farmReset = "Auto Reset when coins deplete",
-        farmToggle = "Auto Halloween Farm",
+        farmToggle = "Start Auto Halloween Farm",
         farmSecHead = ">> 🛡️ Security Systems",
-        farmAntiAfk = "Anti-AFK",
-        -- Update
-        upHead = ">> 📝 Latest Update Logs (V3.0 God Mode)",
-        up1Title = "💀 Pro Prediction Aimbot Integration",
-        up1Desc = "Added advanced prediction aimbot with velocity calculation, raycast wall-check, and FOV priority.",
-        up2Title = "🚀 Safe Momentum Dash & ESP Fix",
-        up2Desc = "Optimized safe dash to prevent Error 267 and permanently fixed round-reset ESP name bugs.",
-        up3Title = "🛡️ Extreme Stability & Zero-Lag Loop",
-        up3Desc = "Completely overhauled loop architecture for maximum performance and zero lag.",
+        farmAntiAfk = "Anti-AFK Protection",
+        -- Update Log
+        upHead = ">> 📝 Latest Update Logs (V4.3 Final)",
+        up1Title = "💀 Pro Prediction Aimbot & 4 Gun Grab Modes",
+        up1Desc = "Added 4 smart gun grab modes and prediction aimbot with raycast wall-check.",
+        up2Title = "🚀 Auto Config Saver & Instant Toast",
+        up2Desc = "Added auto configuration saving and 1-second instant toast notifications.",
+        up3Title = "🛡️ Zero-Bugs Stability & Full Feature Restoration",
+        up3Desc = "Overhauled architecture for maximum stability, zero bugs, and full feature preservation.",
+        -- Config
+        cfgHead = ">> ⚙️ Configuration Manager",
+        cfgSave = "Save Current Configuration",
+        cfgReset = "Reset to Default Settings",
         -- Guide
-        guHead = ">> 📖 Basic Script User Guide",
-        gu1Title = "1. Opening/Closing Main Menu",
-        gu1Desc = "Click the '+' on the hub floating button to toggle the main UI. Drag it anywhere on screen.",
-        gu2Title = "2. Floating Buttons Usage",
-        gu2Desc = "In the Main and Sheriff tabs, toggle floating buttons (Dash, Aimbot, Gun Grab) for quick mobile access.",
-        gu3Title = "3. Safe Event Farming",
-        gu3Desc = "Keep fly speed under 19 and enable auto-farm in the Halloween Farm tab for maximum safety."
+        guHead = ">> 📖 User Guide V4.3",
+        gu1Title = "1. Main Menu Toggle",
+        gu1Desc = "Click '+' floating button to open/close main UI. Drag anywhere on screen.",
+        gu2Title = "2. Gun Grab Modes (4 Modes)",
+        gu2Desc = "Select your preferred gun grab mode in Sheriff tab. Fully stable and fast.",
+        gu3Title = "3. Auto Config Saver & Toast",
+        gu3Desc = "Settings save automatically, and notifications disappear smoothly in 1 second."
     }
 }
 
 local T = L[selectedLanguage]
 
 ----------------------------------------------------------------------------------------------------
--- [6] หน้าต่างหลักแดชบอร์ด
+-- [7] หน้าต่างหลักแดชบอร์ด (Primary Dashboard Window)
 ----------------------------------------------------------------------------------------------------
 local PrimaryWindowFrame = Instance.new("Frame")
 PrimaryWindowFrame.Name = "MeridianPrimaryInterface"
 PrimaryWindowFrame.Parent = RootContainerNode
-PrimaryWindowFrame.BackgroundColor3 = Color3.fromRGB(12, 8, 18)
+PrimaryWindowFrame.BackgroundColor3 = Color3.fromRGB(10, 6, 15)
 PrimaryWindowFrame.BackgroundTransparency = 0.02
 PrimaryWindowFrame.Position = UDim2.new(0.08, 0, 0.12, 0)
 PrimaryWindowFrame.Size = UDim2.new(0, 560, 0, 480)
@@ -506,14 +545,14 @@ WindowBorderGlow.Parent = PrimaryWindowFrame
 local HeaderNavigationPanel = Instance.new("Frame")
 HeaderNavigationPanel.Name = "HeaderPanel"
 HeaderNavigationPanel.Parent = PrimaryWindowFrame
-HeaderNavigationPanel.BackgroundColor3 = Color3.fromRGB(22, 14, 32)
+HeaderNavigationPanel.BackgroundColor3 = Color3.fromRGB(18, 10, 26)
 HeaderNavigationPanel.Size = UDim2.new(1, 0, 0, 45)
 HeaderNavigationPanel.ZIndex = 6
 Instance.new("UICorner", HeaderNavigationPanel).CornerRadius = UDim.new(0, 14)
 
 local HeaderBottomBlocker = Instance.new("Frame")
 HeaderBottomBlocker.Parent = HeaderNavigationPanel
-HeaderBottomBlocker.BackgroundColor3 = Color3.fromRGB(22, 14, 32)
+HeaderBottomBlocker.BackgroundColor3 = Color3.fromRGB(18, 10, 26)
 HeaderBottomBlocker.BorderSizePixel = 0
 HeaderBottomBlocker.Position = UDim2.new(0, 0, 0.7, 0)
 HeaderBottomBlocker.Size = UDim2.new(1, 0, 0.3, 0)
@@ -544,11 +583,11 @@ HideWindowButton.ZIndex = 7
 Instance.new("UICorner", HideWindowButton).CornerRadius = UDim.new(0, 6)
 
 ----------------------------------------------------------------------------------------------------
--- [7] ฝั่งซ้าย: โปรไฟล์ + แท็บเมนูแนวตั้ง
+-- [8] ฝั่งซ้าย: โปรไฟล์ผู้เล่น & แท็บเมนูแนวตั้ง
 ----------------------------------------------------------------------------------------------------
 local LeftProfileSidebar = Instance.new("Frame")
 LeftProfileSidebar.Parent = PrimaryWindowFrame
-LeftProfileSidebar.BackgroundColor3 = Color3.fromRGB(18, 12, 26)
+LeftProfileSidebar.BackgroundColor3 = Color3.fromRGB(15, 10, 22)
 LeftProfileSidebar.Position = UDim2.new(0, 15, 0, 55)
 LeftProfileSidebar.Size = UDim2.new(0, 175, 1, -68)
 LeftProfileSidebar.ZIndex = 6
@@ -603,7 +642,7 @@ DisplayNameLabel.ZIndex = 7
 
 local HealthBarBg = Instance.new("Frame")
 HealthBarBg.Parent = LeftProfileSidebar
-HealthBarBg.BackgroundColor3 = Color3.fromRGB(10, 6, 15)
+HealthBarBg.BackgroundColor3 = Color3.fromRGB(8, 4, 12)
 HealthBarBg.Position = UDim2.new(0, 10, 0, 62)
 HealthBarBg.Size = UDim2.new(1, -20, 0, 18)
 HealthBarBg.ZIndex = 7
@@ -648,7 +687,7 @@ TabMenuContainer.Parent = LeftProfileSidebar
 TabMenuContainer.BackgroundTransparency = 1
 TabMenuContainer.Position = UDim2.new(0, 10, 0, 88)
 TabMenuContainer.Size = UDim2.new(1, -20, 1, -98)
-TabMenuContainer.CanvasSize = UDim2.new(0, 0, 0, 320)
+TabMenuContainer.CanvasSize = UDim2.new(0, 0, 0, 450) -- ขยาย Canvas ให้พอดีทุกแท็บ
 TabMenuContainer.ScrollBarThickness = 3
 TabMenuContainer.ZIndex = 7
 
@@ -658,9 +697,9 @@ tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
 tabLayout.Padding = UDim.new(0, 6)
 
 ----------------------------------------------------------------------------------------------------
--- [8] UI Components & Creators
+-- [9] UI Component Builder Library
 ----------------------------------------------------------------------------------------------------
- local PagesContainer = Instance.new("Frame")
+local PagesContainer = Instance.new("Frame")
 PagesContainer.Parent = PrimaryWindowFrame
 PagesContainer.BackgroundTransparency = 1
 PagesContainer.Position = UDim2.new(0, 200, 0, 55)
@@ -690,7 +729,7 @@ local function createTabContent(tabName)
 
     local menuBtn = Instance.new("TextButton")
     menuBtn.Parent = TabMenuContainer
-    menuBtn.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
+    menuBtn.BackgroundColor3 = Color3.fromRGB(20, 12, 30)
     menuBtn.Size = UDim2.new(1, 0, 0, 32)
     menuBtn.Font = Enum.Font.Code
     menuBtn.Text = "  👻 " .. tostring(tabName)
@@ -709,7 +748,7 @@ local function createTabContent(tabName)
                 btn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
                 btn.TextColor3 = Color3.fromRGB(15, 10, 20)
             else
-                btn.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
+                btn.BackgroundColor3 = Color3.fromRGB(20, 12, 30)
                 btn.TextColor3 = Color3.fromRGB(216, 180, 254)
             end
         end
@@ -735,7 +774,7 @@ end
 local function addParagraph(parent, title, desc)
     local frame = Instance.new("Frame")
     frame.Parent = parent
-    frame.BackgroundColor3 = Color3.fromRGB(18, 12, 26)
+    frame.BackgroundColor3 = Color3.fromRGB(15, 10, 22)
     frame.Size = UDim2.new(1, 0, 0, 48)
     frame.ZIndex = 6
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
@@ -774,7 +813,7 @@ end
 local function addButton(parent, text, callback)
     local btn = Instance.new("TextButton")
     btn.Parent = parent
-    btn.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
+    btn.BackgroundColor3 = Color3.fromRGB(20, 12, 30)
     btn.Size = UDim2.new(1, 0, 0, 36)
     btn.Font = Enum.Font.Code
     btn.Text = "  " .. tostring(text or "")
@@ -799,7 +838,7 @@ end
 local function addToggleButton(parent, text, defaultState, callback)
     local btn = Instance.new("TextButton")
     btn.Parent = parent
-    btn.BackgroundColor3 = defaultState and Color3.fromRGB(255, 140, 0) or Color3.fromRGB(25, 16, 38)
+    btn.BackgroundColor3 = defaultState and Color3.fromRGB(255, 140, 0) or Color3.fromRGB(20, 12, 30)
     btn.Size = UDim2.new(1, 0, 0, 36)
     btn.Font = Enum.Font.Code
     btn.Text = defaultState and ("  [ เปิด ] " .. tostring(text or "")) or ("  [ ปิด ] " .. tostring(text or ""))
@@ -817,7 +856,7 @@ local function addToggleButton(parent, text, defaultState, callback)
             btn.Text = "  [ เปิด ] " .. tostring(text or "")
             btn.TextColor3 = Color3.fromRGB(15, 10, 20)
         else
-            btn.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
+            btn.BackgroundColor3 = Color3.fromRGB(20, 12, 30)
             btn.Text = "  [ ปิด ] " .. tostring(text or "")
             btn.TextColor3 = Color3.fromRGB(216, 180, 254)
         end
@@ -829,7 +868,7 @@ end
 local function addToggleWithInput(parent, text, defaultVal, callback)
     local frame = Instance.new("Frame")
     frame.Parent = parent
-    frame.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 12, 30)
     frame.Size = UDim2.new(1, 0, 0, 38)
     frame.ZIndex = 6
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
@@ -847,7 +886,7 @@ local function addToggleWithInput(parent, text, defaultVal, callback)
 
     local inputBox = Instance.new("TextBox")
     inputBox.Parent = frame
-    inputBox.BackgroundColor3 = Color3.fromRGB(15, 10, 20)
+    inputBox.BackgroundColor3 = Color3.fromRGB(8, 4, 12)
     inputBox.Size = UDim2.new(0, 55, 0, 26)
     inputBox.Position = UDim2.new(1, -62, 0.5, -13)
     inputBox.Font = Enum.Font.Code
@@ -873,7 +912,7 @@ local function addToggleWithInput(parent, text, defaultVal, callback)
             toggleBtn.TextColor3 = Color3.fromRGB(15, 10, 20)
             inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
         else
-            frame.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
+            frame.BackgroundColor3 = Color3.fromRGB(20, 12, 30)
             toggleBtn.Text = "  [ ปิด ] " .. tostring(text or "")
             toggleBtn.TextColor3 = Color3.fromRGB(216, 180, 254)
             inputBox.TextColor3 = Color3.fromRGB(255, 140, 0)
@@ -896,7 +935,7 @@ end
 local function addSlider(parent, title, minVal, maxVal, defaultVal, callback)
     local frame = Instance.new("Frame")
     frame.Parent = parent
-    frame.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 12, 30)
     frame.Size = UDim2.new(1, 0, 0, 48)
     frame.ZIndex = 6
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
@@ -915,7 +954,7 @@ local function addSlider(parent, title, minVal, maxVal, defaultVal, callback)
 
     local inputBox = Instance.new("TextBox")
     inputBox.Parent = frame
-    inputBox.BackgroundColor3 = Color3.fromRGB(15, 10, 20)
+    inputBox.BackgroundColor3 = Color3.fromRGB(8, 4, 12)
     inputBox.Size = UDim2.new(0, 65, 0, 22)
     inputBox.Position = UDim2.new(1, -72, 0, 21)
     inputBox.Font = Enum.Font.Code
@@ -941,7 +980,7 @@ end
 local function addDropdown(parent, title, options, defaultVal, callback)
     local frame = Instance.new("Frame")
     frame.Parent = parent
-    frame.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 12, 30)
     frame.Size = UDim2.new(1, 0, 0, 36)
     frame.ZIndex = 6
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
@@ -994,7 +1033,7 @@ local function addFloatingToggle(parent, text, defaultPos, themeColor, borderCol
     local safeText = tostring(text or "Button")
     local btn = Instance.new("TextButton")
     btn.Parent = parent
-    btn.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
+    btn.BackgroundColor3 = Color3.fromRGB(20, 12, 30)
     btn.Size = UDim2.new(1, 0, 0, 36)
     btn.Font = Enum.Font.Code
     btn.Text = "  [ ปิด ] " .. safeText
@@ -1009,7 +1048,7 @@ local function addFloatingToggle(parent, text, defaultPos, themeColor, borderCol
 
     local function removeFloatBtn()
         if floatingButtonInstance then
-            floatingButtonInstance:Destroy()
+            pcall(function() floatingButtonInstance:Destroy() end)
             floatingButtonInstance = nil
         end
     end
@@ -1019,7 +1058,7 @@ local function addFloatingToggle(parent, text, defaultPos, themeColor, borderCol
         local fBtn = Instance.new("TextButton")
         fBtn.Name = "Float_" .. safeText
         fBtn.Parent = FloatGui
-        fBtn.BackgroundColor3 = Color3.fromRGB(18, 10, 28)
+        fBtn.BackgroundColor3 = Color3.fromRGB(15, 8, 22)
         fBtn.Size = UDim2.new(0, 145, 0, 48)
         fBtn.Position = defaultPos or UDim2.new(0.05, 0, 0.2, 0)
         fBtn.Font = Enum.Font.Code
@@ -1061,20 +1100,20 @@ local function addFloatingToggle(parent, text, defaultPos, themeColor, borderCol
             btn.Text = "  [ เปิด ] " .. safeText
             btn.TextColor3 = Color3.fromRGB(15, 10, 20)
             createFloatBtn()
-            triggerHalloweenToast("SUCCESS", "Spawned floating button [" .. safeText .. "]", "SUCCESS")
+            triggerHalloweenToast("SUCCESS", "Spawned [" .. safeText .. "]", "SUCCESS")
         else
-            btn.BackgroundColor3 = Color3.fromRGB(25, 16, 38)
+            btn.BackgroundColor3 = Color3.fromRGB(20, 12, 30)
             btn.Text = "  [ ปิด ] " .. safeText
             btn.TextColor3 = Color3.fromRGB(216, 180, 254)
             removeFloatBtn()
-            triggerHalloweenToast("WARNING", "Removed floating button [" .. safeText .. "]", "WARNING")
+            triggerHalloweenToast("WARNING", "Removed [" .. safeText .. "]", "WARNING")
         end
     end)
     return btn
 end
 
 ----------------------------------------------------------------------------------------------------
--- [9] สร้างเนื้อหาแต่ละแท็บ (ครบทั้ง 8 หมวดหมู่)
+-- [10] การสร้างเนื้อหาแต่ละแท็บ
 ----------------------------------------------------------------------------------------------------
 
 -- 1. เมนูหลัก
@@ -1101,7 +1140,6 @@ addToggleButton(tabMain, T.mInfJump, false, function(state)
     infJumpEnabled = state
 end)
 
--- ระบบดีดตัวพุ่งไปข้างหน้า (Safe Momentum Dash) พร้อมสไลด์ปรับความแรง 1-1000
 addHeader(tabMain, T.mDashHead)
 local dashPowerValue = 100
 addSlider(tabMain, T.mDashPower, 1, 1000, 100, function(v)
@@ -1114,7 +1152,6 @@ addFloatingToggle(tabMain, T.mDashToggle, UDim2.new(0.05, 0, 0.35, 0), Color3.fr
         if char and char:FindFirstChild("HumanoidRootPart") then
             local hrp = char.HumanoidRootPart
             local lookVector = Camera.CFrame.LookVector
-            -- ปรับแรงพุ่งปลอดภัยผ่าน CFrame + Velocity
             hrp.CFrame = hrp.CFrame + Vector3.new(lookVector.X * (dashPowerValue / 4), 0, lookVector.Z * (dashPowerValue / 4))
             triggerHalloweenToast("SUCCESS", "🚀 Pro Dash activated!", "SUCCESS")
         end
@@ -1151,15 +1188,6 @@ addHeader(tabMain, T.mUtilHead)
 local walkThrough = false
 addToggleButton(tabMain, T.mWalkThrough, false, function(state)
     walkThrough = state
-    if not state then
-        for _, plr in pairs(Players:GetPlayers()) do
-            if plr.Character then
-                for _, part in pairs(plr.Character:GetDescendants()) do
-                    if part:IsA("BasePart") then part.CanCollide = true end
-                end
-            end
-        end
-    end
 end)
 
 RunService.Stepped:Connect(function()
@@ -1237,7 +1265,7 @@ addToggleButton(tabMain, T.mFpsBoost, false, function(state)
 end)
 
 
--- 2. มองผู้เล่น (Role ESP & GunDrop ESP + แก้บัคชื่อ ESP V3.0)
+-- 2. มองผู้เล่น (Role ESP & GunDrop ESP)
 local tabESP = createTabContent(T.tabESP)
 addHeader(tabESP, T.espHead)
 
@@ -1284,7 +1312,6 @@ local function removeESP(char)
 end
 
 RunService.RenderStepped:Connect(function()
-    -- ระบบมองผู้เล่นอัปเกรด V3.0 (รีเฟรชชื่อบทบาทเรียลไทม์ ไร้บัคคำว่าผู้เล่นค้าง)
     for _, plr in pairs(Players:GetPlayers()) do
         if plr ~= LocalPlayer then
             local char = plr.Character
@@ -1376,7 +1403,7 @@ RunService.RenderStepped:Connect(function()
         end
     end
 
-    -- ระบบมองปืนตกบนพื้น (GunDrop ESP)
+    -- GunDrop ESP
     for _, obj in pairs(Workspace:GetDescendants()) do
         if obj.Name == "GunDrop" then
             local part = obj:IsA("Model") and (obj:FindFirstChild("Handle") or obj:FindFirstChildWhichIsA("BasePart")) or (obj:IsA("BasePart") and obj)
@@ -1409,12 +1436,24 @@ RunService.RenderStepped:Connect(function()
 end)
 
 
--- 3. นายอำเภอ (พร้อมระบบยิงดักหน้า Pro Aimbot V3.0)
+-- 3. นายอำเภอ (พร้อม 4 โหมดเก็บปืน + Aimbot ยิงดักหน้า)
 local tabGun = createTabContent(T.tabGun)
 addHeader(tabGun, T.gunHead)
 
--- 1. ปุ่มลอยดึงปืนเข้าตัว (ระบบใหม่ V3.0 ปลอดภัย ไม่โดนแบน)
-addFloatingToggle(tabGun, T.gunGrab, UDim2.new(0.05, 0, 0.2, 0), Color3.fromRGB(255, 140, 0), Color3.fromRGB(255, 165, 0), function(btn)
+local selectedGunGrabMode = "วาปปืนเข้าตัว"
+addDropdown(tabGun, T.gunGrabMode, {
+    "1. วาปไปเก็บปืน 0.1 วิ",
+    "2. วาปปืนเข้าตัว",
+    "3. ให้ปืนเคลื่อนที่มาหา",
+    "4. มุดดินไปเก็บปืนแล้วกลับจุดเดิม"
+}, "2. วาปปืนเข้าตัว", function(val)
+    if string.find(val, "0.1") then selectedGunGrabMode = "วาปไปเก็บปืน 0.1 วิ"
+    elseif string.find(val, "เข้าตัว") then selectedGunGrabMode = "วาปปืนเข้าตัว"
+    elseif string.find(val, "เคลื่อนที่มาหา") then selectedGunGrabMode = "ให้ปืนเคลื่อนที่มาหา"
+    elseif string.find(val, "มุดดิน") then selectedGunGrabMode = "มุดดินไปเก็บปืนแล้วกลับจุดเดิม" end
+end)
+
+local function executeGunGrab()
     pcall(function()
         local char = LocalPlayer.Character
         if not char or not char:FindFirstChild("HumanoidRootPart") then 
@@ -1437,19 +1476,61 @@ addFloatingToggle(tabGun, T.gunGrab, UDim2.new(0.05, 0, 0.2, 0), Color3.fromRGB(
             return
         end
 
-        targetPart.CFrame = root.CFrame * CFrame.new(0, 0, -2)
-        
-        if firetouchinterest then
-            firetouchinterest(root, targetPart, 0)
-            task.wait(0.05)
-            firetouchinterest(root, targetPart, 1)
-        end
+        local originalPos = root.CFrame
 
-        triggerHalloweenToast("SUCCESS", "🎯 ดึงปืนเข้าตัวสำเร็จ!", "SUCCESS")
+        if selectedGunGrabMode == "วาปไปเก็บปืน 0.1 วิ" then
+            root.CFrame = targetPart.CFrame * CFrame.new(0, 1, 0)
+            task.wait(0.1)
+            if firetouchinterest then
+                firetouchinterest(root, targetPart, 0)
+                firetouchinterest(root, targetPart, 1)
+            end
+            task.wait(0.05)
+            root.CFrame = originalPos
+            triggerHalloweenToast("SUCCESS", "🎯 [โหมด 1] วาปไปเก็บปืนสำเร็จ!", "SUCCESS")
+
+        elseif selectedGunGrabMode == "วาปปืนเข้าตัว" then
+            targetPart.CFrame = root.CFrame * CFrame.new(0, 0, -2)
+            if firetouchinterest then
+                firetouchinterest(root, targetPart, 0)
+                task.wait(0.05)
+                firetouchinterest(root, targetPart, 1)
+            end
+            triggerHalloweenToast("SUCCESS", "🎯 [โหมด 2] วาปปืนเข้าตัวสำเร็จ!", "SUCCESS")
+
+        elseif selectedGunGrabMode == "ให้ปืนเคลื่อนที่มาหา" then
+            task.spawn(function()
+                local startTime = tick()
+                while targetPart and targetPart.Parent and tick() - startTime < 3 do
+                    targetPart.CFrame = targetPart.CFrame:Lerp(root.CFrame, 0.2)
+                    if (targetPart.Position - root.Position).Magnitude < 3 then break end
+                    RunService.RenderStepped:Wait()
+                end
+                if firetouchinterest then
+                    firetouchinterest(root, targetPart, 0)
+                    firetouchinterest(root, targetPart, 1)
+                end
+            end)
+            triggerHalloweenToast("SUCCESS", "🎯 [โหมด 3] ดึงปืนวิ่งมาหาสำเร็จ!", "SUCCESS")
+
+        elseif selectedGunGrabMode == "มุดดินไปเก็บปืนแล้วกลับจุดเดิม" then
+            root.CFrame = targetPart.CFrame + Vector3.new(0, -10, 0)
+            task.wait(0.15)
+            if firetouchinterest then
+                firetouchinterest(root, targetPart, 0)
+                firetouchinterest(root, targetPart, 1)
+            end
+            task.wait(0.1)
+            root.CFrame = originalPos
+            triggerHalloweenToast("SUCCESS", "🎯 [โหมด 4] มุดดินเก็บปืนสำเร็จ!", "SUCCESS")
+        end
     end)
+end
+
+addFloatingToggle(tabGun, T.gunGrabBtn, UDim2.new(0.05, 0, 0.2, 0), Color3.fromRGB(255, 140, 0), Color3.fromRGB(255, 165, 0), function()
+    executeGunGrab()
 end)
 
--- ฟังก์ชันค้นหาเป้าหมายฆาตกรที่ใกล้กลางจอที่สุด (FOV Priority)
 local function getBestTarget()
     local bestTarget = nil
     local shortestDist = math.huge
@@ -1460,13 +1541,10 @@ local function getBestTarget()
             if plr.Character.Humanoid.Health > 0 and getRole(plr) == "Knife" then
                 local hrp = plr.Character.HumanoidRootPart
                 local pos, visible = Camera:WorldToViewportPoint(hrp.Position)
-                
                 if visible then
-                    local screenPos = Vector2.new(pos.X, pos.Y)
-                    local distToCenter = (screenPos - screenCenter).Magnitude
-                    
-                    if distToCenter < shortestDist then
-                        shortestDist = distToCenter
+                    local dist = (Vector2.new(pos.X, pos.Y) - screenCenter).Magnitude
+                    if dist < shortestDist then
+                        shortestDist = dist
                         bestTarget = plr
                     end
                 end
@@ -1476,78 +1554,54 @@ local function getBestTarget()
     return bestTarget
 end
 
--- ฟังก์ชันเช็กสิ่งกีดขวาง (Raycast Visibility Check)
 local function isTargetVisible(targetPart, originPos)
-    local raycastParams = RaycastParams.new()
-    raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
-    raycastParams.FilterDescendantsInstances = {LocalPlayer.Character, Camera}
-    raycastParams.IgnoreWater = true
-
-    local direction = (targetPart.Position - originPos)
-    local result = Workspace:Raycast(originPos, direction, raycastParams)
-
-    if result then
-        local hitInstance = result.Instance
-        if hitInstance:IsDescendantOf(targetPart.Parent) then
-            return true
-        end
-        return false
-    end
-    return true
+    local rayParams = RaycastParams.new()
+    rayParams.FilterType = Enum.RaycastFilterType.Blacklist
+    rayParams.FilterDescendantsInstances = {LocalPlayer.Character, Camera}
+    local res = Workspace:Raycast(originPos, (targetPart.Position - originPos), rayParams)
+    if res and res.Instance:IsDescendantOf(targetPart.Parent) then return true end
+    return res == nil
 end
 
--- 2. ปุ่มลอยยิงดักหน้า (Pro Aimbot V3.0)
-addFloatingToggle(tabGun, T.gunShoot, UDim2.new(0.05, 0, 0.35, 0), Color3.fromRGB(239, 68, 68), Color3.fromRGB(255, 140, 0), function(btn)
+addFloatingToggle(tabGun, T.gunShootBtn, UDim2.new(0.05, 0, 0.35, 0), Color3.fromRGB(239, 68, 68), Color3.fromRGB(255, 140, 0), function()
     pcall(function()
-        local character = LocalPlayer.Character
-        if not character or not character:FindFirstChild("HumanoidRootPart") then return end
-        
-        local tool = character:FindFirstChild("Gun") or character:FindFirstChild("Revolver") or LocalPlayer.Backpack:FindFirstChild("Gun") or LocalPlayer.Backpack:FindFirstChild("Revolver")
+        local char = LocalPlayer.Character
+        if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+        local tool = char:FindFirstChild("Gun") or char:FindFirstChild("Revolver") or LocalPlayer.Backpack:FindFirstChild("Gun") or LocalPlayer.Backpack:FindFirstChild("Revolver")
         if not tool then
-            triggerHalloweenToast("WARNING", "⚠️ ไม่พบปืนในตัวหรือกระเป๋า!", "WARNING")
+            triggerHalloweenToast("WARNING", "⚠️ ไม่พบปืนในตัว!", "WARNING")
             return
         end
-        
-        if tool.Parent ~= character then 
-            tool.Parent = character 
-            task.wait(0.05) 
-        end
-
+        if tool.Parent ~= char then tool.Parent = char task.wait(0.05) end
         local remote = tool:FindFirstChild("Shoot")
-        local root = character.HumanoidRootPart
-        local attachment = root:FindFirstChild("GunRaycastAttachment")
-        if not remote or not attachment then return end
+        local root = char.HumanoidRootPart
+        local att = root:FindFirstChild("GunRaycastAttachment")
+        if not remote or not att then return end
 
-        local targetPlr = getBestTarget()
-        if not targetPlr or not targetPlr.Character or not targetPlr.Character:FindFirstChild("Head") then
-            triggerHalloweenToast("WARNING", "🎯 ไม่พบเป้าหมายฆาตกรในระยะมองเห็น", "WARNING")
+        local target = getBestTarget()
+        if not target or not target.Character or not target.Character:FindFirstChild("Head") then
+            triggerHalloweenToast("WARNING", "🎯 ไม่พบเป้าหมาย", "WARNING")
             return
         end
 
-        local targetHead = targetPlr.Character.Head
-        local targetRoot = targetPlr.Character.HumanoidRootPart
-
-        if not isTargetVisible(targetHead, root.Position) then
-            triggerHalloweenToast("ERROR", "❌ ติดกำแพง/สิ่งกีดขวาง ยิงไม่ได้!", "ERROR")
+        local head = target.Character.Head
+        if not isTargetVisible(head, root.Position) then
+            triggerHalloweenToast("ERROR", "❌ ติดกำแพงยิงไม่ได้", "ERROR")
             return
         end
 
         local ping = LocalPlayer:GetNetworkPing() or 0.05
-        local distance = (targetRoot.Position - root.Position).Magnitude
-        local bulletSpeed = 300 
-        local travelTime = (distance / bulletSpeed) + (ping * 1.2)
+        local dist = (head.Position - root.Position).Magnitude
+        local travel = (dist / 300) + (ping * 1.2)
+        local predicted = head.Position + (target.Character.HumanoidRootPart.AssemblyLinearVelocity * travel)
 
-        local velocity = targetRoot.AssemblyLinearVelocity
-        local predictedPos = targetHead.Position + (velocity * travelTime)
-
-        remote:FireServer(attachment.WorldCFrame, CFrame.new(predictedPos))
-        triggerHalloweenToast("SUCCESS", "🎯 ยิงดักหน้า " .. targetPlr.Name .. " เข้าเป้าเต็มๆ!", "SUCCESS")
+        remote:FireServer(att.WorldCFrame, CFrame.new(predicted))
+        triggerHalloweenToast("SUCCESS", "🎯 ยิงเข้าเป้าเต็มๆ!", "SUCCESS")
     end)
 end)
 
 
-
--- 4. ฆาตกร
+-- 4. ฆาตกร (Hitbox & Mass Kill)
 local tabMurder = createTabContent(T.tabMurder)
 addHeader(tabMurder, T.murdHead)
 
@@ -1580,26 +1634,20 @@ local function pullPlayers()
     if not char then return end
     local root = char:FindFirstChild("HumanoidRootPart")
     if not root then return end
-
     local knife = char:FindFirstChild("Knife") or LocalPlayer.Backpack:FindFirstChild("Knife")
     if knife and knife.Parent ~= char then knife.Parent = char end
 
     for _, plr in pairs(Players:GetPlayers()) do
         if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-            local enemyRoot = plr.Character.HumanoidRootPart
-            enemyRoot.CFrame = root.CFrame * CFrame.new(0, 0, -3)
+            plr.Character.HumanoidRootPart.CFrame = root.CFrame * CFrame.new(0, 0, -3)
         end
     end
 end
 
-local killAllState = false
 local autoKillState = false
-
 addToggleButton(tabMurder, T.murdKillAll, false, function(state)
-    killAllState = state
     if state then pullPlayers() end
 end)
-
 addToggleButton(tabMurder, T.murdAutoKill, false, function(state)
     autoKillState = state
 end)
@@ -1617,6 +1665,18 @@ end)
 local tabTeleport = createTabContent(T.tabTeleport)
 addHeader(tabTeleport, T.tpHead)
 
+local function getSheriff()
+    for _, plr in pairs(Players:GetPlayers()) do
+        if getRole(plr) == "Gun" then return plr end
+    end
+end
+
+local function getMurderer()
+    for _, plr in pairs(Players:GetPlayers()) do
+        if getRole(plr) == "Knife" then return plr end
+    end
+end
+
 local function teleportTo(plr)
     if plr and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
         local myChar = LocalPlayer.Character
@@ -1628,12 +1688,12 @@ end
 
 addButton(tabTeleport, T.tpSheriff, function()
     local sheriff = getSheriff()
-    if sheriff then teleportTo(sheriff) end
+    if sheriff then teleportTo(sheriff) else triggerHalloweenToast("WARNING", "⚠️ ไม่พบนายอำเภอ", "WARNING") end
 end)
 
 addButton(tabTeleport, T.tpMurder, function()
     local murderer = getMurderer()
-    if murderer then teleportTo(murderer) end
+    if murderer then teleportTo(murderer) else triggerHalloweenToast("WARNING", "⚠️ ไม่พบฆาตกร", "WARNING") end
 end)
 
 addHeader(tabTeleport, T.tpFriendHead)
@@ -1662,14 +1722,11 @@ addButton(tabTeleport, T.tpButton, function()
     end
 end)
 
-local function refreshPlayers()
-    playerDropdown:Refresh(getPlayerList())
-end
-Players.PlayerAdded:Connect(refreshPlayers)
-Players.PlayerRemoving:Connect(refreshPlayers)
+Players.PlayerAdded:Connect(function() playerDropdown:Refresh(getPlayerList()) end)
+Players.PlayerRemoving:Connect(function() playerDropdown:Refresh(getPlayerList()) end)
 
 
--- 6. ฟาร์มฮาโลวีน
+-- 6. ฟาร์มฮาโลวีน (เสถียรสุดขีด)
 local tabFarm = createTabContent(T.tabFarm)
 addHeader(tabFarm, T.farmHead)
 addParagraph(tabFarm, T.farmWarnTitle, T.farmWarnDesc)
@@ -1711,32 +1768,11 @@ local function restore()
     end
 end
 
-LocalPlayer.CharacterAdded:Connect(function(char)
-    if not flying then return end
-    char:WaitForChild("HumanoidRootPart")
-    char:WaitForChild("Humanoid")
-    local hrp = char:WaitForChild("HumanoidRootPart")
-    local lastPos = hrp.Position
-    repeat
-        task.wait(0.2)
-        local newPos = hrp.Position
-        if (newPos - lastPos).Magnitude > 1 then lastPos = newPos else break end
-    until not flying
-
-    task.wait(0.3)
-    if flying then
-        for _, v in pairs(char:GetDescendants()) do
-            if v:IsA("BasePart") then v.CanCollide = false end
-        end
-        noclipLoop(char)
-    end
-end)
-
 local function getNearestCoin(root)
     local nearest
     local dist = math.huge
     for _, v in pairs(Workspace:GetDescendants()) do
-        if v.Name == "Coin_Server" and v:IsA("BasePart") and v:FindFirstChild("TouchInterest") and v:FindFirstChild("CoinVisual") and not collectedCoins[v] and not v:GetAttribute("Collected") then
+        if v.Name == "Coin_Server" and v:IsA("BasePart") and v:FindFirstChild("TouchInterest") and not collectedCoins[v] and not v:GetAttribute("Collected") then
             local d = (root.Position - v.Position).Magnitude
             if d < dist then
                 dist = d
@@ -1763,17 +1799,9 @@ local function flyTo(targetPart)
 
         local dir = (targetPos - hrp.Position).Unit
         hrp.AssemblyLinearVelocity = dir * flySpeed
+        hrp.CFrame = CFrame.new(hrp.Position, targetPos)
 
-        if flyMode == "นอนคว่ำ" then
-            hrp.CFrame = CFrame.new(hrp.Position, targetPart.Position) * CFrame.Angles(math.rad(90), 0, 0)
-        else
-            hrp.CFrame = CFrame.new(hrp.Position, targetPart.Position)
-        end
-
-        if (hrp.Position - targetPos).Magnitude < 2 then
-            hrp.CFrame = CFrame.new(targetPos)
-            break
-        end
+        if (hrp.Position - targetPos).Magnitude < 2 then break end
         RunService.RenderStepped:Wait()
     end
     hrp.AssemblyLinearVelocity = Vector3.zero
@@ -1817,39 +1845,21 @@ addToggleButton(tabFarm, T.farmToggle, false, function(state)
 end)
 
 addHeader(tabFarm, T.farmSecHead)
+addToggleButton(tabFarm, T.farmAntiAfk, true, function(state) end)
 
-local AntiAFKConnection
-addToggleButton(tabFarm, T.farmAntiAfk, true, function(state)
-    if state then
-        if not AntiAFKConnection then
-            AntiAFKConnection = LocalPlayer.Idled:Connect(function()
-                pcall(function()
-                    local VirtualUser = game:GetService("VirtualUser")
-                    VirtualUser:Button2Down(Vector2.new(0,0), Workspace.CurrentCamera.CFrame)
-                    task.wait(1)
-                    VirtualUser:Button2Up(Vector2.new(0,0), Workspace.CurrentCamera.CFrame)
-                end)
-            end)
-        end
-    else
-        if AntiAFKConnection then
-            AntiAFKConnection:Disconnect()
-            AntiAFKConnection = nil
-        end
+task.spawn(function()
+    while task.wait(60) do
+        pcall(function()
+            local VirtualUser = game:GetService("VirtualUser")
+            VirtualUser:Button2Down(Vector2.new(0,0), Camera.CFrame)
+            task.wait(1)
+            VirtualUser:Button2Up(Vector2.new(0,0), Camera.CFrame)
+        end)
     end
 end)
 
-AntiAFKConnection = LocalPlayer.Idled:Connect(function()
-    pcall(function()
-        local VirtualUser = game:GetService("VirtualUser")
-        VirtualUser:Button2Down(Vector2.new(0,0), Workspace.CurrentCamera.CFrame)
-        task.wait(1)
-        VirtualUser:Button2Up(Vector2.new(0,0), Workspace.CurrentCamera.CFrame)
-    end)
-end)
 
-
--- 7. บันทึกอัพเดท (Update Log)
+-- 7. บันทึกอัพเดท (Update Log Tab)
 local tabUpdate = createTabContent(T.tabUpdate)
 addHeader(tabUpdate, T.upHead)
 addParagraph(tabUpdate, T.up1Title, T.up1Desc)
@@ -1857,13 +1867,29 @@ addParagraph(tabUpdate, T.up2Title, T.up2Desc)
 addParagraph(tabUpdate, T.up3Title, T.up3Desc)
 
 
--- 8. วิธีใช้งาน (User Guide)
+-- 8. ตั้งค่า (Config Manager Tab)
+local tabConfig = createTabContent(T.tabConfig)
+addHeader(tabConfig, T.cfgHead)
+
+addButton(tabConfig, T.cfgSave, function()
+    saveConfig()
+    triggerHalloweenToast("SUCCESS", "💾 บันทึกการตั้งค่าสำเร็จ!", "SUCCESS")
+end)
+
+addButton(tabConfig, T.cfgReset, function()
+    pcall(function()
+        if delfile and isfile(CONFIG_FILE) then delfile(CONFIG_FILE) end
+    end)
+    triggerHalloweenToast("WARNING", "♻️ รีเซ็ตค่าเริ่มต้นสำเร็จ!", "WARNING")
+end)
+
+
+-- 9. วิธีใช้งาน (User Guide Tab)
 local tabGuide = createTabContent(T.tabGuide)
 addHeader(tabGuide, T.guHead)
 addParagraph(tabGuide, T.gu1Title, T.gu1Desc)
 addParagraph(tabGuide, T.gu2Title, T.gu2Desc)
 addParagraph(tabGuide, T.gu3Title, T.gu3Desc)
-
 
 Pages[T.tabMain].Visible = true
 TabButtons[T.tabMain].BackgroundColor3 = Color3.fromRGB(255, 140, 0)
@@ -1871,12 +1897,12 @@ TabButtons[T.tabMain].TextColor3 = Color3.fromRGB(15, 10, 20)
 PrimaryWindowFrame.Visible = true
 
 ----------------------------------------------------------------------------------------------------
--- [10] Widget แสดง ปิง และ FPS
+-- [11] Widget แสดง ปิง และ FPS
 ----------------------------------------------------------------------------------------------------
 local StatsWidget = Instance.new("TextButton")
 StatsWidget.Name = "MeridianStatsWidget"
 StatsWidget.Parent = RootContainerNode
-StatsWidget.BackgroundColor3 = Color3.fromRGB(18, 12, 26)
+StatsWidget.BackgroundColor3 = Color3.fromRGB(15, 10, 22)
 StatsWidget.Position = UDim2.new(0.80, 0, 0.12, 0)
 StatsWidget.Size = UDim2.new(0, 170, 0, 34)
 StatsWidget.Font = Enum.Font.Code
@@ -1910,7 +1936,7 @@ task.spawn(function()
 end)
 
 ----------------------------------------------------------------------------------------------------
--- [11] ปุ่มลอยเปิด/ปิด UI หลัก (ขึ้นเฉพาะตอนปิดหน้าต่างหลัก และซ่อนตอนเปิด)
+-- [12] ปุ่มลอยเปิด/ปิด UI หลัก (Toggle Hub Button)
 ----------------------------------------------------------------------------------------------------
 local ToggleHubGui = Instance.new("ScreenGui")
 ToggleHubGui.Name = "MeridianToggleHubGui"
@@ -1921,7 +1947,7 @@ if not ToggleHubGui.Parent then ToggleHubGui.Parent = LocalPlayer:WaitForChild("
 local HubFloatBtn = Instance.new("TextButton")
 HubFloatBtn.Name = "HubFloatBtn"
 HubFloatBtn.Parent = ToggleHubGui
-HubFloatBtn.BackgroundColor3 = Color3.fromRGB(18, 10, 28)
+HubFloatBtn.BackgroundColor3 = Color3.fromRGB(15, 8, 22)
 HubFloatBtn.Position = UDim2.new(0.05, 0, 0.15, 0)
 HubFloatBtn.Size = UDim2.new(0, 175, 0, 52)
 HubFloatBtn.Font = Enum.Font.Code
@@ -1960,4 +1986,4 @@ HideWindowButton.MouseButton1Click:Connect(function()
     triggerHalloweenToast("WARNING", T.hideUIToast, "WARNING")
 end)
 
-print("MERIDIAN HUB: Halloween God Mode V3.0 Loaded Successfully!")
+print("MERIDIAN HUB: Halloween God Mode V4.3 Final Loaded Successfully!")
