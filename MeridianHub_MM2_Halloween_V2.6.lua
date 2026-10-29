@@ -1554,49 +1554,128 @@ local function getBestTarget()
     return bestTarget
 end
 
-local function isTargetVisible(targetPart, originPos)
+local CombatEngine = {
+    BulletSpeed = 320,      -- ความเร็วกระสุนจำลองในเกม MM2 (ปรับแต่งเพื่อความสมจริง)
+    MaxRange = 1000,        -- ระยะหวังผลสูงสุด
+    PredictionFactor = 1.15 -- ตัวคูณชดเชยน้ำหนักการเคลื่อนที่
+}
+
+local function getAdvancedBestTarget()
+    local bestTarget = nil
+    local highestScore = -math.huge
+    local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+
+    for _, plr in pairs(Players:GetPlayers()) do
+        if plr ~= LocalPlayer and plr.Character then
+            local char = plr.Character
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            local hrp = char:FindFirstChild("HumanoidRootPart")
+            
+            if hum and hrp and hum.Health > 0 and getRole(plr) == "Knife" then
+                -- เช็กระยะทาง
+                local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if myRoot then
+                    local dist = (hrp.Position - myRoot.Position).Magnitude
+                    if dist <= CombatEngine.MaxRange then
+                        local pos, visible = Camera:WorldToViewportPoint(hrp.Position)
+                        if visible then
+                            -- คำนวณคะแนนความน่าจะเป็น (น้ำหนักจากระยะทางและความใกล้กลางจอ)
+                            local screenDist = (Vector2.new(pos.X, pos.Y) - screenCenter).Magnitude
+                            local score = 1000 - (screenDist * 0.7) - (dist * 0.1)
+                            
+                            if score > highestScore then
+                                highestScore = score
+                                bestTarget = plr
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return bestTarget
+end
+
+local function performAdvancedRaycast(origin, targetPos, ignoreList)
     local rayParams = RaycastParams.new()
     rayParams.FilterType = Enum.RaycastFilterType.Blacklist
-    rayParams.FilterDescendantsInstances = {LocalPlayer.Character, Camera}
-    local res = Workspace:Raycast(originPos, (targetPart.Position - originPos), rayParams)
-    if res and res.Instance:IsDescendantOf(targetPart.Parent) then return true end
-    return res == nil
+    rayParams.FilterDescendantsInstances = ignoreList
+    rayParams.IgnoreWater = true
+    
+    local direction = targetPos - origin
+    local result = Workspace:Raycast(origin, direction, rayParams)
+    
+    -- ถ้าไม่มีสิ่งกีดขวางขวางกั้น หรือชนตัวเป้าหมายถือว่าผ่าน
+    if not result then return true end
+    for _, instance in ipairs(ignoreList) do
+        if result.Instance:IsDescendantOf(instance) then
+            return true
+        end
+    end
+    return false
 end
 
 addFloatingToggle(tabGun, T.gunShootBtn, UDim2.new(0.05, 0, 0.35, 0), Color3.fromRGB(239, 68, 68), Color3.fromRGB(255, 140, 0), function()
     pcall(function()
         local char = LocalPlayer.Character
         if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+        
         local tool = char:FindFirstChild("Gun") or char:FindFirstChild("Revolver") or LocalPlayer.Backpack:FindFirstChild("Gun") or LocalPlayer.Backpack:FindFirstChild("Revolver")
         if not tool then
             triggerHalloweenToast("WARNING", "⚠️ ไม่พบปืนในตัว!", "WARNING")
             return
         end
-        if tool.Parent ~= char then tool.Parent = char task.wait(0.05) end
+        
+        if tool.Parent ~= char then 
+            tool.Parent = char 
+            task.wait(0.02) 
+        end
+        
         local remote = tool:FindFirstChild("Shoot")
         local root = char.HumanoidRootPart
         local att = root:FindFirstChild("GunRaycastAttachment")
         if not remote or not att then return end
 
-        local target = getBestTarget()
-        if not target or not target.Character or not target.Character:FindFirstChild("Head") then
-            triggerHalloweenToast("WARNING", "🎯 ไม่พบเป้าหมาย", "WARNING")
+        local target = getAdvancedBestTarget()
+        if not target or not target.Character then
+            triggerHalloweenToast("WARNING", "🎯 ไม่พบเป้าหมายฆาตกรในระยะล็อก", "WARNING")
             return
         end
 
-        local head = target.Character.Head
-        if not isTargetVisible(head, root.Position) then
-            triggerHalloweenToast("ERROR", "❌ ติดกำแพงยิงไม่ได้", "ERROR")
-            return
+        local tChar = target.Character
+        local tHead = tChar:FindFirstChild("Head")
+        local tTorso = tChar:FindFirstChild("UpperTorso") or tChar:FindFirstChild("HumanoidRootPart")
+        
+        if not tHead or not tTorso then return end
+
+        -- เลือกระหว่างหัวหรือลำตัว โดยเน้นจุดที่โล่งที่สุดไม่มีกำแพงบัง
+        local targetPart = tTorso
+        if performAdvancedRaycast(root.Position, tHead.Position, {char, tChar}) then
+            targetPart = tHead -- ถ้าหัวโล่ง เล็งหัวคมๆ
         end
 
+        -- ระบบคำนวณฟิสิกส์วิถีกระสุนขั้นสูง (Advanced Ballistic Prediction)
         local ping = LocalPlayer:GetNetworkPing() or 0.05
-        local dist = (head.Position - root.Position).Magnitude
-        local travel = (dist / 300) + (ping * 1.2)
-        local predicted = head.Position + (target.Character.HumanoidRootPart.AssemblyLinearVelocity * travel)
+        local distance = (targetPart.Position - root.Position).Magnitude
+        
+        -- คำนวณเวลาเดินทางของกระสุน + ชดเชยปิงเครือข่ายแบบไดนามิก
+        local timeToTarget = (distance / CombatEngine.BulletSpeed) + (ping * 0.85)
+        
+        -- ดึงค่าความเร็วและการเคลื่อนไหว (Velocity & Trajectory Vector)
+        local velocity = tChar.HumanoidRootPart.AssemblyLinearVelocity
+        
+        -- คำนวณจุดดักหน้าล่วงหน้า (Predictive Vector Interpolation)
+        local predictedPosition = targetPart.Position + (Vector3.new(velocity.X, 0, velocity.Z) * timeToTarget * CombatEngine.PredictionFactor)
+        
+        -- ตรวจสอบความปลอดภัยสิ่งกีดขวางรอบสุดท้ายก่อนลั่นไก
+        if not performAdvancedRaycast(root.Position, predictedPosition, {char, tChar}) then
+            triggerHalloweenToast("ERROR", "❌ ติดกำแพง/สิ่งกีดขวาง ยิงไม่ผ่าน", "ERROR")
+            return
+        end
 
-        remote:FireServer(att.WorldCFrame, CFrame.new(predicted))
-        triggerHalloweenToast("SUCCESS", "🎯 ยิงเข้าเป้าเต็มๆ!", "SUCCESS")
+        -- ส่งคำสั่งยิงระยะประชิด/ระยะไกลแบบสมบูรณ์
+        remote:FireServer(att.WorldCFrame, CFrame.new(predictedPosition))
+        triggerHalloweenToast("SUCCESS", "🎯 [Advanced Aimbot] ยิงสำเร็จ", "SUCCESS")
     end)
 end)
 
